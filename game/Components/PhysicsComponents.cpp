@@ -12,7 +12,8 @@ glm::mat4* ModelPhysicsComponent::getModelMatrix()
 
 void PlayerPhysicsComponent::update(GLfloat deltaFrameTime)
 {
-    m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, -0.1f * deltaFrameTime, 0.0f));
+    // Сфера падает вниз
+    m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(0.0f, -1.0f * deltaFrameTime, 0.0f));
 }
 
 glm::mat4* PlayerPhysicsComponent::getModelMatrix()

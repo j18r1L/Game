@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     //TODO можно сделать более фабричный метод
     ObjectFabric objectFabric;
     GameObject* player = objectFabric.createPlayer("../data/planet/planet.obj");
-    GameObject* sun = objectFabric.createModelEditor("../data/planet/planet.obj");
+    GameObject* sun = objectFabric.createModel("../data/planet/planet.obj");
     std::vector<GameObject*> gameObjects;
     gameObjects.push_back(player);
     gameObjects.push_back(sun);
