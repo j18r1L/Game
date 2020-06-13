@@ -3,3 +3,4 @@
 *.o
 *.pro.user
 build*
+Lib
