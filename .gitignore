@@ -1,6 +1,10 @@
 .DS_Store
 ._.DS_Store
+.vs
+CMakeLists.txt.user
+out
 *.o
 *.pro.user
 build*
 Lib
+data
