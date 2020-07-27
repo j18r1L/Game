@@ -51,4 +51,6 @@ namespace HE
 #ifdef RELEASE
     #define HE_CORE_INFO
 #endif
+
+
 #endif // LOG_H

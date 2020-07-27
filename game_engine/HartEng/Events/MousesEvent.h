@@ -1,0 +1,4 @@
+#ifndef MOUSESEVENT_H
+#define MOUSESEVENT_H
+
+#endif // MOUSESEVENT_H
