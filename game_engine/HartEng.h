@@ -3,7 +3,7 @@
 
 #include "HartEng/Core.h"
 #include "HartEng/Application.h"
-
+#include "HartEng/Log.h"
 // Entry point
 #include "HartEng/EntryPoint.h"
 

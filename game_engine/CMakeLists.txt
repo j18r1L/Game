@@ -26,7 +26,13 @@ file(GLOB header
     "HartEng/*.h"
 )
 
-add_executable(game_engine ${source} ${header} main.cpp HartEng.h)
+#file(GLOB sbdlog
+#    "HartEng/vendor/spdlog/*"
+#)
+
+include_directories(${CMAKE_SOURCE_DIR} HartEng/vendor/spdlog/include)
+
+add_executable(game_engine ${source} ${header} ${sbdlog}  main.cpp HartEng.h)
 
 #add_executable(game_engine
 #  main.cpp
