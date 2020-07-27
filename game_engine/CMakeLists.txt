@@ -13,7 +13,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5Core)
 
-add_executable(game_engine
-  main.cpp
+
+#add_definitions(-DHE_PLATFORM_WINDOWS, -DHE_BUILD_DLL)
+add_definitions(-DHE_PLATFORM_LINUX)
+
+
+file(GLOB source
+    "HartEng/*.cpp"
 )
+
+file(GLOB header
+    "HartEng/*.h"
+)
+
+add_executable(game_engine ${source} ${header} main.cpp HartEng.h)
+
+#add_executable(game_engine
+#  main.cpp
+#  HartEng/Core.h
+#  HartEng/Application.cpp
+#  HartEng/Application.h
+#  HartEng/HartEng.h
+#)
 target_link_libraries(game_engine Qt5::Core)

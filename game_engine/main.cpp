@@ -1,9 +1,18 @@
-#include <iostream>
 
-using namespace std;
 
-int main(int argc, char *argv[])
+#include <HartEng.h>
+
+
+class SandBox: public HE::Application
 {
-    cout << "hello" << endl;
-    return 0;
+public:
+    SandBox() {}
+
+    ~SandBox() {}
+};
+
+
+HE::Application* HE::CreateApplication()
+{
+    return new SandBox();
 }
