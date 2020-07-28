@@ -2,6 +2,7 @@
 #define APPLICATION_H
 
 #include "Core.h"
+#include "Events/Event.h"
 
 namespace HE
 {
