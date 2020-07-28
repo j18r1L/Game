@@ -1,7 +1,8 @@
 #ifndef ENTRYPOINT_H
 #define ENTRYPOINT_H
-#include <iostream>
-#include <HartEng.h>
+
+#include "HartEng/pch.h"
+#include "HartEng.h"
 
 #ifdef HE_PLATFORM_LINUX
 
@@ -16,13 +17,18 @@ int main(int argc, char *argv[])
 
     int a = 5;
     HE_INFO("Hello! Var={0}", a);
+
+    int b = 1;
+    HE_INFO("Hello! Var={0}", b);
+
+    HE_INFO("Hello! Var={0}", b);
+
+
     auto app = HE::CreateApplication();
-
-
     app->Run();
-
-
     delete app;
+
+
     return 0;
 }
 

@@ -1,10 +1,9 @@
 #ifndef EVENT_H
 #define EVENT_H
 
+#include "HartEng/pch.h"
 #include "HartEng/Core.h"
 
-#include <string>
-#include <functional>
 
 namespace HE
 {
