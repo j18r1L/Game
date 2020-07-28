@@ -1,7 +1,6 @@
 #ifndef MOUSESEVENT_H
 #define MOUSESEVENT_H
 
-#include <sstream>
 
 #include "Event.h"
 
