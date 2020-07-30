@@ -45,12 +45,12 @@ namespace HE
     
     class Event
     {
-        friend class EventDispatcher;
-    protected:
-        // Был ли обработан эвент или нет, нужен для того чтобы предотварить эвент от падения ниже по слоям обработки игры
-        bool m_Handled = false;
+        //friend class EventDispatcher;
 
     public:
+        // Был ли обработан эвент или нет, нужен для того чтобы предотварить эвент от падения ниже по слоям обработки игры
+        bool Handled = false;
+
         virtual EventType GetEventType() const = 0;
         virtual const char* GetName() const = 0;
         virtual int GetCategoryFlags() const = 0; 
@@ -88,7 +88,7 @@ namespace HE
             // Если эвент, который отправляем совпадает с типом EventFn, то вызывается эта функция
             if (m_Event.GetEventType() == T::GetStaticType())
             {
-                m_Event.m_Handled = func(*(T*)&m_Event);
+                m_Event.Handled = func(*(T*)&m_Event);
                 return true;
             }
             return false;

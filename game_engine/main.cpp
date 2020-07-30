@@ -1,10 +1,31 @@
 #include <HartEng.h>
 
+class ExampleLayer: public HE::Layer
+{
+public:
+    ExampleLayer():
+        Layer("Example")
+    {}
+
+    void OnUpdate() override
+    {
+        HE_INFO("ExampleLayer::Update");
+    }
+
+    void OnEvent(HE::Event &event) override
+    {
+        HE_TRACE("{0}", event);
+    }
+
+};
 
 class SandBox: public HE::Application
 {
 public:
-    SandBox() {}
+    SandBox()
+    {
+        PushLayer(new ExampleLayer());
+    }
 
     ~SandBox() {}
 };
