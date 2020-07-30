@@ -34,7 +34,17 @@ namespace HE
         virtual void Init(const WindowProps& props);
         virtual void Shutdown();
 
+        /*
+        // Callback functions
+        static void GLFWWindowSizeCallback(GLFWwindow* window, int width, int height);
+        static void GLFWWindowCloseCallback(GLFWwindow* window);
+        static void GLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void GLFWMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        static void GLFWScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+        */
+
     public:
+        static void GLFWCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
         LinuxWindow(const WindowProps& props);
         virtual ~LinuxWindow();
 
@@ -56,7 +66,9 @@ namespace HE
         static Window* Create(const WindowProps& props = WindowProps());
     };
 
-    // Callback functions
+    // Callback function
     static void GLFWErrorCallback(int error, const char* description);
+
+
 }
 #endif // LINUXWINDOW_H
