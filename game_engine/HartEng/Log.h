@@ -48,9 +48,19 @@ namespace HE
 #define HE_TRACE(...)      ::HE::Log::GetClientLogger()->trace(__VA_ARGS__)
 
 
-// if dist build
+// if dist build remove logging
 #ifdef RELEASE
     #define HE_CORE_INFO
+    #define HE_CORE_ERROR
+    #define HE_CORE_WARN
+    #define HE_CORE_INFO
+    #define HE_CORE_TRACE
+
+    #define HE_FATAL
+    #define HE_ERROR
+    #define HE_WARN
+    #define HE_INFO
+    #define HE_TRACE
 #endif
 
 

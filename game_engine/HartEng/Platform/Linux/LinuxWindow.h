@@ -3,6 +3,11 @@
 
 
 #include "HartEng/Window.h"
+#include "HartEng/Core.h"
+#include "HartEng/Events/ApplicationEvent.h"
+#include "HartEng/Events/MousesEvent.h"
+#include "HartEng/Events/KeyEvent.h"
+
 
 #include "HartEng/pch.h"
 
@@ -50,5 +55,8 @@ namespace HE
 
         static Window* Create(const WindowProps& props = WindowProps());
     };
+
+    // Callback functions
+    static void GLFWErrorCallback(int error, const char* description);
 }
 #endif // LINUXWINDOW_H
