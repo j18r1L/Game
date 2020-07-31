@@ -4,3 +4,6 @@
 [submodule "game_engine/HartEng/vendor/GLFW"]
 	path = game_engine/HartEng/vendor/GLFW
 	url = https://github.com/glfw/glfw.git
+[submodule "game_engine/HartEng/vendor/GLAD"]
+	path = game_engine/HartEng/vendor/GLAD
+	url = https://github.com/Dav1dde/glad.git

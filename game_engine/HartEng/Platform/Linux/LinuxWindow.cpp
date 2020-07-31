@@ -43,6 +43,12 @@ namespace HE
 
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
         glfwMakeContextCurrent(m_Window);
+
+        //Initialize GLAD
+        HE_CORE_INFO("Initializing GLAD...");
+        int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        HE_CORE_ASSERT(status, "Failed to initialize GLAD!");
+
         glfwSetWindowUserPointer(m_Window, &m_Data);
 
         // TODO set given vsync

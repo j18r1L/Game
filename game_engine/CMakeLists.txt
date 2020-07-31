@@ -52,5 +52,11 @@ target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLFW_DIR}/include")
 target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 
+# GLAD
+set(GLAD_DIR "${LIB_DIR}/GLAD")
+add_subdirectory("${GLAD_DIR}")
+target_link_libraries(${PROJECT_NAME} "glad" "${GLAD_LIBRARIES}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
+
 
 
