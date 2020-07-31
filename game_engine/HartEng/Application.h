@@ -1,7 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "Core.h"
+#include "HartEng/Core.h"
 #include "HartEng/Events/Event.h"
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/LayerStack.h"

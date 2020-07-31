@@ -38,6 +38,9 @@ namespace HE
         virtual void SetVSync(bool enable) = 0;
         virtual bool IsSync() const = 0;
 
+        // Так как это не обязательно GLFW окно, а может быть и win32, то используется void*
+        virtual void* GetNativeWindow() const = 0;
+
         static Window* Create(const WindowProps& props = WindowProps());
     };
 }

@@ -47,7 +47,7 @@ namespace HE
         io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
-
+        // TODO убрать GLFW кейкоды, поставить HE_KEY
         // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
         io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
         io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
@@ -158,6 +158,7 @@ namespace HE
     {
         ImGuiIO& io = ImGui::GetIO();
         int keycode = e.GetKeyCode();
+        // Смотрим на кейкоды TODO кириллица не работает
         if (keycode > 0 && keycode < 0x10000)
             io.AddInputCharacter((unsigned short)keycode);
     }

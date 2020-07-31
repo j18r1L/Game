@@ -1,6 +1,5 @@
 #include "LinuxWindow.h"
 
-#include "HartEng/pch.h"
 
 // GLFW platform specific code
 namespace HE

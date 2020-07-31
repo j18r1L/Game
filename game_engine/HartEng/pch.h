@@ -1,7 +1,6 @@
 #ifndef HZPCH_H
 #define HZPCH_H
 
-
 #include <memory>
 #include <functional>
 #include <string>

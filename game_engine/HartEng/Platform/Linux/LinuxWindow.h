@@ -4,6 +4,7 @@
 
 #include "HartEng/Window.h"
 #include "HartEng/Core.h"
+#include "HartEng/Input.h"
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/Events/MousesEvent.h"
 #include "HartEng/Events/KeyEvent.h"
@@ -61,6 +62,11 @@ namespace HE
         };
         void SetVSync(bool enable) override;
         bool IsSync() const override;
+
+        inline virtual void* GetNativeWindow() const
+        {
+            return m_Window;
+        }
 
 
         static Window* Create(const WindowProps& props = WindowProps());
