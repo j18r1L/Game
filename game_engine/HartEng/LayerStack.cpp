@@ -18,12 +18,14 @@ namespace HE
     {
         // Слои пушатся в первую часть вектора, порядок нужно соблюдать, чтобы слои рендерились в парвилном порядке
         m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
+        layer->OnAttach();
     }
 
     void LayerStack::PushOverlay(Layer *overlay)
     {
         // Оверлеи пушатся во вторую часть вектора, порядок нужно соблюдать, чтобы слои рендерились в парвилном порядке
         m_Layers.emplace_back(overlay);
+        overlay->OnAttach();
     }
 
     void LayerStack::PopLayer(Layer *layer)

@@ -7,3 +7,6 @@
 [submodule "game_engine/HartEng/vendor/GLAD"]
 	path = game_engine/HartEng/vendor/GLAD
 	url = https://github.com/Dav1dde/glad.git
+[submodule "game_engine/HartEng/vendor/imGUI"]
+	path = game_engine/HartEng/vendor/imGUI
+	url = https://github.com/ocornut/imgui.git

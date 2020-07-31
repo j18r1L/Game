@@ -17,21 +17,36 @@ find_package(Qt5Core)
 #add_definitions(-DHE_PLATFORM_WINDOWS, -DHE_BUILD_DLL)
 add_definitions(-DHE_PLATFORM_LINUX)
 add_definitions(-DHE_ENABLE_ASSERTS)
+add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set(LIB_DIR "${CMAKE_SOURCE_DIR}/HartEng/vendor")
 
-
-include_directories(${CMAKE_SOURCE_DIR} HartEng/vendor/spdlog/include)
+#imGUI
+set(imGUI_DIR "${LIB_DIR}/imGUI")
+include_directories(${imGUI_DIR})
 
 file(GLOB source
     "HartEng/*.cpp"
     "HartEng/Platform/Linux/*.cpp"
+    "HartEng/Platform/OpenGL/*.cpp"
+    "HartEng/imGUI/*.cpp"
+
+    # Временно
+    "HartEng/vendor/imGUI/*.cpp"
+    "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.cpp"
+
 )
 
 file(GLOB header
     "HartEng/*.h"
     "HartEng/Events/*.h"
     "HartEng/Platform/Linux/*.h"
+    "HartEng/Platform/OpenGL/*.h"
+    "HartEng/imGUI/*.h"
+
+    # Временно
+    "HartEng/vendor/imGUI/*.h"
+    "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.h"
 )
 
 
@@ -57,6 +72,14 @@ set(GLAD_DIR "${LIB_DIR}/GLAD")
 add_subdirectory("${GLAD_DIR}")
 target_link_libraries(${PROJECT_NAME} "glad" "${GLAD_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
+
+#spdlog
+set(SPDLOG_DIR "${LIB_DIR}/spdlog")
+add_subdirectory("${SPDLOG_DIR}")
+target_link_libraries(${PROJECT_NAME} "spdlog" "${SPDLOG_LIBRARIES}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${SPDLOG_DIR}/include")
+
+
 
 
 
