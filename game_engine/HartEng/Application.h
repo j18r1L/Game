@@ -1,6 +1,8 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "HartEng/Keycodes.h"
+#include "HartEng/MouseButtonCodes.h"
 #include "HartEng/Core.h"
 #include "HartEng/Events/Event.h"
 #include "HartEng/Events/ApplicationEvent.h"

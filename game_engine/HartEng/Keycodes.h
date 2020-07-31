@@ -1,6 +1,14 @@
 #ifndef KEYCODES_H
 #define KEYCODES_H
 
+//GLFW KEY CODES
+
+#define HE_TRUE                   1
+#define HE_FALSE                  0
+#define HE_RELEASE                0
+#define HE_PRESS                  1
+#define HE_REPEAT                 2
+
 /* Printable keys */
 #define HE_KEY_SPACE              32
 #define HE_KEY_APOSTROPHE         39  /* ' */

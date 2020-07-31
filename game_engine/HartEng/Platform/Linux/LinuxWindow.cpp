@@ -77,19 +77,19 @@ namespace HE
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             switch(action)
             {
-            case GLFW_PRESS:
+            case HE_PRESS:
             {
                 KeyPressedEvent event(key, 0);
                 data.EventCallback(event);
                 break;
             }
-            case GLFW_RELEASE:
+            case HE_RELEASE:
             {
                 KeyReleasedEvent event(key);
                 data.EventCallback(event);
                 break;
             }
-            case GLFW_REPEAT:
+            case HE_REPEAT:
             {
                 KeyPressedEvent event(key, 1);
                 data.EventCallback(event);
@@ -111,13 +111,13 @@ namespace HE
 
              switch (action)
              {
-             case GLFW_PRESS:
+             case HE_PRESS:
              {
                  MouseButtonPressedEvent event(button);
                  data.EventCallback(event);
                  break;
              }
-             case GLFW_RELEASE:
+             case HE_RELEASE:
              {
                  MouseButtonReleasedEvent event(button);
                  data.EventCallback(event);

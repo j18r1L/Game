@@ -1,6 +1,8 @@
 #ifndef LINUXWINDOW_H
 #define LINUXWINDOW_H
 
+#include "HartEng/Keycodes.h"
+#include "HartEng/MouseButtonCodes.h"
 
 #include "HartEng/Window.h"
 #include "HartEng/Core.h"
