@@ -72,5 +72,23 @@ namespace HE
         EVENT_CLASS_TYPE(KeyReleased)
 
     };
+
+    class KeyTypedEvent: public KeyEvent
+    {
+    public:
+        // repeatCount - количество повторений одной клавиши, если <= 1 - значит клавиша зажата, если 0, то клавиша нажата 1 раз
+        KeyTypedEvent(int keycode):
+            KeyEvent(keycode) {}
+
+        std::string ToString() const override
+        {
+            // ! stringstream медленный, не использовать в release, это debug only
+            std::stringstream ss;
+            ss << "KeyTypedEvent: " << m_KeyCode;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(KeyTyped)
+    };
 }
 #endif // KEYEVENT_H

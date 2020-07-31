@@ -24,4 +24,7 @@
 //
 #define BIT(x) (1 << x)
 
+// Для биндинга эвентов
+#define HE_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
 #endif // CORE_H
