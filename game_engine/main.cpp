@@ -9,7 +9,10 @@ public:
 
     void OnUpdate() override
     {
-        HE_INFO("ExampleLayer::Update");
+        //HE_INFO("ExampleLayer::Update");
+
+        if (HE::Input::IsKeyPressed(HE_KEY_G))
+            HE_TRACE("G key is pressed!");
     }
 
     void OnEvent(HE::Event &event) override
