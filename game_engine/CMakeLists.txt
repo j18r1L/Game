@@ -18,7 +18,7 @@ find_package(Qt5Core)
 add_definitions(-DHE_PLATFORM_LINUX)
 add_definitions(-DHE_ENABLE_ASSERTS)
 add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
-#add_definitions(-DHE_TRACE_EVENTS)
+add_definitions(-DHE_TRACE_EVENTS)
 
 set(LIB_DIR "${CMAKE_SOURCE_DIR}/HartEng/vendor")
 

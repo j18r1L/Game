@@ -11,6 +11,8 @@
 #include "HartEng/Window.h"
 #include "HartEng/imGUI/imGUILayer.h"
 
+#include "HartEng/Renderer/Shader.h"
+
 
 namespace HE
 {
@@ -27,6 +29,7 @@ namespace HE
         static Application* s_Instance;
 
         unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+        std::unique_ptr<Shader> m_Shader;
     public:
         bool m_Running;
         Application();

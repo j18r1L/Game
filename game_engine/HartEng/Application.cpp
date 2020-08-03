@@ -45,6 +45,34 @@ namespace HE
         unsigned int indices[3] = {0, 1, 2};
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+        std::string vertexSrc = R"(
+                #version 430 core
+
+                layout (location = 0) in vec3 a_Position;
+
+                void main()
+                {
+                    gl_Position = vec4(a_Position, 1.0);
+                }
+
+
+            )";
+
+        std::string fragmentSrc = R"(
+                #version 430 core
+
+                layout (location = 0) out vec4 o_Color;
+
+                void main()
+                {
+                    o_Color = vec4(1., 0, 0, 1.0);
+                }
+
+
+            )";
+
+        m_Shader = std::make_unique<Shader>(vertexSrc, fragmentSrc);
+
     }
 
     Application::~Application()
@@ -97,9 +125,11 @@ namespace HE
         {
 
             glClear(GL_COLOR_BUFFER_BIT);
+
+            m_Shader->Bind();
             glBindVertexArray(m_VertexArray);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-            /*
+
             // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера
             for (Layer* layer: m_LayerStack)
                 layer->OnUpdate();
@@ -113,7 +143,7 @@ namespace HE
                 layer->OnImGuiRender();
             }
             m_ImGuiLayer->End();
-            */
+
 
             m_Window->OnUpdate();
 
