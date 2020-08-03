@@ -73,6 +73,12 @@ add_subdirectory("${GLAD_DIR}")
 target_link_libraries(${PROJECT_NAME} "glad" "${GLAD_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 
+# GLM
+set(GLM_DIR "${LIB_DIR}/GLM")
+add_subdirectory("${GLM_DIR}")
+target_link_libraries(${PROJECT_NAME} "glm" "${GLM_LIBRARIES}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
+
 #spdlog
 set(SPDLOG_DIR "${LIB_DIR}/spdlog")
 add_subdirectory("${SPDLOG_DIR}")

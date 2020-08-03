@@ -10,3 +10,6 @@
 [submodule "game_engine/HartEng/vendor/imGUI"]
 	path = game_engine/HartEng/vendor/imGUI
 	url = https://github.com/ocornut/imgui.git
+[submodule "game_engine/HartEng/vendor/GLM"]
+	path = game_engine/HartEng/vendor/GLM
+	url = https://github.com/g-truc/glm.git

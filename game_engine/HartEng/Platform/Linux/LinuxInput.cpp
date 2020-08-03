@@ -13,7 +13,7 @@ namespace HE
 
         // Проверяем нажата ли клавиша
         auto state = glfwGetKey(window, keycode);
-        return ((state == GLFW_PRESS) || (state == GLFW_REPEAT));
+        return ((state == HE_PRESS) || (state == HE_REPEAT));
     }
 
     bool LinuxInput::IsMouseButtonPressedImpl(int button)
@@ -22,7 +22,7 @@ namespace HE
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
         auto state = glfwGetMouseButton(window, button);
-        return (state == GLFW_PRESS);
+        return (state == HE_PRESS);
     }
     float LinuxInput::GetMouseXImpl()
     {
