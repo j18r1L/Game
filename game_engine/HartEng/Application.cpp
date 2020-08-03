@@ -14,6 +14,9 @@ namespace HE
         s_Instance = this;
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
+
+        m_ImGuiLayer = new ImGUILayer();
+        PushOverlay(m_ImGuiLayer);
     }
 
     Application::~Application()
@@ -63,12 +66,21 @@ namespace HE
 
         while(m_Running)
         {
+            // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера
             for (Layer* layer: m_LayerStack)
-            {
                 layer->OnUpdate();
-            }
             //auto[x, y] = Input::GetMousePosition();
             //HE_CORE_TRACE("{0}, {1}", x, y);
+
+            // TODO когда напишу рендерер, то эта часть будет на отдельном потоке
+            m_ImGuiLayer->Begin();
+            for (Layer* layer: m_LayerStack)
+            {
+                layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
+
+
             m_Window->OnUpdate();
         }
     }

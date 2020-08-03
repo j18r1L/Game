@@ -34,6 +34,7 @@ file(GLOB source
     # Временно
     "HartEng/vendor/imGUI/*.cpp"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.cpp"
+    "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
 
 )
 
@@ -47,6 +48,7 @@ file(GLOB header
     # Временно
     "HartEng/vendor/imGUI/*.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.h"
+    "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"
 )
 
 

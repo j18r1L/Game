@@ -1,6 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+
 #include "HartEng/Keycodes.h"
 #include "HartEng/MouseButtonCodes.h"
 #include "HartEng/Core.h"
@@ -8,6 +9,8 @@
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/LayerStack.h"
 #include "HartEng/Window.h"
+#include "HartEng/imGUI/imGUILayer.h"
+
 
 namespace HE
 {
@@ -15,6 +18,7 @@ namespace HE
     {
     private:
         std::unique_ptr<Window> m_Window;
+        ImGUILayer* m_ImGuiLayer;
 
         LayerStack m_LayerStack;
 

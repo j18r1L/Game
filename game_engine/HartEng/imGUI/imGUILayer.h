@@ -4,40 +4,33 @@
 #include "HartEng/pch.h"
 
 #include "HartEng/Layer.h"
-#include "HartEng/Application.h"
+
 
 #include "HartEng/Events/MousesEvent.h"
 #include "HartEng/Events/KeyEvent.h"
 #include "HartEng/Events/ApplicationEvent.h"
 
-#include "imgui.h"
-#include "examples/imgui_impl_opengl3.h"
+#include <imgui.h>
+#include <examples/imgui_impl_opengl3.h>
+#include <examples/imgui_impl_glfw.h>
 
 namespace HE
 {
-    class ImGuiLayer: public Layer
+    class ImGUILayer: public Layer
     {
     private:
         float m_Time = 0.;
-
-        bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-        bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-        bool OnMouseMovedEvent(MouseMovedEvent& e);
-        bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-
-        bool OnKeyPressedEvent(KeyPressedEvent& e);
-        bool OnKeyReleasedEvent(KeyReleasedEvent& e);
-        bool OnKeyTypedEvent(KeyTypedEvent& e);
-
-        bool OnWindwResizedEvent(WindowResizeEvent& e);
     public:
-        ImGuiLayer();
-        ~ImGuiLayer();
+        ImGUILayer();
+        ~ImGUILayer();
 
-        void OnAttach();
-        void OnDetach();
-        void OnUpdate();
-        void OnEvent(Event &event);
+        virtual void OnAttach() override;
+        virtual void OnDetach() override;
+        virtual void OnImGuiRender() override;
+        //void OnEvent(Event &event);
+
+        void Begin();
+        void End();
     };
 }
 
