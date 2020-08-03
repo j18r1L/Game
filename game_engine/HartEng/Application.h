@@ -10,7 +10,7 @@
 #include "HartEng/LayerStack.h"
 #include "HartEng/Window.h"
 #include "HartEng/imGUI/imGUILayer.h"
-
+#include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/Shader.h"
 
 
@@ -28,8 +28,10 @@ namespace HE
 
         static Application* s_Instance;
 
-        unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+        unsigned int m_VertexArray, m_IndexBuffer;
         std::unique_ptr<Shader> m_Shader;
+
+        std::unique_ptr<VertexBuffer> m_VertexBuffer;
     public:
         bool m_Running;
         Application();
