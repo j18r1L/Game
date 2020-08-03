@@ -10,6 +10,8 @@
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/Events/MousesEvent.h"
 #include "HartEng/Events/KeyEvent.h"
+#include "HartEng/Renderer/GraphicsContext.h"
+#include "HartEng/Platform/OpenGL/OpenGLContext.h"
 
 
 #include "HartEng/pch.h"
@@ -22,6 +24,7 @@ namespace HE
     {
     private:
         GLFWwindow* m_Window;
+        GraphicsContext* m_Context;
 
         struct WindowData
         {
@@ -36,15 +39,6 @@ namespace HE
 
         virtual void Init(const WindowProps& props);
         virtual void Shutdown();
-
-        /*
-        // Callback functions
-        static void GLFWWindowSizeCallback(GLFWwindow* window, int width, int height);
-        static void GLFWWindowCloseCallback(GLFWwindow* window);
-        static void GLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        static void GLFWMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        static void GLFWScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
-        */
 
     public:
         static void GLFWCursorPosCallback(GLFWwindow* window, double xpos, double ypos);

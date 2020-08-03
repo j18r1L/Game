@@ -1,6 +1,7 @@
 #ifndef HARTENG_H
 #define HARTENG_H
 
+// HARTENG будет билдится как статическая либа
 #include "HartEng/Core.h"
 #include "HartEng/Application.h"
 #include "HartEng/Log.h"

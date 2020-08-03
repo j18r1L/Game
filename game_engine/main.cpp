@@ -37,9 +37,16 @@ public:
             HE_TRACE("G key is pressed!");
     }
 
+    void OnImGuiRender() override
+    {
+        ImGui::Begin("Test");
+        ImGui::Text("Hello world!");
+        ImGui::End();
+    }
+
     void OnEvent(HE::Event &event) override
     {
-        HE_TRACE("{0}", event);
+
     }
 
 };
