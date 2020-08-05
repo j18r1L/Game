@@ -1,6 +1,5 @@
 #include "LinuxWindow.h"
 
-#include "HartEng/pch.h"
 
 // GLFW platform specific code
 namespace HE
@@ -27,11 +26,15 @@ namespace HE
         m_Data.Width = props.Width;
         m_Data.Height = props.Height;
 
+
+
         HE_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+
+
 
         if (!s_GLFWInitialized)
         {
-            // TODO: glfwTerminate if system shutdown
+            // TODO: glfwT minate if system shutdown
             int success = glfwInit();
             HE_CORE_ASSERT(success, "Could not initialize GLFW!");
 
@@ -42,13 +45,18 @@ namespace HE
         }
 
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(m_Window);
+
+        m_Context = new OpenGLContext(m_Window);
+        m_Context->Init();
         glfwSetWindowUserPointer(m_Window, &m_Data);
+
+
 
         // TODO set given vsync
         SetVSync(true);
 
         // Set GLFW callbacks
+        // TODO remove lambda declarations
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -71,19 +79,19 @@ namespace HE
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             switch(action)
             {
-            case GLFW_PRESS:
+            case HE_PRESS:
             {
                 KeyPressedEvent event(key, 0);
                 data.EventCallback(event);
                 break;
             }
-            case GLFW_RELEASE:
+            case HE_RELEASE:
             {
                 KeyReleasedEvent event(key);
                 data.EventCallback(event);
                 break;
             }
-            case GLFW_REPEAT:
+            case HE_REPEAT:
             {
                 KeyPressedEvent event(key, 1);
                 data.EventCallback(event);
@@ -92,19 +100,26 @@ namespace HE
             }
         });
 
+        glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+        {
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            KeyTypedEvent event(keycode);
+            data.EventCallback(event);
+        });
+
         glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
         {
              WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
              switch (action)
              {
-             case GLFW_PRESS:
+             case HE_PRESS:
              {
                  MouseButtonPressedEvent event(button);
                  data.EventCallback(event);
                  break;
              }
-             case GLFW_RELEASE:
+             case HE_RELEASE:
              {
                  MouseButtonReleasedEvent event(button);
                  data.EventCallback(event);
@@ -140,7 +155,8 @@ namespace HE
     void LinuxWindow::OnUpdate()
     {
         glfwPollEvents();
-        glfwSwapBuffers(m_Window);
+        m_Context->SwapBuffers();
+
     }
 
     void LinuxWindow::SetVSync(bool enabled)

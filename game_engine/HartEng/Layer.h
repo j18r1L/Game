@@ -22,6 +22,8 @@ namespace HE
         virtual void OnDetach() {}
         // Вызывается когда обновляются слои (на каждом кадре)
         virtual void OnUpdate() {}
+
+        virtual void OnImGuiRender() {};
         // Когда эвент посылвается в слой мы его принимаем здесь
         virtual void OnEvent(Event& event) {}
 

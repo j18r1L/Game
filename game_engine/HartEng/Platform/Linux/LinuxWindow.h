@@ -1,12 +1,17 @@
 #ifndef LINUXWINDOW_H
 #define LINUXWINDOW_H
 
+#include "HartEng/Keycodes.h"
+#include "HartEng/MouseButtonCodes.h"
 
 #include "HartEng/Window.h"
 #include "HartEng/Core.h"
+#include "HartEng/Input.h"
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/Events/MousesEvent.h"
 #include "HartEng/Events/KeyEvent.h"
+#include "HartEng/Renderer/GraphicsContext.h"
+#include "HartEng/Platform/OpenGL/OpenGLContext.h"
 
 
 #include "HartEng/pch.h"
@@ -19,6 +24,7 @@ namespace HE
     {
     private:
         GLFWwindow* m_Window;
+        GraphicsContext* m_Context;
 
         struct WindowData
         {
@@ -33,15 +39,6 @@ namespace HE
 
         virtual void Init(const WindowProps& props);
         virtual void Shutdown();
-
-        /*
-        // Callback functions
-        static void GLFWWindowSizeCallback(GLFWwindow* window, int width, int height);
-        static void GLFWWindowCloseCallback(GLFWwindow* window);
-        static void GLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        static void GLFWMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        static void GLFWScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
-        */
 
     public:
         static void GLFWCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
@@ -61,6 +58,11 @@ namespace HE
         };
         void SetVSync(bool enable) override;
         bool IsSync() const override;
+
+        inline virtual void* GetNativeWindow() const
+        {
+            return m_Window;
+        }
 
 
         static Window* Create(const WindowProps& props = WindowProps());
