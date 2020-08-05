@@ -1,15 +1,12 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
+
 #include "HartEng/pch.h"
-#include "HartEng/Renderer/Renderer.h"
-#include "HartEng/Core.h"
-#include "HartEng/Log.h"
 
 #ifdef HE_PLATFORM_WINDOW
-#include "HartEng/Platform/OpenGL/OpenGLBuffer.h"
+#include "HartEng/Platform/Direct3D/Direct3DBuffer.h"
 #endif
-#include "HartEng/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace HE
 {

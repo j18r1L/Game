@@ -1,4 +1,9 @@
 #include "HartEng/Renderer/Buffer.h"
+#include "HartEng/Renderer/Renderer.h"
+#include "HartEng/Core.h"
+#include "HartEng/Log.h"
+
+#include "HartEng/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace HE
 {
@@ -12,6 +17,7 @@ namespace HE
             break;
         case RendererAPI::OpenGL:
             return new OpenGLVertexBuffer(vertices, size);
+            break;
 
         }
 
@@ -29,6 +35,7 @@ namespace HE
             break;
         case RendererAPI::OpenGL:
             return new OpenGLIndexBuffer(indices, size);
+            break;
 
         }
 

@@ -1,5 +1,6 @@
 #include "HartEng/Platform/OpenGL/OpenGLBuffer.h"
 
+
 namespace HE
 {
     OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
@@ -26,13 +27,15 @@ namespace HE
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    OpenGLIndexBuffer::OpenGLIndexBuffer(float* vertices, uint32_t size)
+    //////////////////////////////////////////////////////////// IndexBuffer ////////////////////////////////////////////////////////////////
+
+    OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t size)
     {
         glGenBuffers(1, &m_RendererID);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 
         //TODO заменить захардкоженный STATIC DRAW
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()

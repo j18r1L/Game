@@ -21,7 +21,7 @@ namespace HE
             return s_RendererAPI;
         }
 
-        inline static RendererAPI SetRendererAPI(RendererAPI renderer)
+        inline static void SetRendererAPI(RendererAPI renderer)
         {
             s_RendererAPI =  renderer;
         }

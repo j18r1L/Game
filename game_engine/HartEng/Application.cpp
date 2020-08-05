@@ -32,7 +32,7 @@ namespace HE
 
         };
 
-        m_VertexBuffer = std::make_unique<VertexBuffer> (VertexBuffer::Create(vertices, sizeof(vertices)));
+        m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
         m_VertexBuffer->Bind();
 
         glEnableVertexAttribArray(0);
@@ -41,7 +41,7 @@ namespace HE
 
 
         unsigned int indices[3] = {0, 1, 2};
-        m_IndexBuffer = std::make_unique<IndexBuffer> (IndexBuffer::Create(indices, sizeof(indices)));
+        m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
         std::string vertexSrc = R"(
                 #version 430 core
@@ -126,7 +126,7 @@ namespace HE
 
             m_Shader->Bind();
             glBindVertexArray(m_VertexArray);
-            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера
             for (Layer* layer: m_LayerStack)

@@ -17,6 +17,19 @@ namespace HE
         void Bind() const override;
         void UnBind() const override;
     };
+    
+    //////////////////////////////////////////////////////////// IndexBuffer ////////////////////////////////////////////////////////////////
+
+    class OpenGLIndexBuffer: public IndexBuffer
+    {
+    private:
+        uint32_t m_RendererID;
+    public:
+        OpenGLIndexBuffer(uint32_t* indices, uint32_t size);
+        virtual ~OpenGLIndexBuffer();
+        void Bind() const override;
+        void UnBind() const override;
+    };
 }
 
 #endif // OPENGLBUFFER_H

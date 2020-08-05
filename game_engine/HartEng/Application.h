@@ -28,10 +28,11 @@ namespace HE
 
         static Application* s_Instance;
 
-        unsigned int m_VertexArray, m_IndexBuffer;
+        unsigned int m_VertexArray;
         std::unique_ptr<Shader> m_Shader;
 
         std::unique_ptr<VertexBuffer> m_VertexBuffer;
+        std::unique_ptr<IndexBuffer> m_IndexBuffer;
     public:
         bool m_Running;
         Application();
