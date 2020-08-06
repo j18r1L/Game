@@ -24,11 +24,14 @@ namespace HE
     {
     private:
         uint32_t m_RendererID;
+        uint32_t m_Count;
     public:
         OpenGLIndexBuffer(uint32_t* indices, uint32_t size);
         virtual ~OpenGLIndexBuffer();
         void Bind() const override;
         void UnBind() const override;
+
+        uint32_t GetCount() const override;
     };
 }
 
