@@ -10,7 +10,7 @@ namespace HE
 
     Application::Application(): m_Running(true)
     {
-        HE_CORE_ASSERT(s_Instance, "Application already exists!");
+        HE_CORE_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));

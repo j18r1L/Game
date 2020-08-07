@@ -46,6 +46,10 @@ add_subdirectory("${SPDLOG_DIR}")
 set(imGUI_DIR "${LIB_DIR}/imGUI")
 include_directories(${imGUI_DIR})
 
+# entt
+set(ENTT_DIR "${LIB_DIR}/entt")
+include_directories("${ENTT_DIR}/include/")
+
 file(GLOB source
     "HartEng/*.cpp"
 
