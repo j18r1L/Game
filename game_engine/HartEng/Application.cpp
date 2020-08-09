@@ -37,14 +37,16 @@ namespace HE
             {ShaderDataType::Float3, "a_Position"},
             {ShaderDataType::Float4, "a_Color"}
         };
+
         m_VertexBuffer->SetLayout(layout);
         m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-
 
 
         unsigned int indices[3] = {0, 1, 2};
         m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+
+
 
         std::string vertexSrc = R"(
                 #version 430 core
@@ -56,6 +58,7 @@ namespace HE
 
                 void main()
                 {
+                    f_Color = vec4(1., 0., 0., 1.);
                     f_Color = a_Color;
                     gl_Position = vec4(a_Position, 1.0);
                 }
@@ -79,7 +82,6 @@ namespace HE
             )";
 
         m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
-
     }
 
     Application::~Application()

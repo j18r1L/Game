@@ -14,11 +14,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5Core)
 
 
+# Platform
 #add_definitions(-DHE_PLATFORM_WINDOWS, -DHE_BUILD_DLL)
-add_definitions(-DHE_PLATFORM_LINUX)
-add_definitions(-DHE_ENABLE_ASSERTS)
-add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
+#add_definitions(-DHE_PLATFORM_LINUX)
+add_definitions(-DHE_PLATFORM_WINDOWS)
+
+# IDE
+#add_definitions(-DHE_VISUAL_STUDIO)
+add_definitions(-DHE_QT_CTEATOR)
+
+# Silent asserts
+#add_definitions(-DHE_SILENT_ASSERTS)
+
+# Debug
+add_definitions(-DHE_DEBUG)
+
+# Event's trace
 add_definitions(-DHE_TRACE_EVENTS)
+
+#using glad if OpenGL
+add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set(LIB_DIR "${CMAKE_SOURCE_DIR}/HartEng/vendor")
 
@@ -49,8 +64,6 @@ include_directories(${imGUI_DIR})
 # entt
 set(ENTT_DIR "${LIB_DIR}/entt")
 include_directories("${ENTT_DIR}/include/")
-
-include_directories("${CMAKE_SOURCE_DIR}HartEng/Events")
 
 file(GLOB source
     "HartEng/*.cpp"

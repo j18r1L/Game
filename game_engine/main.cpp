@@ -1,5 +1,6 @@
 #include <HartEng.h>
 
+#include <iostream>
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
@@ -25,7 +26,7 @@ public:
     {
         float a = 5.0f;
         sizeof(a) * 3;
-        cout << sizeof(camera(5.0f, {0.5f, 0.5f}));
+        std::cout << sizeof(camera(5.0f, {0.5f, 0.5f}));
 
     }
 
