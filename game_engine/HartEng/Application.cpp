@@ -18,10 +18,8 @@ namespace HE
         m_ImGuiLayer = new ImGUILayer();
         PushOverlay(m_ImGuiLayer);
 
-        //Vertex array
-        glGenVertexArrays(1, &m_VertexArray);
-        glBindVertexArray(m_VertexArray);
-
+        
+        
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
@@ -29,38 +27,24 @@ namespace HE
 
         };
 
-
+        //Vertex array
+        m_VertexArray.reset(VertexArray::Create());
+        m_VertexArray->Bind();
         m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
         m_VertexBuffer->Bind();
 
-        // Пример, скоро уберу, когда отделю Opengl контекс от application-а
-        {
-            BufferLayout layout = {
-                {ShaderDataType::Float3, "a_Position"},
-                {ShaderDataType::Float4, "a_Color"}
-            };
-            m_VertexBuffer->SetLayout(layout);
-        }
-
-        uint32_t index = 0;
-
-
-        const auto& layout_1 = m_VertexBuffer->GetLayout();
-        for (const auto& element : layout_1)
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, element.GetComponentCount(), GL_FLOAT, element.Normalized ? GL_TRUE : GL_FALSE, layout_1.GetStride(), (void*)element.Offset);
-            index++;
-        }
-
-        
-
-        
+        BufferLayout layout = {
+            {ShaderDataType::Float3, "a_Position"},
+            {ShaderDataType::Float4, "a_Color"}
+        };
+        m_VertexBuffer->SetLayout(layout);
+        m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 
 
 
         unsigned int indices[3] = {0, 1, 2};
         m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
         std::string vertexSrc = R"(
                 #version 430 core
@@ -94,7 +78,7 @@ namespace HE
 
             )";
 
-        m_Shader = std::make_unique<Shader>(vertexSrc, fragmentSrc);
+        m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
 
     }
 
@@ -150,7 +134,8 @@ namespace HE
             glClear(GL_COLOR_BUFFER_BIT);
 
             m_Shader->Bind();
-            glBindVertexArray(m_VertexArray);
+            m_VertexArray->Bind();
+            //glBindVertexArray(m_VertexArray);
             glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера

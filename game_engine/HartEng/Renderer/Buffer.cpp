@@ -1,7 +1,5 @@
 #include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/Renderer.h"
-#include "HartEng/Core.h"
-#include "HartEng/Log.h"
 
 #include "HartEng/Platform/OpenGL/OpenGLBuffer.h"
 

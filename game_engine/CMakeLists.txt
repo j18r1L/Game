@@ -50,6 +50,8 @@ include_directories(${imGUI_DIR})
 set(ENTT_DIR "${LIB_DIR}/entt")
 include_directories("${ENTT_DIR}/include/")
 
+include_directories("${CMAKE_SOURCE_DIR}HartEng/Events")
+
 file(GLOB source
     "HartEng/*.cpp"
 

@@ -1,17 +1,22 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "HartEng/pch.h"
 
 #include "HartEng/Keycodes.h"
 #include "HartEng/MouseButtonCodes.h"
 #include "HartEng/Core.h"
-#include "HartEng/Events/Event.h"
-#include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/LayerStack.h"
 #include "HartEng/Window.h"
+
+#include "HartEng/Events/Event.h"
+#include "HartEng/Events/ApplicationEvent.h"
+
 #include "HartEng/imGUI/imGUILayer.h"
+
 #include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/Shader.h"
+#include "HartEng/Renderer/VertexArray.h"
 
 
 namespace HE
@@ -28,11 +33,11 @@ namespace HE
 
         static Application* s_Instance;
 
-        unsigned int m_VertexArray;
-        std::unique_ptr<Shader> m_Shader;
 
-        std::unique_ptr<VertexBuffer> m_VertexBuffer;
-        std::unique_ptr<IndexBuffer> m_IndexBuffer;
+        std::shared_ptr<Shader> m_Shader;
+        std::shared_ptr<VertexBuffer> m_VertexBuffer;
+        std::shared_ptr<IndexBuffer> m_IndexBuffer;
+        std::shared_ptr<VertexArray> m_VertexArray;
     public:
         bool m_Running;
         Application();
