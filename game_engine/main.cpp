@@ -66,6 +66,7 @@ public:
 HE::Application* HE::CreateApplication()
 {
     return new SandBox();
+    
 }
 
 

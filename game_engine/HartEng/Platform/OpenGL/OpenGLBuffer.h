@@ -11,11 +11,22 @@ namespace HE
     {
     private:
         uint32_t m_RendererID;
+        BufferLayout m_Layout;
     public:
         OpenGLVertexBuffer(float* vertices, uint32_t size);
         virtual ~OpenGLVertexBuffer();
         void Bind() const override;
         void UnBind() const override;
+
+        virtual void SetLayout(const BufferLayout& layout)
+        {
+            m_Layout = layout;
+        }
+        virtual const BufferLayout& GetLayout() const
+        {
+            return m_Layout;
+        }
+
     };
     
     //////////////////////////////////////////////////////////// IndexBuffer ////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@ namespace HE
 
     Application* Application::s_Instance = nullptr;
 
-    Application::Application(): m_Running(true)
+    Application::Application() : m_Running(true)
     {
         HE_CORE_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
@@ -19,24 +19,43 @@ namespace HE
         PushOverlay(m_ImGuiLayer);
 
         //Vertex array
-        //vertex buffer
-        //index buffer
-        //shader
         glGenVertexArrays(1, &m_VertexArray);
         glBindVertexArray(m_VertexArray);
 
-        float vertices[3 * 3] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
+        float vertices[3 * 7] = {
+            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 
         };
+
 
         m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
         m_VertexBuffer->Bind();
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+        // Пример, скоро уберу, когда отделю Opengl контекс от application-а
+        {
+            BufferLayout layout = {
+                {ShaderDataType::Float3, "a_Position"},
+                {ShaderDataType::Float4, "a_Color"}
+            };
+            m_VertexBuffer->SetLayout(layout);
+        }
+
+        uint32_t index = 0;
+
+
+        const auto& layout_1 = m_VertexBuffer->GetLayout();
+        for (const auto& element : layout_1)
+        {
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(index, element.GetComponentCount(), GL_FLOAT, element.Normalized ? GL_TRUE : GL_FALSE, layout_1.GetStride(), (void*)element.Offset);
+            index++;
+        }
+
+        
+
+        
 
 
 
@@ -47,9 +66,13 @@ namespace HE
                 #version 430 core
 
                 layout (location = 0) in vec3 a_Position;
+                layout (location = 1) in vec4 a_Color;
+
+                out vec4 f_Color;
 
                 void main()
                 {
+                    f_Color = a_Color;
                     gl_Position = vec4(a_Position, 1.0);
                 }
 
@@ -61,9 +84,11 @@ namespace HE
 
                 layout (location = 0) out vec4 o_Color;
 
+                in vec4 f_Color;
+
                 void main()
                 {
-                    o_Color = vec4(1., 0, 0, 1.0);
+                    o_Color = vec4(f_Color);
                 }
 
 
