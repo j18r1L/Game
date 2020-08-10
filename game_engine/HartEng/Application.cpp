@@ -157,19 +157,32 @@ namespace HE
         if (!e.IsInCategory(EventCategoryInput))
             HE_TRACE(false);
         */
-        glClearColor(0., 0., 0., 1.0);
+        RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
         while(m_Running)
         {
 
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::Clear();
+            //Можно команды для каждой сцены разделать {}, это просто для вида :)
+            //Renderer::BeginScene(camera, lights, environment);
+            //{
 
+            //}
+            Renderer::BeginScene();
             m_Shader->Bind();
+            Renderer::Submit(m_SquareVA);
+            Renderer::Submit(m_VertexArray);
 
-            m_SquareVA->Bind();
-            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::EndScene();
 
-            m_VertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            //Renderer::Flush();
+
+
+
+            //m_SquareVA->Bind();
+            //glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+            //m_VertexArray->Bind();
+            //glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 
 

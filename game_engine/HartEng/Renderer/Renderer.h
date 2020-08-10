@@ -2,32 +2,25 @@
 #define RENDERER_H
 
 #include "HartEng/pch.h"
+#include "HartEng/Renderer/RenderCommand.h"
 
 namespace HE
 {
-    enum class RendererAPI
-    {
-        None = 0, OpenGL = 1
-    };
-
+    // Renderer это то с чем работает клиент, этот класс  втом числе существует, чтобы скрыть имплементацию определенных действий
+    // Например то, что нам нужно забиндить Vertex Array прежде чем вызывать Draw
     class Renderer
     {
-    private:
-        static RendererAPI s_RendererAPI;
     public:
+        // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
+        static void BeginScene();
+        static void EndScene();
 
-        inline static RendererAPI GetRendererAPI()
+        static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+
+        inline static RendererAPI::API GetAPI()
         {
-            return s_RendererAPI;
+            return RendererAPI::GetAPI();
         }
-
-        inline static void SetRendererAPI(RendererAPI renderer)
-        {
-            s_RendererAPI =  renderer;
-        }
-
-
-
     };
 
 

@@ -17,6 +17,7 @@
 #include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Renderer/VertexArray.h"
+#include "HartEng/Renderer/Renderer.h"
 
 
 namespace HE
