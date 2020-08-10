@@ -30,21 +30,23 @@ namespace HE
         //Vertex array
         m_VertexArray.reset(VertexArray::Create());
         m_VertexArray->Bind();
-        m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-        m_VertexBuffer->Bind();
+        std::shared_ptr<VertexBuffer> triangleVB;
+        triangleVB.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        triangleVB->Bind();
 
         BufferLayout layout = {
             {ShaderDataType::Float3, "a_Position"},
             {ShaderDataType::Float4, "a_Color"}
         };
 
-        m_VertexBuffer->SetLayout(layout);
-        m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+        triangleVB->SetLayout(layout);
+        m_VertexArray->AddVertexBuffer(triangleVB);
 
 
         unsigned int indices[3] = {0, 1, 2};
-        m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-        m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+        std::shared_ptr<IndexBuffer> triangleIB;
+        triangleIB.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        m_VertexArray->SetIndexBuffer(triangleIB);
 
 
 
@@ -82,6 +84,32 @@ namespace HE
             )";
 
         m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
+
+        float vertices_square[3 * 4] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f,
+        };
+
+        //Vertex array
+        m_SquareVA.reset(VertexArray::Create());
+        m_SquareVA->Bind();
+        // Vertex buffer
+        std::shared_ptr<VertexBuffer> squareVB;
+        squareVB.reset(VertexBuffer::Create(vertices_square, sizeof(vertices_square)));
+        squareVB->Bind();
+
+        squareVB->SetLayout({
+                                {ShaderDataType::Float3, "a_Position"}
+                            });
+        m_SquareVA->AddVertexBuffer(squareVB);
+        unsigned int indices_square[6] = {0, 1, 2, 2, 3, 0};
+        std::shared_ptr<IndexBuffer> squareIB;
+        squareIB.reset(IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t)));
+        m_SquareVA->SetIndexBuffer(squareIB);
+
+
     }
 
     Application::~Application()
@@ -136,9 +164,14 @@ namespace HE
             glClear(GL_COLOR_BUFFER_BIT);
 
             m_Shader->Bind();
+
+            m_SquareVA->Bind();
+            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
             m_VertexArray->Bind();
-            //glBindVertexArray(m_VertexArray);
-            glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+
 
             // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера
             for (Layer* layer: m_LayerStack)

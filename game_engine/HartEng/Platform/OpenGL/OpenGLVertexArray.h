@@ -16,7 +16,7 @@ namespace HE
         std::shared_ptr<IndexBuffer> m_IndexBuffer;
     public:
         OpenGLVertexArray(); 
-        virtual ~OpenGLVertexArray();
+        ~OpenGLVertexArray();
 
         void Bind() const override;
         void UnBind() const override;
