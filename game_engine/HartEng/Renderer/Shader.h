@@ -3,6 +3,7 @@
 
 #include "HartEng/pch.h"
 #include "HartEng/Log.h"
+#include <glm/glm.hpp>
 
 namespace HE
 {
@@ -16,6 +17,8 @@ namespace HE
 
         void Bind() const;
         void UnBind() const;
+
+        void SetMat4(const std::string& name, const glm::mat4& matrix);
 
     };
 }

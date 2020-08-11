@@ -1,8 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "HartEng/pch.h"
 #include "HartEng/Renderer/RenderCommand.h"
+#include "HartEng/Renderer/OrthographicCamera.h"
+#include "HartEng/Renderer/Shader.h"
 
 namespace HE
 {
@@ -10,12 +11,20 @@ namespace HE
     // Например то, что нам нужно забиндить Vertex Array прежде чем вызывать Draw
     class Renderer
     {
+    private:
+        // TODO временно, нужно добавить que и буффер для хранения state-ов
+        struct SceneData
+        {
+            glm::mat4 ProjectionViewMatrix;
+        };
+
+        static SceneData* m_SceneData;
     public:
         // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
-        static void BeginScene();
+        static void BeginScene(OrthographicCamera& camera);
         static void EndScene();
 
-        static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray);
 
         inline static RendererAPI::API GetAPI()
         {

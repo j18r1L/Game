@@ -1,10 +1,12 @@
 #include "HartEng/Renderer/Renderer.h"
+#include "HartEng/pch.h"
 
 namespace HE
 {
-    void Renderer::BeginScene()
+    Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
+    void Renderer::BeginScene(OrthographicCamera& camera)
     {
-
+        m_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
     }
 
     void Renderer::EndScene()
@@ -12,8 +14,10 @@ namespace HE
 
     }
 
-    void Renderer::Submit(const std::shared_ptr<VertexArray> &vertexArray)
+    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray> &vertexArray)
     {
+        shader->Bind();
+        shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
         //Должен добавлять в commandQUE
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);

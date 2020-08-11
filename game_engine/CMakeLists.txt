@@ -15,13 +15,27 @@ find_package(Qt5Core)
 
 
 # Platform
+if (WIN32)
+    add_definitions(-DHE_PLATFORM_WINDOWS)
+endif (WIN32)
+
+if (UNIX)
+    add_definitions(-DHE_PLATFORM_LINUX)
+    add_definitions(-DHE_QT_CTEATOR)
+endif (UNIX)
+
+
+if (MSVC)
+    add_definitions(-DHE_VISUAL_STUDIO)
+endif (MSVC)
+
 #add_definitions(-DHE_PLATFORM_WINDOWS, -DHE_BUILD_DLL)
 #add_definitions(-DHE_PLATFORM_LINUX)
-add_definitions(-DHE_PLATFORM_WINDOWS)
+#add_definitions(-DHE_PLATFORM_WINDOWS)
 
 # IDE
 #add_definitions(-DHE_VISUAL_STUDIO)
-add_definitions(-DHE_QT_CTEATOR)
+#add_definitions(-DHE_QT_CTEATOR)
 
 # Silent asserts
 #add_definitions(-DHE_SILENT_ASSERTS)

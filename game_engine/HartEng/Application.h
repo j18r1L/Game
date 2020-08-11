@@ -19,6 +19,7 @@
 #include "HartEng/Renderer/VertexArray.h"
 #include "HartEng/Renderer/Renderer.h"
 
+#include "HartEng/Renderer/OrthographicCamera.h"
 
 namespace HE
 {
@@ -33,11 +34,6 @@ namespace HE
         bool OnWindowClosed(WindowCloseEvent& e);
 
         static Application* s_Instance;
-
-
-        std::shared_ptr<Shader> m_Shader;
-        std::shared_ptr<VertexArray> m_VertexArray;
-        std::shared_ptr<VertexArray> m_SquareVA;
     public:
         bool m_Running;
         Application();

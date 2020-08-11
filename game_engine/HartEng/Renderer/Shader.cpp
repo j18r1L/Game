@@ -1,5 +1,7 @@
 #include "HartEng/Renderer/Shader.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace HE
 {
     Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
@@ -129,6 +131,11 @@ namespace HE
     void Shader::UnBind() const
     {
         glUseProgram(0);
+    }
+
+    void Shader::SetMat4(const std::string& name, const glm::mat4& value)
+    {
+        glad_glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
     }
 
 }
