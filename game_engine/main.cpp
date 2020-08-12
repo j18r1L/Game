@@ -57,17 +57,12 @@ public:
                 #version 430 core
 
                 layout (location = 0) in vec3 a_Position;
-                layout (location = 1) in vec4 a_Color;
 
                 uniform mat4 u_ProjectionView;
                 uniform mat4 u_Model;
 
-                out vec4 f_Color;
-
                 void main()
                 {
-                    f_Color = vec4(1., 0., 0., 1.);
-                    f_Color = a_Color;
                     gl_Position = u_ProjectionView * u_Model * vec4(a_Position, 1.0);
                 }
             )";
@@ -77,11 +72,11 @@ public:
 
                 layout (location = 0) out vec4 o_Color;
 
-                in vec4 f_Color;
+                uniform vec4 u_Color;
 
                 void main()
                 {
-                    o_Color = vec4(f_Color);
+                    o_Color = vec4(u_Color);
                 }
             )";
 
@@ -145,7 +140,9 @@ public:
         m_Camera.SetRotation(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
         HE::Renderer::BeginScene(m_Camera);
         {
+            m_Shader->SetVec4("u_Color", glm::vec4(1.0, 0.0, 0.0, 1.0));
             HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
+            m_Shader->SetVec4("u_Color", glm::vec4(0.0, 1.0, 0.0, 1.0));
             HE::Renderer::Submit(m_Shader, m_VertexArray);
         }
         HE::Renderer::EndScene();

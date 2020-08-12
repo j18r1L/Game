@@ -135,7 +135,36 @@ namespace HE
 
     void Shader::SetMat4(const std::string& name, const glm::mat4& value)
     {
-        glad_glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+    }
+
+    void Shader::SetMat3(const std::string& name, const glm::mat3& value)
+    {
+        glUniformMatrix3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+    }
+    void Shader::SetVec4(const std::string& name, const glm::vec4& value)
+    {
+        glUniform4f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y, value.z, value.w);
+    }
+    void Shader::SetVec3(const std::string& name, const glm::vec3& value)
+    {
+        glUniform3f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y, value.z);
+    }
+    void Shader::SetVec2(const std::string& name, const glm::vec2& value)
+    {
+        glUniform2f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y);
+    }
+    void Shader::SetFloat(const std::string& name, float value)
+    {
+        glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
+    void Shader::SetInt(const std::string& name, int value)
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
+    void Shader::SetBool(const std::string& name, bool value)
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
     }
 
 }
