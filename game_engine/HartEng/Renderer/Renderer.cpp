@@ -19,6 +19,16 @@ namespace HE
         shader->Bind();
         shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
         shader->SetMat4("u_Model", transform);
+        // В будущем, при использовании системы материалов, mi - material instance (смотреть main.cpp):
+        // mi->Bind()
+        // этого больше не будет в Submit:
+        /*
+         * shader->Bind();
+         * shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
+         * shader->SetMat4("u_Model", transform);
+        */
+
+
 
         //Должен добавлять в commandQUE
         vertexArray->Bind();

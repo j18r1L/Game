@@ -140,6 +140,16 @@ public:
         m_Camera.SetRotation(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
         HE::Renderer::BeginScene(m_Camera);
         {
+            // Из шейдера достаем все нужные юниформы, Material - буффер, который хранит информацию о материале, заполняет ее стандартными значениям
+            //HE::Material* material = new HE::Material(m_Shader);
+
+
+            // Настраиваем instance материала, пример: base material - серебро, но мы делаем material_instance->SetTexture("u_Roughness", roughness_map_texture); - устанавливаем индивидуально для каждой instance свою карту шереховатости
+            //HE::MaterialInstance* material_instance = new HE::MaterialInstance(material);
+            //material_instance->SetValue("u_Color", redColor);
+            //mesh->SetMaterial(material_instance);
+            //HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
+
             m_Shader->SetVec4("u_Color", glm::vec4(1.0, 0.0, 0.0, 1.0));
             HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
             m_Shader->SetVec4("u_Color", glm::vec4(0.0, 1.0, 0.0, 1.0));
