@@ -32,6 +32,7 @@ namespace HE
 
         virtual unsigned int GetWidth() const = 0;
         virtual unsigned int GetHeight() const = 0;
+        virtual double GetTime() const = 0;
 
         // Атрибуты окна
         virtual void SetEventCallback(const EventCallBackFn& callback) = 0;

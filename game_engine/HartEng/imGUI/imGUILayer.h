@@ -18,8 +18,6 @@ namespace HE
 {
     class ImGUILayer: public Layer
     {
-    private:
-        float m_Time = 0.;
     public:
         ImGUILayer();
         ~ImGUILayer();

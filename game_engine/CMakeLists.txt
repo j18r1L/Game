@@ -80,12 +80,17 @@ set(ENTT_DIR "${LIB_DIR}/entt")
 include_directories("${ENTT_DIR}/include/")
 
 file(GLOB source
+    "HartEng/Core/*.cpp"
     "HartEng/*.cpp"
 
     "HartEng/imGUI/*.cpp"
+
     "HartEng/Renderer/*.cpp"
+
     "HartEng/Platform/Linux/*.cpp"
     "HartEng/Platform/OpenGL/*.cpp"
+
+
 
     # Временно
     "HartEng/vendor/imGUI/*.cpp"
@@ -95,13 +100,18 @@ file(GLOB source
 )
 
 file(GLOB header
+    "HartEng/Core/*.h"
     "HartEng/*.h"
     "HartEng/Events/*.h"
 
     "HartEng/imGUI/*.h"
+
     "HartEng/Renderer/*.h"
+
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/OpenGL/*.h"
+
+
 
     # Временно
     "HartEng/vendor/imGUI/*.h"
@@ -110,7 +120,7 @@ file(GLOB header
 )
 
 
-add_executable(game_engine ${source} ${header}  main.cpp HartEng.h)
+add_executable(game_engine ${source} ${header}  HartEng.h main.cpp )
 
 target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
 

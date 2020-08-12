@@ -147,6 +147,11 @@ namespace HE
 
     }
 
+    double LinuxWindow::GetTime() const
+    {
+        return glfwGetTime();
+    }
+
     void LinuxWindow::Shutdown()
     {
         glfwDestroyWindow(m_Window);

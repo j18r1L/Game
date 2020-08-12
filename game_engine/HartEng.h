@@ -2,11 +2,13 @@
 #define HARTENG_H
 
 // Core
+#include "HartEng/Core/Timestep.h"
 #include "HartEng/Core.h"
 #include "HartEng/Application.h"
 #include "HartEng/Log.h"
 #include "HartEng/Layer.h"
 #include "HartEng/Input.h"
+
 
 // Renderer
 #include "HartEng/Renderer/Renderer.h"
@@ -14,7 +16,7 @@
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/VertexArray.h"
-#include "HartEng/Renderer/OrthographicCamera.h"
+#include "HartEng/Renderer/Cameras.h"
 
 
 // Events

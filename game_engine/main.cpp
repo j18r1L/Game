@@ -3,22 +3,25 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+
 class ExampleLayer: public HE::Layer
 {
 private:
     std::shared_ptr<HE::Shader> m_Shader;
     std::shared_ptr<HE::VertexArray> m_VertexArray;
     std::shared_ptr<HE::VertexArray> m_SquareVA;
+
     HE::OrthographicCamera m_Camera;
-    glm::vec3 m_CameraPosition;
-    float m_CameraSpeed;
+
+    glm::vec3 m_SquarePosition;
+    float m_SquareSpeed;
 
 public:
     ExampleLayer():
         Layer("Example"),
         m_Camera(-1.0f, 1.0f, -1.0f, 1.0f),
-        m_CameraPosition(0.0f, 0.0f, 0.0f),
-        m_CameraSpeed(0.01f)
+        m_SquarePosition(0.0f),
+        m_SquareSpeed(1.0f)
     {
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
@@ -57,6 +60,7 @@ public:
                 layout (location = 1) in vec4 a_Color;
 
                 uniform mat4 u_ProjectionView;
+                uniform mat4 u_Model;
 
                 out vec4 f_Color;
 
@@ -64,7 +68,7 @@ public:
                 {
                     f_Color = vec4(1., 0., 0., 1.);
                     f_Color = a_Color;
-                    gl_Position = u_ProjectionView * vec4(a_Position, 1.0);
+                    gl_Position = u_ProjectionView * u_Model * vec4(a_Position, 1.0);
                 }
             )";
 
@@ -109,25 +113,31 @@ public:
 
     }
 
-    void OnUpdate() override
+    void OnUpdate(HE::Timestep& ts) override
     {
+        float deltaTime = ts;
+        // OnUpdate выполняется на каждый кадр, здесь следует посредством Input polling-а обрабатывать движения, стрельбу и другие игровые действия, требующие не единичного использования
+        // Например подобрать предмет нажатием на E лучше запихнуть в эвент систему
+        // так, допустим, нажатие мыши имеет только евенты КнопкаМышиНажата и КнопкаМышиОтжата, у нее нет эвента КнопкаМышиЗажата
         if (HE::Input::IsKeyPressed(HE_KEY_W))
         {
-            m_CameraPosition.y += m_CameraSpeed;
+            m_SquarePosition.y += m_SquareSpeed * deltaTime;
         }
         if (HE::Input::IsKeyPressed(HE_KEY_S))
         {
-            m_CameraPosition.y -= m_CameraSpeed;
+            m_SquarePosition.y -= m_SquareSpeed * deltaTime;
         }
         if (HE::Input::IsKeyPressed(HE_KEY_A))
         {
-            m_CameraPosition.x -= m_CameraSpeed;
+            m_SquarePosition.x -= m_SquareSpeed * deltaTime;
         }
         if (HE::Input::IsKeyPressed(HE_KEY_D))
         {
-            m_CameraPosition.x += m_CameraSpeed;
+            m_SquarePosition.x += m_SquareSpeed * deltaTime;
         }
-        m_Camera.SetPosition(m_CameraPosition);
+
+        glm::mat4 square_transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
+
         HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
         HE::RenderCommand::Clear();
         //Можно команды для каждой сцены разделать {}, это просто для вида :)
@@ -135,7 +145,7 @@ public:
         m_Camera.SetRotation(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
         HE::Renderer::BeginScene(m_Camera);
         {
-            HE::Renderer::Submit(m_Shader, m_SquareVA);
+            HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
             HE::Renderer::Submit(m_Shader, m_VertexArray);
         }
         HE::Renderer::EndScene();
@@ -150,12 +160,14 @@ public:
 
     void OnEvent(HE::Event &event) override
     {
+        // Вот таким образом добавляем функцию обработчик эвентов, который может быть у каждого слоя свой
         //HE::EventDispatcher dispatcher(event);
         //dispatcher.Dispatch<HE::KeyPressedEvent>(HE_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent));
     }
 
     bool OnKeyPressedEvent(HE::KeyPressedEvent& event)
     {
+        // описываем функцию обработчика эвента, ее в целом надо использовать в менюшках, нажатиях кнопки мыши в них, работы с инвентарем, но не для стрельбы, ходьбы
         /*
         if (event.GetKeyCode() == HE_KEY_W)
         {

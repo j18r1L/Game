@@ -4,6 +4,7 @@
 #include "HartEng/Core.h"
 #include "HartEng/pch.h"
 #include "HartEng/Events/Event.h"
+#include "HartEng/Core/Timestep.h"
 
 namespace HE
 {
@@ -21,7 +22,7 @@ namespace HE
         // Когда слой удаляется из LayerStack
         virtual void OnDetach() {}
         // Вызывается когда обновляются слои (на каждом кадре)
-        virtual void OnUpdate() {}
+        virtual void OnUpdate(Timestep& ts) {}
 
         virtual void OnImGuiRender() {};
         // Когда эвент посылвается в слой мы его принимаем здесь

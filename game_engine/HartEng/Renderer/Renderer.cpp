@@ -14,10 +14,12 @@ namespace HE
 
     }
 
-    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray> &vertexArray)
+    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray> &vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
         shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
+        shader->SetMat4("u_Model", transform);
+
         //Должен добавлять в commandQUE
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);

@@ -1,5 +1,5 @@
-#ifndef ORTHOGRAPHICCAMERA_H
-#define ORTHOGRAPHICCAMERA_H
+#ifndef CAMERAS_H
+#define CAMERAS_H
 
 
 #include <glm/glm.hpp>
@@ -34,4 +34,4 @@ namespace HE
     };
 }
 
-#endif // ORTHOGRAPHICCAMERA_H
+#endif // CAMERAS_H

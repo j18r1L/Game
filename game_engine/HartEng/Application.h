@@ -14,12 +14,13 @@
 
 #include "HartEng/imGUI/imGUILayer.h"
 
+#include "HartEng/Core/Timestep.h"
+
 #include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Renderer/VertexArray.h"
 #include "HartEng/Renderer/Renderer.h"
-
-#include "HartEng/Renderer/OrthographicCamera.h"
+#include "HartEng/Renderer/Cameras.h"
 
 namespace HE
 {
@@ -27,13 +28,19 @@ namespace HE
     {
     private:
         std::unique_ptr<Window> m_Window;
+
         ImGUILayer* m_ImGuiLayer;
 
         LayerStack m_LayerStack;
 
-        bool OnWindowClosed(WindowCloseEvent& e);
+        Timestep m_Timestep;
+        float m_CurrentTime;
+
+
 
         static Application* s_Instance;
+
+        bool OnWindowClosed(WindowCloseEvent& e);
     public:
         bool m_Running;
         Application();

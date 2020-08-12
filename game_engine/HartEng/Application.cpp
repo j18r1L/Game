@@ -20,6 +20,7 @@ namespace HE
 #endif
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
+        m_CurrentTime = m_Window->GetTime();
 
         m_ImGuiLayer = new ImGUILayer();
         PushOverlay(m_ImGuiLayer);
@@ -63,11 +64,18 @@ namespace HE
 
     void Application::Run()
     {
+        // TODO сделать хороший timestep из Fix your time step
+        m_CurrentTime = m_Window->GetTime();
+
         while(m_Running)
         {
+            float time = m_Window->GetTime();
+            m_Timestep.SetTime(time - m_CurrentTime);
+            m_CurrentTime = time;
+
             // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера
             for (Layer* layer: m_LayerStack)
-                layer->OnUpdate();
+                layer->OnUpdate(m_Timestep);
 
             // TODO когда напишу рендерер, то эта часть будет на отдельном потоке
             m_ImGuiLayer->Begin();
