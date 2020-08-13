@@ -79,6 +79,10 @@ include_directories(${imGUI_DIR})
 set(ENTT_DIR "${LIB_DIR}/entt")
 include_directories("${ENTT_DIR}/include/")
 
+# stb
+set(STB_DIR "${LIB_DIR}/stb")
+include_directories("${STB_DIR}")
+
 file(GLOB source
     "HartEng/Core/*.cpp"
     "HartEng/*.cpp"
@@ -91,8 +95,7 @@ file(GLOB source
     "HartEng/Platform/OpenGL/*.cpp"
 
 
-
-    # Временно
+    "HartEng/vendor/stb/*.cpp"
     "HartEng/vendor/imGUI/*.cpp"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.cpp"
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
@@ -111,9 +114,7 @@ file(GLOB header
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/OpenGL/*.h"
 
-
-
-    # Временно
+    "HartEng/vendor/stb/*.h"
     "HartEng/vendor/imGUI/*.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"

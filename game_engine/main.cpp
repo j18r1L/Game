@@ -11,6 +11,7 @@ private:
     std::shared_ptr<HE::Shader> m_Shader;
     std::shared_ptr<HE::VertexArray> m_VertexArray;
     std::shared_ptr<HE::VertexArray> m_SquareVA;
+    std::shared_ptr<HE::Texture2D> m_Texture;
 
     HE::OrthographicCamera m_Camera;
 
@@ -59,12 +60,16 @@ public:
                 #version 430 core
 
                 layout (location = 0) in vec3 a_Position;
+                layout (location = 1) in vec2 a_TexCoord;
 
                 uniform mat4 u_ProjectionView;
                 uniform mat4 u_Model;
 
+                out vec2 v_TexCoord;
+
                 void main()
                 {
+                    v_TexCoord = a_TexCoord;
                     gl_Position = u_ProjectionView * u_Model * vec4(a_Position, 1.0);
                 }
             )";
@@ -74,22 +79,26 @@ public:
 
                 layout (location = 0) out vec4 o_Color;
 
-                uniform vec3 u_Color;
+                uniform sampler2D u_Texture;
+
+                in vec2 v_TexCoord;
 
                 void main()
                 {
-                    o_Color = vec4(u_Color, 1.);
+                    vec4 color = vec4(1.0);
+                    color = texture(u_Texture, v_TexCoord);
+                    o_Color = vec4(color);
                 }
             )";
 
 
         m_Shader.reset(m_Shader->Create(vertexSrc, fragmentSrc));
 
-        float vertices_square[3 * 4] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f,
+        float vertices_square[5 * 4] = {
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
         };
 
         //Vertex array
@@ -101,13 +110,22 @@ public:
         squareVB->Bind();
 
         squareVB->SetLayout({
-                                {HE::ShaderDataType::Float3, "a_Position"}
-                            });
+            {HE::ShaderDataType::Float3, "a_Position"},
+            {HE::ShaderDataType::Float2, "a_TexCoord"}
+        });
         m_SquareVA->AddVertexBuffer(squareVB);
         unsigned int indices_square[6] = {0, 1, 2, 2, 3, 0};
         std::shared_ptr<HE::IndexBuffer> squareIB;
         squareIB.reset(HE::IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
+
+        HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
+
+        // load texture
+        m_Texture = HE::Texture2D::Create("../Media/red.png");
+        m_Shader->Bind();
+        m_Shader->SetInt("u_Texture", 0);
+        m_Texture->Bind(0);
 
     }
 
@@ -136,7 +154,7 @@ public:
 
         glm::mat4 square_transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
 
-        HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
+
         HE::RenderCommand::Clear();
         //Можно команды для каждой сцены разделать {}, это просто для вида :)
         //Renderer::BeginScene(camera, lights, environment);
@@ -154,9 +172,8 @@ public:
             //HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
             m_Shader->Bind();
             m_Shader->SetVec3("u_Color", m_SquareColor);
+
             HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
-            m_Shader->SetVec3("u_Color", glm::vec3(0.0, 1.0, 0.0));
-            HE::Renderer::Submit(m_Shader, m_VertexArray);
         }
         HE::Renderer::EndScene();
         //Renderer::Flush();
