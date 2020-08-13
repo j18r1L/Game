@@ -34,23 +34,22 @@ namespace HE
 
 
 // Core log macros
-#define HE_CORE_FATAL(...) ::HE::Log::GetCoreLogger()->fatal(__VA_ARGS__)
-#define HE_CORE_ERROR(...) ::HE::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define HE_CORE_WARN(...)  ::HE::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define HE_CORE_INFO(...)  ::HE::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define HE_CORE_TRACE(...) ::HE::Log::GetCoreLogger()->trace(__VA_ARGS__)
+//#define HE_CORE_FATAL(...) ::HE::Log::GetCoreLogger()->fatal(__VA_ARGS__)
+#ifdef HE_DEBUG
+    #define HE_CORE_ERROR(...) ::HE::Log::GetCoreLogger()->error(__VA_ARGS__)
+    #define HE_CORE_WARN(...)  ::HE::Log::GetCoreLogger()->warn(__VA_ARGS__)
+    #define HE_CORE_INFO(...)  ::HE::Log::GetCoreLogger()->info(__VA_ARGS__)
+    #define HE_CORE_TRACE(...) ::HE::Log::GetCoreLogger()->trace(__VA_ARGS__)
 
-// Client log macros
-#define HE_FATAL(...)      ::HE::Log::GetClientLogger()->fatal(__VA_ARGS__)
-#define HE_ERROR(...)      ::HE::Log::GetClientLogger()->error(__VA_ARGS__)
-#define HE_WARN(...)       ::HE::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define HE_INFO(...)       ::HE::Log::GetClientLogger()->info(__VA_ARGS__)
-#define HE_TRACE(...)      ::HE::Log::GetClientLogger()->trace(__VA_ARGS__)
-
-
+    // Client log macros
+    //#define HE_FATAL(...)      ::HE::Log::GetClientLogger()->fatal(__VA_ARGS__)
+    #define HE_ERROR(...)      ::HE::Log::GetClientLogger()->error(__VA_ARGS__)
+    #define HE_WARN(...)       ::HE::Log::GetClientLogger()->warn(__VA_ARGS__)
+    #define HE_INFO(...)       ::HE::Log::GetClientLogger()->info(__VA_ARGS__)
+    #define HE_TRACE(...)      ::HE::Log::GetClientLogger()->trace(__VA_ARGS__)
 // if dist build remove logging
-#ifdef RELEASE
-    #define HE_CORE_INFO
+#else
+    #define HE_CORE_FATAL
     #define HE_CORE_ERROR
     #define HE_CORE_WARN
     #define HE_CORE_INFO

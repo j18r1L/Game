@@ -14,11 +14,40 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Qt5Core)
 
 
+# Platform
+if (WIN32)
+    add_definitions(-DHE_PLATFORM_WINDOWS)
+endif (WIN32)
+
+if (UNIX)
+    add_definitions(-DHE_PLATFORM_LINUX)
+    add_definitions(-DHE_QT_CTEATOR)
+endif (UNIX)
+
+
+if (MSVC)
+    add_definitions(-DHE_VISUAL_STUDIO)
+endif (MSVC)
+
 #add_definitions(-DHE_PLATFORM_WINDOWS, -DHE_BUILD_DLL)
-add_definitions(-DHE_PLATFORM_LINUX)
-add_definitions(-DHE_ENABLE_ASSERTS)
-add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
+#add_definitions(-DHE_PLATFORM_LINUX)
+#add_definitions(-DHE_PLATFORM_WINDOWS)
+
+# IDE
+#add_definitions(-DHE_VISUAL_STUDIO)
+#add_definitions(-DHE_QT_CTEATOR)
+
+# Silent asserts
+#add_definitions(-DHE_SILENT_ASSERTS)
+
+# Debug
+add_definitions(-DHE_DEBUG)
+
+# Event's trace
 add_definitions(-DHE_TRACE_EVENTS)
+
+#using glad if OpenGL
+add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set(LIB_DIR "${CMAKE_SOURCE_DIR}/HartEng/vendor")
 
@@ -50,15 +79,23 @@ include_directories(${imGUI_DIR})
 set(ENTT_DIR "${LIB_DIR}/entt")
 include_directories("${ENTT_DIR}/include/")
 
+# stb
+set(STB_DIR "${LIB_DIR}/stb")
+include_directories("${STB_DIR}")
+
 file(GLOB source
+    "HartEng/Core/*.cpp"
     "HartEng/*.cpp"
 
     "HartEng/imGUI/*.cpp"
+
     "HartEng/Renderer/*.cpp"
+
     "HartEng/Platform/Linux/*.cpp"
     "HartEng/Platform/OpenGL/*.cpp"
 
-    # Временно
+
+    "HartEng/vendor/stb/*.cpp"
     "HartEng/vendor/imGUI/*.cpp"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.cpp"
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
@@ -66,22 +103,25 @@ file(GLOB source
 )
 
 file(GLOB header
+    "HartEng/Core/*.h"
     "HartEng/*.h"
     "HartEng/Events/*.h"
 
     "HartEng/imGUI/*.h"
+
     "HartEng/Renderer/*.h"
+
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/OpenGL/*.h"
 
-    # Временно
+    "HartEng/vendor/stb/*.h"
     "HartEng/vendor/imGUI/*.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"
 )
 
 
-add_executable(game_engine ${source} ${header}  main.cpp HartEng.h)
+add_executable(game_engine ${source} ${header}  HartEng.h main.cpp )
 
 target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
 

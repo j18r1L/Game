@@ -1,15 +1,13 @@
-#include "HartEng/Log.h"
-#include "HartEng/Core.h"
 
+#include "HartEng/Renderer/VertexArray.h"
 #include "HartEng/Renderer/Renderer.h"
-#include "HartEng/Renderer/Shader.h"
-#include "HartEng/Platform/OpenGL/OpenGLShader.h"
-
-
+#include "HartEng/Core.h"
+#include "HartEng/Log.h"
+#include "HartEng/Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace HE
 {
-    Shader* Shader::Create(const std::string& vertexSrc, const std::string& fragmentSrc)
+    VertexArray* VertexArray::Create()
     {
         switch (Renderer::GetAPI())
         {
@@ -17,13 +15,13 @@ namespace HE
             HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
             return nullptr;
         case RendererAPI::API::OpenGL:
-            return new OpenGLShader(vertexSrc, fragmentSrc);
+            return new OpenGLVertexArray();
+
         }
+
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
     }
 
-
-
+    
 }
-
