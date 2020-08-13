@@ -54,45 +54,8 @@ public:
         triangleIB.reset(HE::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(triangleIB);
 
-
-
-        std::string vertexSrc = R"(
-                #version 430 core
-
-                layout (location = 0) in vec3 a_Position;
-                layout (location = 1) in vec2 a_TexCoord;
-
-                uniform mat4 u_ProjectionView;
-                uniform mat4 u_Model;
-
-                out vec2 v_TexCoord;
-
-                void main()
-                {
-                    v_TexCoord = a_TexCoord;
-                    gl_Position = u_ProjectionView * u_Model * vec4(a_Position, 1.0);
-                }
-            )";
-
-        std::string fragmentSrc = R"(
-                #version 430 core
-
-                layout (location = 0) out vec4 o_Color;
-
-                uniform sampler2D u_Texture;
-
-                in vec2 v_TexCoord;
-
-                void main()
-                {
-                    vec4 color = vec4(1.0);
-                    color = texture(u_Texture, v_TexCoord);
-                    o_Color = vec4(color);
-                }
-            )";
-
-
-        m_Shader.reset(m_Shader->Create(vertexSrc, fragmentSrc));
+        m_Shader.reset(HE::Shader::Create("../assets/shaders/Texture.glsl"));
+        //m_Shader.reset(m_Shader->Create(vertexSrc, fragmentSrc));
 
         float vertices_square[5 * 4] = {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -122,7 +85,7 @@ public:
         HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
 
         // load texture
-        m_Texture = HE::Texture2D::Create("../Media/red.png");
+        m_Texture = HE::Texture2D::Create("../media/red.png");
         m_Shader->Bind();
         m_Shader->SetInt("u_Texture", 0);
         m_Texture->Bind(0);

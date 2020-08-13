@@ -21,6 +21,7 @@ namespace HE
             return s_API;
         }
 
+        virtual void Init() = 0;
         // Отчистить экран
         virtual void Clear() = 0;
         // Установить цвет отчистки экрана

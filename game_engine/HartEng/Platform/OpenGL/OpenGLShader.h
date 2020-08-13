@@ -1,6 +1,7 @@
 #ifndef OPENGLSHADER_H
 #define OPENGLSHADER_H
 
+#include "HartEng/pch.h"
 #include "HartEng/Renderer/Shader.h"
 #include <glm/glm.hpp>
 
@@ -10,8 +11,13 @@ namespace HE
     {
     private:
         uint32_t m_RendererID;
+
+        std::string ReadFile(const std::string& path);
+        void Compile(std::unordered_map<GLenum, std::string>& shaderSources);
+        std::unordered_map<GLenum, std::string> PreProcess(const std::string& shaderSrc);
     public:
         OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+        OpenGLShader(const std::string& path);
         virtual ~OpenGLShader();
 
         void Bind() const override;

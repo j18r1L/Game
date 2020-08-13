@@ -10,6 +10,7 @@ namespace HE
     {
     public:
         static Shader* Create(const std::string& vertexSrc, const std::string& fragmentSrc);
+        static Shader* Create(const std::string& path);
         virtual ~Shader() = default;
 
         virtual void Bind() const = 0;
