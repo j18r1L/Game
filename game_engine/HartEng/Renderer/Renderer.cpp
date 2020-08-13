@@ -1,5 +1,8 @@
-#include "HartEng/Renderer/Renderer.h"
 #include "HartEng/pch.h"
+#include "HartEng/Renderer/Renderer.h"
+#include "HartEng/Platform/OpenGL/OpenGLShader.h"
+
+
 
 namespace HE
 {
@@ -17,8 +20,8 @@ namespace HE
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray> &vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
-        shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
-        shader->SetMat4("u_Model", transform);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
+        std::dynamic_pointer_cast<OpenGLShader>(shader)->SetMat4("u_Model", transform);
         // В будущем, при использовании системы материалов, mi - material instance (смотреть main.cpp):
         // mi->Bind()
         // этого больше не будет в Submit:

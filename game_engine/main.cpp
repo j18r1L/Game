@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <glm/glm.hpp>
-
+#include <glm/gtc/type_ptr.hpp>
+#include <memory>
 
 class ExampleLayer: public HE::Layer
 {
@@ -15,6 +16,7 @@ private:
 
     glm::vec3 m_SquarePosition;
     float m_SquareSpeed;
+    glm::vec3 m_SquareColor;
 
 public:
     ExampleLayer():
@@ -72,15 +74,16 @@ public:
 
                 layout (location = 0) out vec4 o_Color;
 
-                uniform vec4 u_Color;
+                uniform vec3 u_Color;
 
                 void main()
                 {
-                    o_Color = vec4(u_Color);
+                    o_Color = vec4(u_Color, 1.);
                 }
             )";
 
-        m_Shader.reset(new HE::Shader(vertexSrc, fragmentSrc));
+
+        m_Shader.reset(m_Shader->Create(vertexSrc, fragmentSrc));
 
         float vertices_square[3 * 4] = {
             -0.5f, -0.5f, 0.0f,
@@ -149,10 +152,10 @@ public:
             //material_instance->SetValue("u_Color", redColor);
             //mesh->SetMaterial(material_instance);
             //HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
-
-            m_Shader->SetVec4("u_Color", glm::vec4(1.0, 0.0, 0.0, 1.0));
+            m_Shader->Bind();
+            m_Shader->SetVec3("u_Color", m_SquareColor);
             HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
-            m_Shader->SetVec4("u_Color", glm::vec4(0.0, 1.0, 0.0, 1.0));
+            m_Shader->SetVec3("u_Color", glm::vec3(0.0, 1.0, 0.0));
             HE::Renderer::Submit(m_Shader, m_VertexArray);
         }
         HE::Renderer::EndScene();
@@ -162,7 +165,11 @@ public:
 
     void OnImGuiRender() override
     {
+        ImGui::Begin("Setting");
 
+        ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+
+        ImGui::End();
     }
 
     void OnEvent(HE::Event &event) override
