@@ -12,7 +12,8 @@ namespace HE
     {
         RenderCommand::Init();
     }
-    void Renderer::BeginScene(OrthographicCamera& camera)
+
+    void Renderer::BeginScene(Camera& camera)
     {
         m_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
     }

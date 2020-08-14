@@ -21,7 +21,7 @@ namespace HE
         static SceneData* m_SceneData;
     public:
         // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
-        static void BeginScene(OrthographicCamera& camera);
+        static void BeginScene(Camera& camera);
         static void EndScene();
         static void Init();
 

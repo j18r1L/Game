@@ -14,24 +14,26 @@ private:
     std::shared_ptr<HE::VertexArray> m_SquareVA;
     std::shared_ptr<HE::Texture2D> m_Texture;
 
-    HE::OrthographicCamera m_Camera;
+    HE::PerspectiveCamera m_Camera;
+    //HE::OrthographicCamera m_Camera;
 
-    glm::vec3 m_SquarePosition;
-    float m_SquareSpeed;
-    glm::vec3 m_SquareColor;
+    glm::vec3 m_CameraPosition;
+    glm::quat m_CameraRotation;
+    float m_CameraSpeed;
 
 public:
     ExampleLayer():
         Layer("Example"),
-        m_Camera(-1.0f, 1.0f, -1.0f, 1.0f),
-        m_SquarePosition(0.0f),
-        m_SquareSpeed(1.0f)
+        //m_Camera(-1.0f, 1.0f, -1.0f, 1.0f),
+        m_Camera(45.0f, HE::Application::Get().GetWindow().GetWidth() / HE::Application::Get().GetWindow().GetHeight(), 0.1f, 10.0f),
+        m_CameraPosition(0.0f),
+        m_CameraRotation(),
+        m_CameraSpeed(1.0f)
     {
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
             0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
             0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-
         };
 
         //Vertex array
@@ -58,10 +60,10 @@ public:
         auto textureShader = m_ShaderLibrary.Load("../assets/shaders/Texture.glsl");
 
         float vertices_square[5 * 4] = {
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -1.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -1.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -1.0f, 0.0f, 1.0f,
         };
 
         //Vertex array
@@ -98,24 +100,36 @@ public:
         // OnUpdate выполняется на каждый кадр, здесь следует посредством Input polling-а обрабатывать движения, стрельбу и другие игровые действия, требующие не единичного использования
         // Например подобрать предмет нажатием на E лучше запихнуть в эвент систему
         // так, допустим, нажатие мыши имеет только евенты КнопкаМышиНажата и КнопкаМышиОтжата, у нее нет эвента КнопкаМышиЗажата
+        // TODO обработка камеры должна быть в компоненте камеры, заскриптованной через
         if (HE::Input::IsKeyPressed(HE_KEY_W))
         {
-            m_SquarePosition.y += m_SquareSpeed * deltaTime;
+            m_CameraPosition.z += m_CameraSpeed * deltaTime;
         }
         if (HE::Input::IsKeyPressed(HE_KEY_S))
         {
-            m_SquarePosition.y -= m_SquareSpeed * deltaTime;
+            m_CameraPosition.z -= m_CameraSpeed * deltaTime;
         }
         if (HE::Input::IsKeyPressed(HE_KEY_A))
         {
-            m_SquarePosition.x -= m_SquareSpeed * deltaTime;
+            m_CameraPosition.x -= m_CameraSpeed * deltaTime;
         }
         if (HE::Input::IsKeyPressed(HE_KEY_D))
         {
-            m_SquarePosition.x += m_SquareSpeed * deltaTime;
+            m_CameraPosition.x += m_CameraSpeed * deltaTime;
         }
+        if (HE::Input::IsKeyPressed(HE_KEY_Q))
+        {
+            m_CameraPosition.y += m_CameraSpeed * deltaTime;
+        }
+        if (HE::Input::IsKeyPressed(HE_KEY_E))
+        {
+            m_CameraPosition.y -= m_CameraSpeed * deltaTime;
+        }
+        m_Camera.SetPosition(m_CameraPosition);
+        HE_INFO("camera pos.x = {0}", m_CameraPosition.x);
+        HE_INFO("camera pos.y = {0}", m_CameraPosition.y);
+        HE_INFO("camera pos.z = {0}", m_CameraPosition.z);
 
-        glm::mat4 square_transform = glm::translate(glm::mat4(1.0f), m_SquarePosition);
 
 
         HE::RenderCommand::Clear();
@@ -135,9 +149,8 @@ public:
             //HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
             auto textureShader = m_ShaderLibrary.Get("Texture");
             textureShader->Bind();
-            textureShader->SetVec3("u_Color", m_SquareColor);
 
-            HE::Renderer::Submit(textureShader, m_SquareVA, square_transform);
+            HE::Renderer::Submit(textureShader, m_SquareVA);
         }
         HE::Renderer::EndScene();
         //Renderer::Flush();
@@ -148,7 +161,9 @@ public:
     {
         ImGui::Begin("Setting");
 
-        ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+        //ImGui::InputFloat("input scientific", &m_CameraPosition.z, 0.0, 0.0, "%e");
+        //HE_INFO("camera pos.z = {0}", m_CameraPosition.z);
+        //ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
 
         ImGui::End();
     }
