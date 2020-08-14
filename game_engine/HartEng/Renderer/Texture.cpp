@@ -10,13 +10,15 @@ namespace HE
 {
     std::shared_ptr<Texture2D> Texture2D::Create(const std::string& path)
     {
-        switch (Renderer::GetAPI())
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
         {
-        case RendererAPI::API::None:
+            return std::make_shared<OpenGLTexture2D>(path);
+        }
+        else if (api == RendererAPI::API::None)
+        {
             HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
             return nullptr;
-        case RendererAPI::API::OpenGL:
-            return std::make_shared<OpenGLTexture2D>(path);
         }
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;

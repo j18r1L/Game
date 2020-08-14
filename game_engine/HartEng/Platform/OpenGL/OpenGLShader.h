@@ -11,17 +11,20 @@ namespace HE
     {
     private:
         uint32_t m_RendererID;
+        std::string m_Name;
 
         std::string ReadFile(const std::string& path);
         void Compile(std::unordered_map<GLenum, std::string>& shaderSources);
         std::unordered_map<GLenum, std::string> PreProcess(const std::string& shaderSrc);
     public:
-        OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+        OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
         OpenGLShader(const std::string& path);
         virtual ~OpenGLShader();
 
         void Bind() const override;
         void UnBind() const override;
+
+        const std::string & GetName() const override;
 
         void SetMat4(const std::string& name, const glm::mat4& value) const override;
         void SetMat3(const std::string& name, const glm::mat3& value) const override;

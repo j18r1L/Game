@@ -9,32 +9,76 @@
 
 namespace HE
 {
-    Shader* Shader::Create(const std::string& vertexSrc, const std::string& fragmentSrc)
+    std::shared_ptr<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
     {
-        switch (Renderer::GetAPI())
+
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
         {
-        case RendererAPI::API::None:
+            return std::shared_ptr<OpenGLShader> (new OpenGLShader(name, vertexSrc, fragmentSrc));
+        }
+        else if (api == RendererAPI::API::None)
+        {
             HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
             return nullptr;
-        case RendererAPI::API::OpenGL:
-            return new OpenGLShader(vertexSrc, fragmentSrc);
         }
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
     }
 
-    Shader* Shader::Create(const std::string& path)
+    std::shared_ptr<Shader> Shader::Create(const std::string& path)
     {
-        switch (Renderer::GetAPI())
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
         {
-        case RendererAPI::API::None:
+            return std::shared_ptr<Shader> (new OpenGLShader(path));
+        }
+        else if (api == RendererAPI::API::None)
+        {
             HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
             return nullptr;
-        case RendererAPI::API::OpenGL:
-            return new OpenGLShader(path);
         }
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
+    }
+
+    void ShaderLibrary::Add(const std::string& name, const std::shared_ptr<Shader> shader)
+    {
+        HE_CORE_ASSERT(!Exists(name), "Shader already exists!");
+        m_Shaders[name] = shader;
+    }
+
+    void ShaderLibrary::Add(const std::shared_ptr<Shader> shader)
+    {
+        auto& name = shader->GetName();
+        Add(name, shader);
+    }
+
+
+
+    std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& path)
+    {
+        auto shader = Shader::Create(path);
+        Add(shader);
+        return shader;
+    }
+
+    std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& name, const std::string& path)
+    {
+        auto shader = Shader::Create(path);
+        Add(name, shader);
+        return shader;
+    }
+
+    std::shared_ptr<Shader> ShaderLibrary::Get(const std::string& name)
+    {
+        HE_CORE_ASSERT(Exists(name), "Shader not found!");
+        return m_Shaders[name];
+    }
+
+    bool ShaderLibrary::Exists(const std::string& name) const
+    {
+        return m_Shaders.find(name) != m_Shaders.end();
     }
 
 

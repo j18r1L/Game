@@ -7,36 +7,33 @@ namespace HE
 {
     VertexBuffer* VertexBuffer::Create(float *vertices, uint32_t size)
     {
-        switch (Renderer::GetAPI())
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
         {
-        case RendererAPI::API::None:
+            return new OpenGLVertexBuffer(vertices, size);
+        }
+        else if (api == RendererAPI::API::None)
+        {
             HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
             return nullptr;
-            break;
-        case RendererAPI::API::OpenGL:
-            return new OpenGLVertexBuffer(vertices, size);
-            break;
-
         }
-
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
     }
 
     IndexBuffer* IndexBuffer::Create(uint32_t *indices, uint32_t size)
     {
-        switch (Renderer::GetAPI())
+
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
         {
-        case RendererAPI::API::None:
+             return new OpenGLIndexBuffer(indices, size);
+        }
+        else if (api == RendererAPI::API::None)
+        {
             HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
             return nullptr;
-            break;
-        case RendererAPI::API::OpenGL:
-            return new OpenGLIndexBuffer(indices, size);
-            break;
-
         }
-
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
     }

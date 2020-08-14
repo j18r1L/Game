@@ -33,7 +33,8 @@ namespace HE
         return "";
     }
 
-    OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc):
+        m_Name(name)
     {
         std::unordered_map<GLenum, std::string> sources;
         sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -46,6 +47,12 @@ namespace HE
         std::string source = ReadFile(path);
         auto shaderSources = PreProcess(source);
         Compile(shaderSources);
+
+        auto lastSlash = path.find_last_of("/\\");
+        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        auto lastDot = path.rfind('.');
+        auto count = lastDot == std::string::npos ? path.size() - lastSlash : lastDot - lastSlash;
+        m_Name = path.substr(lastSlash, count);
 
     }
 
@@ -85,7 +92,7 @@ namespace HE
     void OpenGLShader::Compile(std::unordered_map<GLenum, std::string>& shaderSources)
     {
         m_RendererID = -1;
-        std::vector<GLenum> glShaderIDs(shaderSources.size());
+        std::vector<GLenum> glShaderIDs;
         GLuint program = glCreateProgram();
         for (auto& kv: shaderSources)
         {
@@ -210,6 +217,11 @@ namespace HE
     void OpenGLShader::UnBind() const
     {
         glUseProgram(0);
+    }
+
+    const std::string& OpenGLShader::GetName() const
+    {
+        return m_Name;
     }
 
     void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) const

@@ -5,10 +5,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <memory>
 
+
 class ExampleLayer: public HE::Layer
 {
 private:
-    std::shared_ptr<HE::Shader> m_Shader;
+    HE::ShaderLibrary m_ShaderLibrary;
     std::shared_ptr<HE::VertexArray> m_VertexArray;
     std::shared_ptr<HE::VertexArray> m_SquareVA;
     std::shared_ptr<HE::Texture2D> m_Texture;
@@ -54,8 +55,7 @@ public:
         triangleIB.reset(HE::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(triangleIB);
 
-        m_Shader.reset(HE::Shader::Create("../assets/shaders/Texture.glsl"));
-        //m_Shader.reset(m_Shader->Create(vertexSrc, fragmentSrc));
+        auto textureShader = m_ShaderLibrary.Load("../assets/shaders/Texture.glsl");
 
         float vertices_square[5 * 4] = {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -86,8 +86,8 @@ public:
 
         // load texture
         m_Texture = HE::Texture2D::Create("../media/red.png");
-        m_Shader->Bind();
-        m_Shader->SetInt("u_Texture", 0);
+        textureShader->Bind();
+        textureShader->SetInt("u_Texture", 0);
         m_Texture->Bind(0);
 
     }
@@ -133,10 +133,11 @@ public:
             //material_instance->SetValue("u_Color", redColor);
             //mesh->SetMaterial(material_instance);
             //HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
-            m_Shader->Bind();
-            m_Shader->SetVec3("u_Color", m_SquareColor);
+            auto textureShader = m_ShaderLibrary.Get("Texture");
+            textureShader->Bind();
+            textureShader->SetVec3("u_Color", m_SquareColor);
 
-            HE::Renderer::Submit(m_Shader, m_SquareVA, square_transform);
+            HE::Renderer::Submit(textureShader, m_SquareVA, square_transform);
         }
         HE::Renderer::EndScene();
         //Renderer::Flush();
