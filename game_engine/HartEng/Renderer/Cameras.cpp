@@ -11,8 +11,7 @@ namespace HE
     }
     void Camera::SetRotation(float angle, const glm::vec3& rotation)
     {
-        // angle в градусах
-        m_Rotation = glm::angleAxis(angle, rotation);
+        m_Rotation = glm::angleAxis(glm::radians(angle), rotation);
         RecalculateViewMatrix();
     }
 

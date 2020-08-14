@@ -126,6 +126,7 @@ public:
             m_CameraPosition.y -= m_CameraSpeed * deltaTime;
         }
         m_Camera.SetPosition(m_CameraPosition);
+
         HE_INFO("camera pos.x = {0}", m_CameraPosition.x);
         HE_INFO("camera pos.y = {0}", m_CameraPosition.y);
         HE_INFO("camera pos.z = {0}", m_CameraPosition.z);
@@ -135,7 +136,7 @@ public:
         HE::RenderCommand::Clear();
         //Можно команды для каждой сцены разделать {}, это просто для вида :)
         //Renderer::BeginScene(camera, lights, environment);
-        m_Camera.SetRotation(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
+        //m_Camera.SetRotation(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
         HE::Renderer::BeginScene(m_Camera);
         {
             // Из шейдера достаем все нужные юниформы, Material - буффер, который хранит информацию о материале, заполняет ее стандартными значениям
