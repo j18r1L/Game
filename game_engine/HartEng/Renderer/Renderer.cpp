@@ -13,9 +13,9 @@ namespace HE
         RenderCommand::Init();
     }
 
-    void Renderer::BeginScene(Camera& camera)
+    void Renderer::BeginScene(std::shared_ptr<Camera> camera)
     {
-        m_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
+        m_SceneData->ProjectionViewMatrix = camera->GetProjectionViewMatrix();
     }
 
     void Renderer::EndScene()

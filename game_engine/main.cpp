@@ -14,22 +14,16 @@ private:
     std::shared_ptr<HE::VertexArray> m_SquareVA;
     std::shared_ptr<HE::Texture2D> m_Texture;
 
-    HE::PerspectiveCamera m_Camera;
-    //HE::OrthographicCamera m_Camera;
-
-    glm::vec3 m_CameraPosition;
-    glm::quat m_CameraRotation;
-    float m_CameraSpeed;
+    //HE::OrthographicCameraController m_CameraController;
+    HE::PerspectiveCameraController m_CameraController;
 
 public:
     ExampleLayer():
         Layer("Example"),
-        //m_Camera(-1.0f, 1.0f, -1.0f, 1.0f),
-        m_Camera(45.0f, HE::Application::Get().GetWindow().GetWidth() / HE::Application::Get().GetWindow().GetHeight(), 0.1f, 10.0f),
-        m_CameraPosition(0.0f),
-        m_CameraRotation(),
-        m_CameraSpeed(1.0f)
+        //m_CameraController(HE::Application::Get().GetWindow().GetWidth() / HE::Application::Get().GetWindow().GetHeight())
+        m_CameraController(45.0f, HE::Application::Get().GetWindow().GetWidth() / HE::Application::Get().GetWindow().GetHeight(), 0.1f, 10.0f)
     {
+        m_CameraController.SetPosition({0.0f, 0.0f, 2.0f});
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
             0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
@@ -60,10 +54,10 @@ public:
         auto textureShader = m_ShaderLibrary.Load("../assets/shaders/Texture.glsl");
 
         float vertices_square[5 * 4] = {
-            -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, -1.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, -1.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, -1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
         };
 
         //Vertex array
@@ -96,48 +90,13 @@ public:
 
     void OnUpdate(HE::Timestep& ts) override
     {
-        float deltaTime = ts;
-        // OnUpdate выполняется на каждый кадр, здесь следует посредством Input polling-а обрабатывать движения, стрельбу и другие игровые действия, требующие не единичного использования
-        // Например подобрать предмет нажатием на E лучше запихнуть в эвент систему
-        // так, допустим, нажатие мыши имеет только евенты КнопкаМышиНажата и КнопкаМышиОтжата, у нее нет эвента КнопкаМышиЗажата
-        // TODO обработка камеры должна быть в компоненте камеры, заскриптованной через
-        if (HE::Input::IsKeyPressed(HE_KEY_W))
-        {
-            m_CameraPosition.z += m_CameraSpeed * deltaTime;
-        }
-        if (HE::Input::IsKeyPressed(HE_KEY_S))
-        {
-            m_CameraPosition.z -= m_CameraSpeed * deltaTime;
-        }
-        if (HE::Input::IsKeyPressed(HE_KEY_A))
-        {
-            m_CameraPosition.x -= m_CameraSpeed * deltaTime;
-        }
-        if (HE::Input::IsKeyPressed(HE_KEY_D))
-        {
-            m_CameraPosition.x += m_CameraSpeed * deltaTime;
-        }
-        if (HE::Input::IsKeyPressed(HE_KEY_Q))
-        {
-            m_CameraPosition.y += m_CameraSpeed * deltaTime;
-        }
-        if (HE::Input::IsKeyPressed(HE_KEY_E))
-        {
-            m_CameraPosition.y -= m_CameraSpeed * deltaTime;
-        }
-        m_Camera.SetPosition(m_CameraPosition);
 
-        HE_INFO("camera pos.x = {0}", m_CameraPosition.x);
-        HE_INFO("camera pos.y = {0}", m_CameraPosition.y);
-        HE_INFO("camera pos.z = {0}", m_CameraPosition.z);
-
-
-
+        // Update
+        m_CameraController.OnUpdate(ts);
+        HE_INFO("{0}",m_CameraController.GetPosition().z );
+        // Renderer
         HE::RenderCommand::Clear();
-        //Можно команды для каждой сцены разделать {}, это просто для вида :)
-        //Renderer::BeginScene(camera, lights, environment);
-        //m_Camera.SetRotation(0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
-        HE::Renderer::BeginScene(m_Camera);
+        HE::Renderer::BeginScene(m_CameraController.GetCamera());
         {
             // Из шейдера достаем все нужные юниформы, Material - буффер, который хранит информацию о материале, заполняет ее стандартными значениям
             //HE::Material* material = new HE::Material(m_Shader);
@@ -163,40 +122,18 @@ public:
         ImGui::Begin("Setting");
 
         //ImGui::InputFloat("input scientific", &m_CameraPosition.z, 0.0, 0.0, "%e");
-        //HE_INFO("camera pos.z = {0}", m_CameraPosition.z);
         //ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
 
         ImGui::End();
     }
 
-    void OnEvent(HE::Event &event) override
+    void OnEvent(HE::Event &e) override
     {
-        // Вот таким образом добавляем функцию обработчик эвентов, который может быть у каждого слоя свой
-        //HE::EventDispatcher dispatcher(event);
-        //dispatcher.Dispatch<HE::KeyPressedEvent>(HE_BIND_EVENT_FN(ExampleLayer::OnKeyPressedEvent));
+        m_CameraController.OnEvent(e);
     }
 
-    bool OnKeyPressedEvent(HE::KeyPressedEvent& event)
+    bool OnKeyPressedEvent(HE::KeyPressedEvent& e)
     {
-        // описываем функцию обработчика эвента, ее в целом надо использовать в менюшках, нажатиях кнопки мыши в них, работы с инвентарем, но не для стрельбы, ходьбы
-        /*
-        if (event.GetKeyCode() == HE_KEY_W)
-        {
-            m_CameraPosition.y += m_CameraSpeed;
-        }
-        if (event.GetKeyCode() == HE_KEY_S)
-        {
-            m_CameraPosition.y -= m_CameraSpeed;
-        }
-        if (event.GetKeyCode() == HE_KEY_A)
-        {
-            m_CameraPosition.x -= m_CameraSpeed;
-        }
-        if (event.GetKeyCode() == HE_KEY_D)
-        {
-            m_CameraPosition.x += m_CameraSpeed;
-        }
-        */
         return false;
     }
 

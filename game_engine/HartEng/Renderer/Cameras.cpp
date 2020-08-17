@@ -3,28 +3,6 @@
 #include "HartEng/pch.h"
 namespace HE
 {
-
-    void Camera::SetPosition(const glm::vec3& position)
-    {
-        m_Position = position;
-        RecalculateViewMatrix();
-    }
-    void Camera::SetRotation(float angle, const glm::vec3& rotation)
-    {
-        m_Rotation = glm::angleAxis(glm::radians(angle), rotation);
-        RecalculateViewMatrix();
-    }
-
-    const glm::vec3& Camera::GetPosition() const
-    {
-        return m_Position;
-    }
-
-    const glm::quat& Camera::GetRotation() const
-    {
-        return m_Rotation;
-    }
-
     const glm::mat4& Camera::GetProjectionMatrix() const
     {
         return m_ProjectionMatrix;
@@ -38,19 +16,25 @@ namespace HE
         return m_ProjectionViewMatrix;
     }
 
-    void Camera::RecalculateViewMatrix()
+    void Camera::RecalculateViewMatrix(glm::vec3 position, glm::quat rotation)
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::mat4_cast(m_Rotation);
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::mat4_cast(rotation);
         m_ViewMatrix = glm::inverse(transform);
         m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
     }
 
     /////////////////////////////////////////// Orthographic Camera /////////////////////////////////////////////
 
-    OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float near, float far)
+    OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float zNear, float zFar)
     {
-        m_ProjectionMatrix = glm::ortho(left, right, bottom, top, near, far);
+        m_ProjectionMatrix = glm::ortho(left, right, bottom, top, zNear, zFar);
         m_ViewMatrix = glm::mat4(1.0f);
+        m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
+    }
+
+    void OrthographicCamera::SetProjection(float left, float right, float bottom, float top, float zNear, float zFar)
+    {
+        m_ProjectionMatrix = glm::ortho(left, right, bottom, top, zNear, zFar);
         m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
     }
 
@@ -61,18 +45,23 @@ namespace HE
     /////////////////////////////////////////// Perspective Camera /////////////////////////////////////////////
 
 
-    PerspectiveCamera::PerspectiveCamera(float fov, float width, float heigth, float near, float far)
-
+    PerspectiveCamera::PerspectiveCamera(float fov, float width, float heigth, float zNear, float zFar)
     {
-        m_ProjectionMatrix = glm::perspective(fov, width / heigth, near, far);
+        m_ProjectionMatrix = glm::perspective(fov, width / heigth, zNear, zFar);
         m_ViewMatrix = glm::mat4(1.0f);
         m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
     }
 
-    PerspectiveCamera::PerspectiveCamera(float fov, float aspect_ratio, float near, float far)
+    PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float zNear, float zFar)
     {
-        m_ProjectionMatrix = glm::perspective(fov,aspect_ratio, near, far);
+        m_ProjectionMatrix = glm::perspective(fov, aspectRatio, zNear, zFar);
         m_ViewMatrix = glm::mat4(1.0f);
+        m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
+    }
+
+    void PerspectiveCamera::SetProjection(float fov, float aspectRatio, float zNear, float zFar)
+    {
+        m_ProjectionMatrix = glm::perspective(fov, aspectRatio, zNear, zFar);
         m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
     }
 
