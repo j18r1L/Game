@@ -23,6 +23,12 @@ namespace HE
         m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
     }
 
+    void Camera::RecalculateViewMatrix(glm::vec3 position, glm::vec3 front, glm::vec3 up)
+    {
+        m_ViewMatrix = glm::lookAt(position, position + front, up);
+        m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
+    }
+
     /////////////////////////////////////////// Orthographic Camera /////////////////////////////////////////////
 
     OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float zNear, float zFar)

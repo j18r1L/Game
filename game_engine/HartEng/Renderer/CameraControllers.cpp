@@ -2,6 +2,7 @@
 #include "HartEng/Input.h"
 #include "HartEng/Keycodes.h"
 #include "HartEng/pch.h"
+#include "HartEng/Log.h"
 
 #include <iostream>
 #include <string>
@@ -99,8 +100,20 @@ namespace HE
     /////////////////////////////////////////// Perspective Camera /////////////////////////////////////////////
 
     PerspectiveCameraController::PerspectiveCameraController(float fov, float width, float heigth, float zNear, float zFar):
-        m_Fov(fov)
+        m_Fov(fov),
+        m_CameraSensivity(0.05f),
+        m_LastMousePosition(width / 2, heigth / 2),
+        m_Up(0.0f, 1.0f, 0.0f),
+        m_Front(glm::vec3(0.0f, 1.0f, -1.0f)),
+        m_Right(glm::vec3(1.0f, 0.0f, 0.0f)),
+        m_WorldUp(m_Up)
     {
+        m_CameraRotation = glm::quat();
+        //glm::vec3 angles = glm::eulerAngles(m_CameraRotation) * 3.14159f / 180.f; //XYZ as pitch, yaw, and roll
+        //m_Front = glm::normalize(glm::vec3(glm::cos(angles.y) * glm::cos(angles.x), glm::sin(angles.x), glm::sin(angles.y) * glm::cos(angles.x)));
+        //m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
+        //m_Up = glm::normalize(glm::cross(m_Right, m_Front));
+
         m_AspectRatio = (width / heigth);
         m_Znear = zNear;
         m_Zfar = zFar;
@@ -108,8 +121,21 @@ namespace HE
     }
 
     PerspectiveCameraController::PerspectiveCameraController(float fov, float aspectRatio, float zNear, float zFar):
-        m_Fov(fov)
+        m_Fov(fov),
+        m_CameraSensivity(0.05f),
+        m_LastMousePosition(0.0f, 0.0f), // TODO возможно надо изменить, так как мышка сперва оказывается не в 0.0, 0.0
+        m_Up(0.0f, 1.0f, 0.0f),
+        m_Front(glm::vec3(0.0f, 1.0f, -1.0f)),
+        m_Right(glm::vec3(1.0f, 0.0f, 0.0f)),
+        m_WorldUp(m_Up)
     {
+        m_CameraRotation = glm::quat();
+        //glm::vec3 angles = glm::eulerAngles(m_CameraRotation) * 3.14159f / 180.f; //XYZ as pitch, yaw, and roll
+        //m_Front = glm::normalize(glm::vec3(glm::cos(angles.y) * glm::cos(angles.x), glm::sin(angles.x), glm::sin(angles.y) * glm::cos(angles.x)));
+        //m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
+        //m_Up = glm::normalize(glm::cross(m_Right, m_Front));
+
+
         m_AspectRatio = aspectRatio;
         m_Znear = zNear;
         m_Zfar = zFar;
@@ -123,36 +149,59 @@ namespace HE
         // Rotation
         auto [x, y] = Input::GetMousePosition();
 
+        glm::vec2 offset(x - m_LastMousePosition.x, m_LastMousePosition.y - y);
+
+        m_LastMousePosition.x = x;
+        m_LastMousePosition.y = y;
+
+        offset *= m_CameraSensivity;
+
+        // TODO quaternion realization
+        /*
+        glm::vec3 angles = glm::eulerAngles(m_CameraRotation); //XYZ as pitch, yaw, and roll
+        angles += glm::vec3(glm::radians(offset.y), glm::radians(offset.x), 0.0f);
+        m_CameraRotation = glm::quat(glm::vec3(angles.x, angles.y, angles.z));
+        m_Front = glm::normalize(glm::vec3(glm::cos(angles.y) * glm::cos(angles.x), glm::sin(angles.x), glm::sin(angles.y) * glm::cos(angles.x)));
+        m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
+        m_Up = glm::normalize(glm::cross(m_Right, m_Front));
+        */
+
+        // euler angles realization
+        m_Yaw += glm::radians(offset.x);
+        m_Pitch += glm::radians(offset.y);
+
+        m_Front = glm::normalize(glm::vec3(glm::cos(m_Yaw) * glm::cos(m_Pitch), glm::sin(m_Pitch), glm::sin(m_Yaw) * glm::cos(m_Pitch)));
+        m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
+        m_Up = glm::normalize(glm::cross(m_Right, m_Front));
 
         // Position
         float velocity = m_CameraSpeed * ts;
-        if (Input::IsKeyPressed(HE_KEY_W))
+        if (Input::IsKeyPressed(HE_KEY_W)) // forawrd
         {
-            m_CameraPosition.z += velocity;
+            m_CameraPosition += m_Front * velocity;
         }
-        if (Input::IsKeyPressed(HE_KEY_S))
+        if (Input::IsKeyPressed(HE_KEY_S)) // backward
         {
-            m_CameraPosition.z -= velocity;
+            m_CameraPosition -= m_Front * velocity;
         }
-        if (Input::IsKeyPressed(HE_KEY_D))
+        if (Input::IsKeyPressed(HE_KEY_D)) // dight
         {
-            m_CameraPosition.x += velocity;
+            m_CameraPosition += m_Right * velocity;
         }
-        if (Input::IsKeyPressed(HE_KEY_A))
+        if (Input::IsKeyPressed(HE_KEY_A)) // left
         {
-            m_CameraPosition.x -= velocity;
+            m_CameraPosition -= m_Right * velocity;
         }
-        if (Input::IsKeyPressed(HE_KEY_Q))
+        if (Input::IsKeyPressed(HE_KEY_Q)) // up
         {
-            m_CameraPosition.y += velocity;
+            m_CameraPosition += m_Up * velocity;
         }
-        if (Input::IsKeyPressed(HE_KEY_E))
+        if (Input::IsKeyPressed(HE_KEY_E)) // down
         {
-            m_CameraPosition.y -= velocity;
+            m_CameraPosition -= m_Up * velocity;
         }
 
-
-        m_Camera->RecalculateViewMatrix(m_CameraPosition, m_CameraRotation);
+        m_Camera->RecalculateViewMatrix(m_CameraPosition, m_Front, m_Up);
     }
 
     void PerspectiveCameraController::OnEvent(Event& e)
@@ -164,8 +213,10 @@ namespace HE
 
     bool PerspectiveCameraController::OnMouseScroll(MouseScrolledEvent& e)
     {
+        // TODO кастомные настройки fov-a
+        HE_CORE_INFO("{0}", e.GetYOffset());
         if (m_Fov >= 1.0f && m_Fov <= 45.0f)
-            m_Fov -= e.GetYOffset();
+            m_Fov += glm::radians(e.GetYOffset());
         if (m_Fov <= 1.0f)
             m_Fov = 1.0f;
         if (m_Fov >= 45.0f)

@@ -81,7 +81,7 @@ public:
         HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
 
         // load texture
-        m_Texture = HE::Texture2D::Create("../media/red.png");
+        m_Texture = HE::Texture2D::Create("../media/tex_coord.png");
         textureShader->Bind();
         textureShader->SetInt("u_Texture", 0);
         m_Texture->Bind(0);
@@ -93,7 +93,6 @@ public:
 
         // Update
         m_CameraController.OnUpdate(ts);
-        HE_INFO("{0}",m_CameraController.GetPosition().z );
         // Renderer
         HE::RenderCommand::Clear();
         HE::Renderer::BeginScene(m_CameraController.GetCamera());

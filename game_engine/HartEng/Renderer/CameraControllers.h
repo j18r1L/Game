@@ -76,7 +76,18 @@ namespace HE
     {
     private:
         float m_Fov;
+        float m_CameraSensivity;
+
+        glm::vec2 m_LastMousePosition;
+
         glm::vec3 m_Front;
+        glm::vec3 m_Up;
+        glm::vec3 m_WorldUp;
+        glm::vec3 m_Right;
+
+
+        float m_Yaw = 0.0f;
+        float m_Pitch = 0.0f;
 
         bool OnMouseScroll(MouseScrolledEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);

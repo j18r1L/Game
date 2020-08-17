@@ -22,6 +22,7 @@ namespace HE
         virtual ~Camera() = default;
 
         void RecalculateViewMatrix(glm::vec3 position, glm::quat rotation);
+        void RecalculateViewMatrix(glm::vec3 position, glm::vec3 front, glm::vec3 up);
 
         virtual const glm::mat4& GetProjectionMatrix() const;
         virtual const glm::mat4& GetViewMatrix() const;
