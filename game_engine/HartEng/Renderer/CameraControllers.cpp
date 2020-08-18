@@ -101,7 +101,7 @@ namespace HE
 
     PerspectiveCameraController::PerspectiveCameraController(float fov, float width, float heigth, float zNear, float zFar):
         m_Fov(fov),
-        m_CameraSensivity(0.05f),
+        m_CameraSensivity(0.1f),
         m_LastMousePosition(width / 2, heigth / 2),
         m_Up(0.0f, 1.0f, 0.0f),
         m_Front(glm::vec3(0.0f, 1.0f, -1.0f)),
@@ -122,7 +122,7 @@ namespace HE
 
     PerspectiveCameraController::PerspectiveCameraController(float fov, float aspectRatio, float zNear, float zFar):
         m_Fov(fov),
-        m_CameraSensivity(0.05f),
+        m_CameraSensivity(0.1f),
         m_LastMousePosition(0.0f, 0.0f), // TODO возможно надо изменить, так как мышка сперва оказывается не в 0.0, 0.0
         m_Up(0.0f, 1.0f, 0.0f),
         m_Front(glm::vec3(0.0f, 1.0f, -1.0f)),

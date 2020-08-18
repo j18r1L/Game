@@ -16,6 +16,7 @@ namespace HE
         struct SceneData
         {
             glm::mat4 ProjectionViewMatrix;
+            glm::mat4 ViewMatrix;
         };
 
         static SceneData* m_SceneData;
