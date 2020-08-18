@@ -43,5 +43,11 @@ namespace HE
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
     }
+
+    void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+    {
+        // TODO когда будет много framebuffer-ов, то нужно будет резайзить нужные, а не только вьюшку
+        RenderCommand::SetViewport(0, 0, width, height);
+    }
 }
 

@@ -45,7 +45,8 @@ namespace HE
     void Application::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<WindowCloseEvent>(HE_BIND_EVENT_FN(Application::OnWindowClosed));
+        dispatcher.Dispatch<WindowCloseEvent>(HE_BIND_EVENT_FN(Application::OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(HE_BIND_EVENT_FN(Application::OnWindowResize));
 #ifdef HE_TRACE_EVENTS
         HE_CORE_TRACE("{0}", e);
 #endif
@@ -58,11 +59,7 @@ namespace HE
         }
     }
 
-    bool Application::OnWindowClosed(WindowCloseEvent &e)
-    {
-        m_Running = false;
-        return true;
-    }
+
 
     void Application::Run()
     {
@@ -75,11 +72,13 @@ namespace HE
             m_Timestep.SetTime(time - m_CurrentTime);
             m_CurrentTime = time;
 
-            // При вызове OnUpdate слои будут отправлять данные в отдельный поток рендерера
-            for (Layer* layer: m_LayerStack)
-                layer->OnUpdate(m_Timestep);
+            if (!m_Minimized)
+            {
+                for (Layer* layer: m_LayerStack)
+                    layer->OnUpdate(m_Timestep);
+            }
 
-            // TODO когда напишу рендерер, то эта часть будет на отдельном потоке
+
             m_ImGuiLayer->Begin();
             for (Layer* layer: m_LayerStack)
             {
@@ -90,6 +89,27 @@ namespace HE
             m_Window->OnUpdate();
 
         }
+    }
+
+    bool Application::OnWindowClose(WindowCloseEvent &e)
+    {
+        m_Running = false;
+        return true;
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent &e)
+    {
+        uint32_t width = e.GetWidth();
+        uint32_t height = e.GetHeight();
+        if (e.GetWidth() == 0 || e.GetHeight() == 0)
+        {
+            m_Minimized = true;
+            return false;
+        }
+        m_Minimized = false;
+
+        Renderer::OnWindowResize(width, height);
+        return true;
     }
 }
 
