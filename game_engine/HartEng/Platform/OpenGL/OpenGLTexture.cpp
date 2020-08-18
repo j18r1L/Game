@@ -14,13 +14,24 @@ namespace HE
         stbi_set_flip_vertically_on_load(true);
         stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         HE_CORE_ASSERT(data, "Failed to load image from: " + path);
-        GLenum format = GL_RGB;
+        GLenum internalFormat = 0, dataFormat = 0;
         if (channels == 1)
-            format = GL_RED;
+        {
+            internalFormat = GL_RED;
+            dataFormat = GL_RED;
+        }
         else if (channels == 3)
-            format = GL_RGB;
+        {
+            internalFormat = GL_RGB8;
+            dataFormat = GL_RGB;
+        }
         else if (channels == 4)
-            format = GL_RGBA;
+        {
+            internalFormat = GL_RGBA8;
+            dataFormat = GL_RGBA;
+        }
+        HE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+
 
         // TODO перевод uint int
         m_Width = width;
@@ -28,13 +39,13 @@ namespace HE
 
         // TODO mipmap-ы
         glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-        glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_Width, m_Height);
+        glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
         // TODO кастомные параметры
         glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, format, GL_UNSIGNED_BYTE, data);
+        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
     }

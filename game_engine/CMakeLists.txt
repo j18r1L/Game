@@ -35,7 +35,7 @@ endif (MSVC)
 
 # IDE
 #add_definitions(-DHE_VISUAL_STUDIO)
-#add_definitions(-DHE_QT_CTEATOR)
+add_definitions(-DHE_QT_CTEATOR)
 
 # Silent asserts
 #add_definitions(-DHE_SILENT_ASSERTS)

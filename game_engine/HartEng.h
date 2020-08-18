@@ -17,6 +17,7 @@
 #include "HartEng/Renderer/Buffer.h"
 #include "HartEng/Renderer/VertexArray.h"
 #include "HartEng/Renderer/Cameras.h"
+#include "HartEng/Renderer/CameraControllers.h"
 #include "HartEng/Renderer/Texture.h"
 
 // Events

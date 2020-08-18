@@ -16,7 +16,7 @@ namespace HE
 
         WindowProps(const std::string& title = "HartEngine",
                     unsigned int width = 1280,
-                    unsigned int height = 720):
+                    unsigned int height = 1020):
             Title(title), Width(width), Height(height) {}
     };
 

@@ -7,9 +7,15 @@
 namespace HE
 {
     Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
-    void Renderer::BeginScene(OrthographicCamera& camera)
+
+    void Renderer::Init()
     {
-        m_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
+        RenderCommand::Init();
+    }
+
+    void Renderer::BeginScene(std::shared_ptr<Camera> camera)
+    {
+        m_SceneData->ProjectionViewMatrix = camera->GetProjectionViewMatrix();
     }
 
     void Renderer::EndScene()

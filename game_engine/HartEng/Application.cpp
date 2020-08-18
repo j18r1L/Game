@@ -18,9 +18,11 @@ namespace HE
 #elif HE_PLATFORM_LINUX
         HE_CORE_INFO("Linux platform");
 #endif
+
         m_Window = std::unique_ptr<Window>(Window::Create());
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
-        m_CurrentTime = m_Window->GetTime();
+
+        Renderer::Init();
 
         m_ImGuiLayer = new ImGUILayer();
         PushOverlay(m_ImGuiLayer);
