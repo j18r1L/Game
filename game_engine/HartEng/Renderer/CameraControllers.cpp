@@ -169,6 +169,8 @@ namespace HE
         // euler angles realization
         m_Yaw += glm::radians(offset.x);
         m_Pitch += glm::radians(offset.y);
+        glm::vec3 angles = glm::eulerAngles(m_CameraRotation); //XYZ as pitch, yaw, and roll
+        m_CameraRotation = glm::quat(glm::vec3(m_Pitch, m_Yaw, angles.z));
 
         m_Front = glm::normalize(glm::vec3(glm::cos(m_Yaw) * glm::cos(m_Pitch), glm::sin(m_Pitch), glm::sin(m_Yaw) * glm::cos(m_Pitch)));
         m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));

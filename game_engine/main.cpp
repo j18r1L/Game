@@ -23,41 +23,16 @@ public:
         //m_CameraController(HE::Application::Get().GetWindow().GetWidth() / HE::Application::Get().GetWindow().GetHeight())
         m_CameraController(45.0f, HE::Application::Get().GetWindow().GetWidth() / HE::Application::Get().GetWindow().GetHeight(), 0.1f, 10.0f)
     {
-        m_CameraController.SetPosition({0.0f, 0.0f, 2.0f});
-        float vertices[3 * 7] = {
-            -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-            0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        };
-
-        //Vertex array
-        m_VertexArray.reset(HE::VertexArray::Create());
-        m_VertexArray->Bind();
-        std::shared_ptr<HE::VertexBuffer> triangleVB;
-        triangleVB.reset(HE::VertexBuffer::Create(vertices, sizeof(vertices)));
-        triangleVB->Bind();
-
-        HE::BufferLayout layout = {
-            {HE::ShaderDataType::Float3, "a_Position"},
-            {HE::ShaderDataType::Float4, "a_Color"}
-        };
-
-        triangleVB->SetLayout(layout);
-        m_VertexArray->AddVertexBuffer(triangleVB);
-
-
-        unsigned int indices[3] = {0, 1, 2};
-        std::shared_ptr<HE::IndexBuffer> triangleIB;
-        triangleIB.reset(HE::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-        m_VertexArray->SetIndexBuffer(triangleIB);
+        m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
+        m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
         auto textureShader = m_ShaderLibrary.Load("../assets/shaders/Texture.glsl");
 
         float vertices_square[5 * 4] = {
-            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+            0.0f, -0.5f, -0.5f, 0.0f, 0.0f,
+            0.0f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.0f, 0.5f, -0.5f, 0.0f, 1.0f,
         };
 
         //Vertex array
