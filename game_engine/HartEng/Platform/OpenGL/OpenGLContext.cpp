@@ -21,6 +21,11 @@ namespace HE
         HE_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
         HE_CORE_INFO("  Veesion: {0}", glGetString(GL_VERSION));
 
+        int major = 0;
+        int minor = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &major);
+        glGetIntegerv(GL_MINOR_VERSION, &minor);
+        HE_CORE_ASSERT(major > 4 || (major == 4 && minor >= 5), "OpenGL 4.5 is required, current OpenGL version is: " + std::to_string(major) + "." + std::to_string(minor));
 
 
     }

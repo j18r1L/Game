@@ -40,9 +40,11 @@ namespace HE
 
         static Application* s_Instance;
 
-        bool OnWindowClosed(WindowCloseEvent& e);
+        bool OnWindowClose(WindowCloseEvent& e);
+        bool OnWindowResize(WindowResizeEvent &e);
     public:
-        bool m_Running;
+        bool m_Running = true; // Gameloop
+        bool m_Minimized = false;
         Application();
         virtual ~Application();
         void Run();

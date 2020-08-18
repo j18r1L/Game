@@ -12,24 +12,22 @@
 
 namespace HE
 {
-    // Используется для того чтобы в конструктор BufferLayout дать ShaderDataType::Float3 например
     enum class ShaderDataType
     {
         None = 0,
-        Float, 
+        Float,
         Float2,
         Float3,
-        Float4, 
+        Float4,
         Mat3,
-        Mat4, 
+        Mat4,
         Int,
-        Int2, 
-        Int3, 
-        Int4, 
+        Int2,
+        Int3,
+        Int4,
         Bool
     };
 
-    // Функция для определения размера типа, мб сделать статичные 4, а не sizeof(float)
     static uint32_t ShaderDataTypeSize(ShaderDataType type)
     {
         switch (type)
@@ -50,7 +48,6 @@ namespace HE
         return 0;
     }
 
-    // Структура содержащая в себе название layout-a, сдвиг, размер, тип
     struct BufferElement
     {
         std::string Name;
@@ -58,7 +55,7 @@ namespace HE
         uint32_t Size;
         ShaderDataType Type;
         bool Normalized;
-       
+
         BufferElement() {}
 
         BufferElement(ShaderDataType type, const std::string& name, bool normalized = false) :
@@ -91,11 +88,10 @@ namespace HE
 
     };
 
-    // Класс содержащий в себе вектор layout-ов
     class BufferLayout
     {
     private:
-        
+
         std::vector<BufferElement> m_Elements;
         uint32_t m_Stride = 0;
 
@@ -112,7 +108,6 @@ namespace HE
         }
     public:
         BufferLayout() {}
-        // initializer_list чтобы BufferLayout layout = { {Float3, name_1}, {Float4, name_2} };, а не std::vector<BufferLayout> = ...
         BufferLayout(const std::initializer_list<BufferElement>& elements):
             m_Elements(elements)
         {
@@ -128,7 +123,6 @@ namespace HE
             return m_Stride;
         }
 
-        // Чтобы делать:  for (const auto& element : layout)
         std::vector<BufferElement>::iterator begin()
         {
             return m_Elements.begin();
@@ -138,7 +132,6 @@ namespace HE
             return m_Elements.end();
         }
 
-        // Чтобы делать: for (const auto& element : m_VertexBuffer->GetLayout())
         std::vector<BufferElement>::const_iterator begin() const
         {
             return m_Elements.begin();
@@ -162,7 +155,7 @@ namespace HE
         virtual void SetLayout(const BufferLayout& layout) = 0;
         virtual const BufferLayout& GetLayout() const = 0;
 
-        static VertexBuffer* Create(float* vertices, uint32_t size);
+        static std::shared_ptr<VertexBuffer> Create(float* vertices, uint32_t size);
     };
 
     class IndexBuffer
@@ -177,7 +170,7 @@ namespace HE
 
         virtual uint32_t GetCount() const = 0;
 
-        static IndexBuffer* Create(uint32_t* indices, uint32_t count);
+        static std::shared_ptr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
     };
 }
 

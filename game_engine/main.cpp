@@ -36,11 +36,11 @@ public:
         };
 
         //Vertex array
-        m_SquareVA.reset(HE::VertexArray::Create());
+        m_SquareVA = HE::VertexArray::Create();
         m_SquareVA->Bind();
         // Vertex buffer
         std::shared_ptr<HE::VertexBuffer> squareVB;
-        squareVB.reset(HE::VertexBuffer::Create(vertices_square, sizeof(vertices_square)));
+        squareVB = HE::VertexBuffer::Create(vertices_square, sizeof(vertices_square));
         squareVB->Bind();
 
         squareVB->SetLayout({
@@ -50,7 +50,7 @@ public:
         m_SquareVA->AddVertexBuffer(squareVB);
         unsigned int indices_square[6] = {0, 1, 2, 2, 3, 0};
         std::shared_ptr<HE::IndexBuffer> squareIB;
-        squareIB.reset(HE::IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t)));
+        squareIB = HE::IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t));
         m_SquareVA->SetIndexBuffer(squareIB);
 
         HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));

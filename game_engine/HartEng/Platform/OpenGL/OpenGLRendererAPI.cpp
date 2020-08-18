@@ -16,6 +16,11 @@ namespace HE
         glClearColor(color.r, color.g, color.b, color.a);
     }
 
+    void OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t  width, uint32_t  height)
+    {
+        glViewport(x, y, width, height);
+    }
+
     void OpenGLRendererAPI::Clear()
     {
         // TODO получать на вход флаги что именно отчистить (в будущем framebuffer-ы мб буду заниматься отчисткой)

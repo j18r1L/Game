@@ -34,8 +34,8 @@ namespace HE
 
 
 // Core log macros
-//#define HE_CORE_FATAL(...) ::HE::Log::GetCoreLogger()->fatal(__VA_ARGS__)
 #ifdef HE_DEBUG
+    //#define HE_CORE_FATAL(...) ::HE::Log::GetCoreLogger()->fatal(__VA_ARGS__)
     #define HE_CORE_ERROR(...) ::HE::Log::GetCoreLogger()->error(__VA_ARGS__)
     #define HE_CORE_WARN(...)  ::HE::Log::GetCoreLogger()->warn(__VA_ARGS__)
     #define HE_CORE_INFO(...)  ::HE::Log::GetCoreLogger()->info(__VA_ARGS__)

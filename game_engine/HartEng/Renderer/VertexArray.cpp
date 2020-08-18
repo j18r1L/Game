@@ -7,12 +7,12 @@
 
 namespace HE
 {
-    VertexArray* VertexArray::Create()
+    std::shared_ptr<VertexArray> VertexArray::Create()
     {
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
-            return new OpenGLVertexArray();
+            return std::shared_ptr<OpenGLVertexArray>(new OpenGLVertexArray());
         }
         else if  (api == RendererAPI::API::None)
         {

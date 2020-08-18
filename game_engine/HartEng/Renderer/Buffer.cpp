@@ -5,12 +5,12 @@
 
 namespace HE
 {
-    VertexBuffer* VertexBuffer::Create(float *vertices, uint32_t size)
+    std::shared_ptr<VertexBuffer> VertexBuffer::Create(float *vertices, uint32_t size)
     {
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
-            return new OpenGLVertexBuffer(vertices, size);
+            return std::shared_ptr<OpenGLVertexBuffer>(new OpenGLVertexBuffer(vertices, size));
         }
         else if (api == RendererAPI::API::None)
         {
@@ -21,13 +21,13 @@ namespace HE
         return nullptr;
     }
 
-    IndexBuffer* IndexBuffer::Create(uint32_t *indices, uint32_t size)
+    std::shared_ptr<IndexBuffer> IndexBuffer::Create(uint32_t *indices, uint32_t size)
     {
 
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
-             return new OpenGLIndexBuffer(indices, size);
+             return std::shared_ptr<OpenGLIndexBuffer>(new OpenGLIndexBuffer(indices, size));
         }
         else if (api == RendererAPI::API::None)
         {
