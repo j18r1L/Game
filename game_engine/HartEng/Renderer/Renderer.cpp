@@ -16,6 +16,7 @@ namespace HE
     void Renderer::BeginScene(std::shared_ptr<Camera> camera)
     {
         m_SceneData->ProjectionViewMatrix = camera->GetProjectionViewMatrix();
+        m_SceneData->ViewMatrix = camera->GetViewMatrix();
     }
 
     void Renderer::EndScene()
@@ -26,8 +27,6 @@ namespace HE
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray> &vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
-        std::dynamic_pointer_cast<OpenGLShader>(shader)->SetMat4("u_Model", transform);
         // В будущем, при использовании системы материалов, mi - material instance (смотреть main.cpp):
         // mi->Bind()
         // этого больше не будет в Submit:

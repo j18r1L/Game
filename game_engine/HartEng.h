@@ -28,7 +28,7 @@
 
 
 // Entry point
-#include "HartEng/EntryPoint.h"
+//#include "HartEng/EntryPoint.h"
 
 // Key and Mouse Codes
 #include "HartEng/MouseButtonCodes.h"

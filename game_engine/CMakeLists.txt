@@ -120,8 +120,13 @@ file(GLOB header
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"
 )
 
+file(GLOB main_project
+    "*.cpp"
+    "*.h"
+)
 
-add_executable(game_engine ${source} ${header}  HartEng.h main.cpp )
+
+add_executable(game_engine ${source} ${header} ${main_project} HartEng.h main.cpp )
 
 target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
 
