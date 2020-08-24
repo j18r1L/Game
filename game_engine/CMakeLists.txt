@@ -11,9 +11,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5Core)
-
-
 # Platform
 if (WIN32)
     add_definitions(-DHE_PLATFORM_WINDOWS)
@@ -129,8 +126,6 @@ file(GLOB main_project
 add_executable(game_engine ${source} ${header} ${main_project} HartEng.h main.cpp )
 
 target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
-
-target_link_libraries(game_engine Qt5::Core)
 
 # GLFW
 target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")

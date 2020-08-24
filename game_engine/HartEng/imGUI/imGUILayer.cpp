@@ -59,13 +59,6 @@ namespace HE
         ImGui::DestroyContext();
     }
 
-    void  ImGUILayer::OnImGuiRender()
-    {
-        static bool show = true;
-        ImGui::ShowDemoWindow(&show);
-    }
-
-
     void ImGUILayer::Begin()
     {
          ImGui_ImplOpenGL3_NewFrame();
