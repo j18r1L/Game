@@ -10,6 +10,8 @@ namespace HE
 
     void OpenGLContext::Init()
     {
+        HE_PROFILE_FUNCTION();
+
         glfwMakeContextCurrent(m_WindowHandle);
         //Initialize GLAD
         HE_CORE_INFO("Initializing GLAD...");
@@ -32,6 +34,8 @@ namespace HE
 
     void OpenGLContext::SwapBuffers()
     {
+        HE_PROFILE_FUNCTION();
+
         glfwSwapBuffers(m_WindowHandle);
     }
 }

@@ -7,6 +7,8 @@ TestLayer::TestLayer():
 
 void TestLayer::OnAttach()
 {
+    HE_PROFILE_FUNCTION();
+
     m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
     m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -132,12 +134,14 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
 
     {
         HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
+
         // Update
         m_CameraController.OnUpdate(ts);
     }
 
     {
         HE_PROFILE_SCOPE("RenderCommand::Clear");
+
         // Renderer
         HE::RenderCommand::Clear();
     }

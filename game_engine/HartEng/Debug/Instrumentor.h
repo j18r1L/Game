@@ -123,6 +123,7 @@ namespace HE
     };
 }
 
+
 #ifdef HE_PROFILE
     #ifndef __FUNCSIG__
         #define __FUNCSIG__ __PRETTY_FUNCTION__
@@ -137,6 +138,13 @@ namespace HE
     #define HE_PROFILE_END_SESSION()
     #define HE_PROFILE_SCOPE(name)
     #define HE_PROFILE_FUNCTION()
+
+#endif
+
+// TODO Сделать HE_PROFILE_RENDERER_FUNCTION, чтобы отдельно можно было посмотреть на рендерер и на cpu
+#ifdef HE_PROFILE_RENDER
+    #define HE_PROFILE_SCOPE(name) ::HE::InstrumentationTimer timer##__LINE__(name)
+    HE_PROFILE_RENDERER_FUNCTION() HE_PROFILE_SCOPE(__FUNCSIG__)
 
 #endif
 

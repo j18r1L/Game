@@ -11,6 +11,7 @@ namespace HE
         std::string m_Path; // путь можно убрать мб
         uint32_t m_Width, m_Height;
         uint32_t m_RendererID;
+        GLenum m_DataFormat;
 
     public:
         OpenGLTexture2D(const std::string& path);
@@ -26,6 +27,7 @@ namespace HE
         }
 
         void Bind(uint32_t slot = 0) const override;
+        void SetData(void* data, uint32_t size) const override;
     };
 }
 #endif // OPENGLTEXTURE_H

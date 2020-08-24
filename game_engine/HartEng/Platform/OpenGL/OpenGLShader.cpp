@@ -11,6 +11,7 @@ namespace HE
 {
     static GLenum ShaderTypeFromString(const std::string& type)
     {
+        HE_PROFILE_FUNCTION();
         if (type == "vertex")
             return GL_VERTEX_SHADER;
         if (type == "fragment" || type == "pixel")
@@ -23,6 +24,7 @@ namespace HE
 
     static std::string StringFromShaderType(GLenum type)
     {
+        HE_PROFILE_FUNCTION();
         if (type == GL_VERTEX_SHADER)
             return "Vertex";
         if (type == GL_FRAGMENT_SHADER)
@@ -36,6 +38,7 @@ namespace HE
     OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc):
         m_Name(name)
     {
+        HE_PROFILE_FUNCTION();
         std::unordered_map<GLenum, std::string> sources;
         sources[GL_VERTEX_SHADER] = vertexSrc;
         sources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -44,6 +47,7 @@ namespace HE
 
     OpenGLShader::OpenGLShader(const std::string& path)
     {
+        HE_PROFILE_FUNCTION();
         std::string source = ReadFile(path);
         auto shaderSources = PreProcess(source);
         Compile(shaderSources);
@@ -58,11 +62,13 @@ namespace HE
 
     OpenGLShader::~OpenGLShader()
     {
+        HE_PROFILE_FUNCTION();
         glDeleteProgram(m_RendererID);
     }
 
     std::string OpenGLShader::ReadFile(const std::string& filepath)
     {
+        HE_PROFILE_FUNCTION();
         std::string result;
         std::ifstream in(filepath, std::ios::in | std::ios::binary);
         if (in)
@@ -91,6 +97,7 @@ namespace HE
 
     void OpenGLShader::Compile(std::unordered_map<GLenum, std::string>& shaderSources)
     {
+        HE_PROFILE_FUNCTION();
         m_RendererID = -1;
         std::vector<GLenum> glShaderIDs;
         GLuint program = glCreateProgram();
@@ -188,6 +195,8 @@ namespace HE
 
     std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& shaderSrc)
     {
+        HE_PROFILE_FUNCTION();
+
         std::unordered_map<GLenum, std::string> shaderSources;
 
         const char* typeToken = "#type";
@@ -212,10 +221,14 @@ namespace HE
 
     void OpenGLShader::Bind() const
     {
+        HE_PROFILE_FUNCTION();
+
         glUseProgram(m_RendererID);
     }
     void OpenGLShader::UnBind() const
     {
+        HE_PROFILE_FUNCTION();
+
         glUseProgram(0);
     }
 
@@ -226,35 +239,51 @@ namespace HE
 
     void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
     }
 
     void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniformMatrix3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
     }
     void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniform4f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y, value.z, value.w);
     }
     void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniform3f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y, value.z);
     }
     void OpenGLShader::SetVec2(const std::string& name, const glm::vec2& value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniform2f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y);
     }
     void OpenGLShader::SetFloat(const std::string& name, float value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
     }
     void OpenGLShader::SetInt(const std::string& name, int value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
     }
     void OpenGLShader::SetBool(const std::string& name, bool value) const
     {
+        HE_PROFILE_FUNCTION();
+
         glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
     }
 
