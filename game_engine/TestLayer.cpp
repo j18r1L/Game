@@ -128,16 +128,23 @@ void TestLayer::OnDetach()
 
 void TestLayer::OnUpdate(HE::Timestep& ts)
 {
-    // Update
-    m_CameraController.OnUpdate(ts);
+    HE_PROFILE_FUNCTION();
 
-    // Renderer
-    HE::RenderCommand::Clear();
-    HE::Renderer::BeginScene(m_CameraController.GetCamera());
     {
+        HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
+        // Update
+        m_CameraController.OnUpdate(ts);
+    }
 
+    {
+        HE_PROFILE_SCOPE("RenderCommand::Clear");
+        // Renderer
+        HE::RenderCommand::Clear();
+    }
+    {
+        HE_PROFILE_SCOPE("Renderer Draw");
 
-
+        HE::Renderer::BeginScene(m_CameraController.GetCamera());
         // environment
         auto environmentShader = m_ShaderLibrary.Get("Environment");
         environmentShader->Bind();
@@ -165,17 +172,20 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
         textureShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionViewMatrix());
         textureShader->SetMat4("u_Model", glm::mat4(1.0f));
         HE::Renderer::Submit(textureShader, m_SquareVA);
+
+        HE::Renderer::EndScene();
     }
-    HE::Renderer::EndScene();
 }
 
 void TestLayer::OnImGuiRender()
 {
+    HE_PROFILE_FUNCTION();
 
 }
 
 void TestLayer::OnEvent(HE::Event &e)
 {
+    HE_PROFILE_FUNCTION();
     m_CameraController.OnEvent(e);
 }
 

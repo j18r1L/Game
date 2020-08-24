@@ -40,6 +40,9 @@ add_definitions(-DHE_QT_CTEATOR)
 # Debug
 add_definitions(-DHE_DEBUG)
 
+# Profile
+add_definitions(-DHE_PROFILE)
+
 # Event's trace
 add_definitions(-DHE_TRACE_EVENTS)
 
@@ -91,6 +94,7 @@ file(GLOB source
     "HartEng/Platform/Linux/*.cpp"
     "HartEng/Platform/OpenGL/*.cpp"
 
+    "HartEng/Debug/*.h"
 
     "HartEng/vendor/stb/*.cpp"
     "HartEng/vendor/imGUI/*.cpp"
@@ -110,6 +114,8 @@ file(GLOB header
 
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/OpenGL/*.h"
+
+    "HartEng/Debug/*.h"
 
     "HartEng/vendor/stb/*.h"
     "HartEng/vendor/imGUI/*.h"
