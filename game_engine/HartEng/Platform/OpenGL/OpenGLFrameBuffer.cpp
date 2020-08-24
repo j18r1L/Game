@@ -14,11 +14,15 @@ namespace HE
 
     OpenGLFrameBuffer::~OpenGLFrameBuffer()
     {
+        HE_PROFILE_FUNCTION();
+
         glDeleteFramebuffers(1, &m_RendererID);
     }
 
     void OpenGLFrameBuffer::Invalidate()
     {
+        HE_PROFILE_FUNCTION();
+
         glCreateFramebuffers(1, &m_RendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
@@ -52,12 +56,16 @@ namespace HE
 
     void OpenGLFrameBuffer::Bind()
     {
+        HE_PROFILE_FUNCTION();
+
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
     }
 
     void OpenGLFrameBuffer::UnBind()
     {
+        HE_PROFILE_FUNCTION();
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     }
