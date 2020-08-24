@@ -26,4 +26,6 @@
     #include <Windows.h>
 #endif
 
+#include "HartEng/Debug/Instrumentor.h"
+
 #endif // HZPCH_H

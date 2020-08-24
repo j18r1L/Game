@@ -12,6 +12,7 @@ namespace HE
         m_Running(true)
     {
         HE_CORE_ASSERT(!s_Instance, "Application already exists!");
+        HE_PROFILE_FUNCTION();
         s_Instance = this;
 #ifdef HE_PLATFORM_WINDOWS
         HE_CORE_INFO("Windows platform");
@@ -30,20 +31,28 @@ namespace HE
 
     Application::~Application()
     {
-
+        Renderer::Shutdown();
     }
 
     void Application::PushLayer(Layer* layer)
     {
+        HE_PROFILE_FUNCTION();
+
         m_LayerStack.PushLayer(layer);
+        layer->OnAttach();
     }
     void Application::PushOverlay(Layer* overlay)
     {
+        HE_PROFILE_FUNCTION();
+
         m_LayerStack.PushOverlay(overlay);
+        overlay->OnAttach();
     }
 
     void Application::OnEvent(Event& e)
     {
+        HE_PROFILE_FUNCTION();
+
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(HE_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(HE_BIND_EVENT_FN(Application::OnWindowResize));
@@ -63,28 +72,40 @@ namespace HE
 
     void Application::Run()
     {
+        HE_PROFILE_FUNCTION();
+
         // TODO сделать хороший timestep из Fix your time step
         m_CurrentTime = m_Window->GetTime();
 
         while(m_Running)
         {
+            HE_PROFILE_SCOPE("RunLoop");
+
             float time = m_Window->GetTime();
             m_Timestep.SetTime(time - m_CurrentTime);
             m_CurrentTime = time;
 
             if (!m_Minimized)
             {
-                for (Layer* layer: m_LayerStack)
-                    layer->OnUpdate(m_Timestep);
+                {
+                    HE_PROFILE_SCOPE("LayerStack::OnUpdate");
+                    for (Layer* layer: m_LayerStack)
+                        layer->OnUpdate(m_Timestep);
+                }
+                m_ImGuiLayer->Begin();
+                {
+                    HE_PROFILE_SCOPE("LayerStack::OnImGuiRender");
+                    for (Layer* layer: m_LayerStack)
+                    {
+                        layer->OnImGuiRender();
+                    }
+                }
+                m_ImGuiLayer->End();
+
             }
 
 
-            m_ImGuiLayer->Begin();
-            for (Layer* layer: m_LayerStack)
-            {
-                layer->OnImGuiRender();
-            }
-            m_ImGuiLayer->End();
+
 
             m_Window->OnUpdate();
 
@@ -93,12 +114,16 @@ namespace HE
 
     bool Application::OnWindowClose(WindowCloseEvent &e)
     {
+        HE_PROFILE_FUNCTION();
+
         m_Running = false;
         return true;
     }
 
     bool Application::OnWindowResize(WindowResizeEvent &e)
     {
+        HE_PROFILE_FUNCTION();
+
         uint32_t width = e.GetWidth();
         uint32_t height = e.GetHeight();
         if (e.GetWidth() == 0 || e.GetHeight() == 0)

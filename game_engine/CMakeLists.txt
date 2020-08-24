@@ -11,9 +11,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5Core)
-
-
 # Platform
 if (WIN32)
     add_definitions(-DHE_PLATFORM_WINDOWS)
@@ -42,6 +39,9 @@ add_definitions(-DHE_QT_CTEATOR)
 
 # Debug
 add_definitions(-DHE_DEBUG)
+
+# Profile
+add_definitions(-DHE_PROFILE)
 
 # Event's trace
 add_definitions(-DHE_TRACE_EVENTS)
@@ -94,6 +94,7 @@ file(GLOB source
     "HartEng/Platform/Linux/*.cpp"
     "HartEng/Platform/OpenGL/*.cpp"
 
+    "HartEng/Debug/*.h"
 
     "HartEng/vendor/stb/*.cpp"
     "HartEng/vendor/imGUI/*.cpp"
@@ -114,6 +115,8 @@ file(GLOB header
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/OpenGL/*.h"
 
+    "HartEng/Debug/*.h"
+
     "HartEng/vendor/stb/*.h"
     "HartEng/vendor/imGUI/*.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.h"
@@ -129,8 +132,6 @@ file(GLOB main_project
 add_executable(game_engine ${source} ${header} ${main_project} HartEng.h main.cpp )
 
 target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
-
-target_link_libraries(game_engine Qt5::Core)
 
 # GLFW
 target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")

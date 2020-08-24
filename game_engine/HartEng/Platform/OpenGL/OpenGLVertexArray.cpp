@@ -26,25 +26,34 @@ namespace HE
     }
     OpenGLVertexArray::OpenGLVertexArray()
     {
+        HE_PROFILE_FUNCTION();
         glGenVertexArrays(1, &m_RendererID);
         
     }
     OpenGLVertexArray::~OpenGLVertexArray()
     {
+        HE_PROFILE_FUNCTION();
+
         glDeleteVertexArrays(1, &m_RendererID);
     }
 
     void OpenGLVertexArray::Bind() const
     {
+        HE_PROFILE_FUNCTION();
+
         glBindVertexArray(m_RendererID);
     }
     void OpenGLVertexArray::UnBind() const
     {
+        HE_PROFILE_FUNCTION();
+
         glBindVertexArray(0);
     }
 
     void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer>& vertexBuffer)
     {
+        HE_PROFILE_FUNCTION();
+
         glBindVertexArray(m_RendererID);
         vertexBuffer->Bind();
 
@@ -60,8 +69,11 @@ namespace HE
         }
         m_VertexBuffers.push_back(vertexBuffer);
     }
+
     void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IndexBuffer>& indexBuffer)
     {
+        HE_PROFILE_FUNCTION();
+
         glBindVertexArray(m_RendererID);
         indexBuffer->Bind();
         m_IndexBuffer = indexBuffer;

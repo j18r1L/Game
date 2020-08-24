@@ -24,7 +24,9 @@ namespace HE
         // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
         static void BeginScene(std::shared_ptr<Camera> camera);
         static void EndScene();
+
         static void Init();
+        static void Shutdown();
 
         static void OnWindowResize(uint32_t width, uint32_t height);
 

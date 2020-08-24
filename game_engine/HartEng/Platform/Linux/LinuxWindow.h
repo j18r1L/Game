@@ -19,6 +19,8 @@
 // GLFW platform specific code
 namespace HE
 {
+
+
     // Интерфейс для ПК окна
     class LinuxWindow: public Window
     {

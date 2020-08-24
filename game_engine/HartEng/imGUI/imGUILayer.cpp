@@ -17,6 +17,8 @@ namespace HE
 
     void ImGUILayer::OnAttach()
     {
+        HE_PROFILE_FUNCTION();
+
         HE_CORE_INFO("Attaching ImGUI context!");
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -53,28 +55,27 @@ namespace HE
 
     void ImGUILayer::OnDetach()
     {
+        HE_PROFILE_FUNCTION();
+
         HE_CORE_INFO("Detaching ImGUI context!");
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
-    void  ImGUILayer::OnImGuiRender()
-    {
-        static bool show = true;
-        ImGui::ShowDemoWindow(&show);
-    }
-
-
     void ImGUILayer::Begin()
     {
-         ImGui_ImplOpenGL3_NewFrame();
-         ImGui_ImplGlfw_NewFrame();
-         ImGui::NewFrame();
+        HE_PROFILE_FUNCTION();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
     }
 
     void ImGUILayer::End()
     {
+        HE_PROFILE_FUNCTION();
+
         ImGuiIO& io = ImGui::GetIO();
         Application& app = Application::Get();
         io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
