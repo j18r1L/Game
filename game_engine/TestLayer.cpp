@@ -121,6 +121,12 @@ void TestLayer::OnAttach()
     textureShader->Bind();
     textureShader->SetInt("u_Texture", 0);
     m_Texture->Bind(0);
+
+    // load framebuffer
+    HE::FrameBufferSpecification fbSpec;
+    fbSpec.Width = HE::Application::Get().GetWindow().GetWidth();
+    fbSpec.Height = HE::Application::Get().GetWindow().GetWidth();
+    m_FrameBuffer = HE::FrameBuffer::Create(fbSpec);
 }
 
 void TestLayer::OnDetach()
@@ -140,14 +146,14 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
     }
 
     {
-        HE_PROFILE_SCOPE("RenderCommand::Clear");
+        HE_PROFILE_SCOPE("Render prep");
 
         // Renderer
         HE::RenderCommand::Clear();
     }
     {
         HE_PROFILE_SCOPE("Renderer Draw");
-
+        //m_FrameBuffer->Bind();
         HE::Renderer::BeginScene(m_CameraController.GetCamera());
         // environment
         auto environmentShader = m_ShaderLibrary.Get("Environment");
@@ -168,6 +174,7 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
 
         gridShader->SetMat4("u_Model", transform);
         //gridShader->SetMat4("u_Model", glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0, 0.0f)));
+
         HE::Renderer::Submit(gridShader, m_SquareVA);
 
         // quad with texture
@@ -175,9 +182,11 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
         textureShader->Bind();
         textureShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionViewMatrix());
         textureShader->SetMat4("u_Model", glm::mat4(1.0f));
+        m_Texture->Bind();
         HE::Renderer::Submit(textureShader, m_SquareVA);
 
         HE::Renderer::EndScene();
+        //m_FrameBuffer->UnBind();
     }
 }
 

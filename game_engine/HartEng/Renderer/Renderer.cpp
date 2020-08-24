@@ -49,7 +49,7 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        shader->Bind();
+        //shader->Bind();
         // В будущем, при использовании системы материалов, mi - material instance (смотреть main.cpp):
         // mi->Bind()
         // этого больше не будет в Submit:

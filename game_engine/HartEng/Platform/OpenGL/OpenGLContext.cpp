@@ -21,7 +21,7 @@ namespace HE
         HE_CORE_INFO("OpenGL Info:");
         HE_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
         HE_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-        HE_CORE_INFO("  Veesion: {0}", glGetString(GL_VERSION));
+        HE_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
 
         int major = 0;
         int minor = 0;
