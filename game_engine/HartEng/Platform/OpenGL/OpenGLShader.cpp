@@ -165,7 +165,11 @@ namespace HE
 
             // The maxLength includes the NULL character
             std::vector<GLchar> infoLog(maxLength);
-            glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+            if (maxLength != 0)
+            {                
+                glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+            }
+            
 
             // We don't need the program anymore.
             glDeleteProgram(program);
