@@ -20,8 +20,13 @@ namespace HE
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
             data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         }
-
-        HE_CORE_ASSERT(data, "Failed to load image from: " + path);
+        if (data)
+        {
+            HE_CORE_ERROR("Failed to load image from: " + path);
+            return;
+        }
+            
+        //HE_CORE_ASSERT(data, "Failed to load image from: " + path);
         GLenum internalFormat = 0;
         if (channels == 1)
         {
@@ -77,8 +82,40 @@ namespace HE
 
     void OpenGLTexture2D::Bind(uint32_t slot) const
     {
+        
         HE_PROFILE_FUNCTION();
-
-        glBindTextureUnit(slot, m_RendererID);
+        
+        //4.1 version
+        GLenum format = GL_TEXTURE0;
+        switch (slot)
+        {
+            case (0):
+                format = GL_TEXTURE0;
+                break;
+            case (1):
+                format = GL_TEXTURE1;
+                break;
+            case (2):
+                format = GL_TEXTURE2;
+                break;
+            case (3):
+                format = GL_TEXTURE3;
+                break;
+            case (4):
+                format = GL_TEXTURE4;
+                break;
+            case (5):
+                format = GL_TEXTURE5;
+                break;
+            case (6):
+                format = GL_TEXTURE6;
+                break;
+                HE_CORE_ERROR("More than 6 textures is not currently supported for OpenGL 4.4 or less");
+        }
+        glActiveTexture(format);
+        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        
+        //4.5 version
+        //glBindTextureUnit(slot, m_RendererID);
     }
 }
