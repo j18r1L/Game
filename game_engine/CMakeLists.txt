@@ -11,6 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_definitions(-DCMAKE_PATH="${CMAKE_SOURCE_DIR}")
+
 # Platform
 if (WIN32)
     add_definitions(-DHE_PLATFORM_WINDOWS)
@@ -19,6 +21,7 @@ endif (WIN32)
 if (UNIX)
     add_definitions(-DHE_PLATFORM_LINUX)
     add_definitions(-DHE_QT_CTEATOR)
+    add_definitions(-DHE_API_OPENGL)
 endif (UNIX)
 
 
@@ -130,6 +133,10 @@ file(GLOB main_project
 
 
 add_executable(game_engine ${source} ${header} ${main_project} HartEng.h main.cpp )
+
+#if (MY_VAR)
+#    target_compile_definitions(game_engine PRIVATE MY_VAR=${CMAKE_SOURCE_DIR})
+#endif()
 
 #target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
 

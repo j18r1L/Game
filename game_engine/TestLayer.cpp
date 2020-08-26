@@ -12,8 +12,9 @@ void TestLayer::OnAttach()
     m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
     m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    m_ShaderLibrary.Load("../assets/shaders/Grid.glsl");
-    m_ShaderLibrary.Load("../assets/shaders/Environment.glsl");
+    std::string path_to_project = CMAKE_PATH;
+    m_ShaderLibrary.Load(path_to_project + "/../assets/shaders/Grid.glsl");
+    m_ShaderLibrary.Load(path_to_project + "/../assets/shaders/Environment.glsl");
     //m_ShaderLibrary.Load("Grid.glsl");
     //m_ShaderLibrary.Load("Environment.glsl");
 
@@ -89,7 +90,7 @@ void TestLayer::OnAttach()
 
 
     // Square with texture
-    auto textureShader = m_ShaderLibrary.Load("../assets/shaders/Texture.glsl");
+    auto textureShader = m_ShaderLibrary.Load(path_to_project + "/../assets/shaders/Texture.glsl");
     //auto textureShader = m_ShaderLibrary.Load("Texture.glsl");
 
     float vertices_square[5 * 4] = {
@@ -120,7 +121,7 @@ void TestLayer::OnAttach()
     HE::RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
 
     // load texture
-    m_Texture = HE::Texture2D::Create("../media/tex_coord.png");
+    m_Texture = HE::Texture2D::Create(path_to_project + "/../media/tex_coord.png");
     //m_Texture = HE::Texture2D::Create("tex_coord.png");
     textureShader->Bind();
     textureShader->SetInt("u_Texture", 0);

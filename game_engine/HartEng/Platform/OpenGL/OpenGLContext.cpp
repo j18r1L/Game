@@ -20,11 +20,7 @@ namespace HE
         glfwMakeContextCurrent(m_WindowHandle);
         //Initialize GLAD
         HE_CORE_INFO("Initializing GLAD...");
-        // TODO ради поддержки macos необходимо явно указать версию OpenGL-a
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         //int status =  gladLoadGL();
         HE_CORE_ASSERT(status, "Failed to initialize GLAD!");
