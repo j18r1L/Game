@@ -9,7 +9,9 @@
 #include "HartEng/Events/MousesEvent.h"
 #include "HartEng/Events/KeyEvent.h"
 #include "HartEng/Events/ApplicationEvent.h"
-
+#ifdef HE_API_OPENGL
+    #include <glad/glad.h>
+#endif
 // GLFW platform specific code
 namespace HE
 {
