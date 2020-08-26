@@ -247,54 +247,64 @@ namespace HE
         return m_Name;
     }
 
+    uint32_t OpenGLShader::GetUniformLocation(const std::string& name) const
+    {
+        if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+            return m_UniformLocationCache[name];
+        uint32_t location = glGetUniformLocation(m_RendererID, name.c_str());
+        m_UniformLocationCache[name] = location;
+        return location;
+
+    }
+
     void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+        glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
     }
 
     void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniformMatrix3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+        glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
     }
     void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniform4f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y, value.z, value.w);
+        glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
     }
     void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniform3f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y, value.z);
+        glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
     }
     void OpenGLShader::SetVec2(const std::string& name, const glm::vec2& value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniform2f(glGetUniformLocation(m_RendererID, name.c_str()), value.x, value.y);
+        glUniform2f(GetUniformLocation(name), value.x, value.y);
     }
     void OpenGLShader::SetFloat(const std::string& name, float value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+        glUniform1f(GetUniformLocation(name), value);
     }
     void OpenGLShader::SetInt(const std::string& name, int value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+        glUniform1i(GetUniformLocation(name), value);
     }
     void OpenGLShader::SetBool(const std::string& name, bool value) const
     {
         HE_PROFILE_FUNCTION();
 
-        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+        glUniform1i(GetUniformLocation(name), value);
     }
 
 }

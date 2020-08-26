@@ -19,6 +19,7 @@
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Renderer/CameraControllers.h"
 #include "HartEng/Renderer/Texture.h"
+#include "HartEng/Renderer/Framebuffer.h"
 
 // Events
 #include "HartEng/Events/Event.h"

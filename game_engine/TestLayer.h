@@ -10,6 +10,7 @@ private:
     std::shared_ptr<HE::VertexArray> m_CubeVA;
     std::shared_ptr<HE::VertexArray> m_SquareVA;
     std::shared_ptr<HE::Texture2D> m_Texture;
+    std::shared_ptr<HE::FrameBuffer> m_FrameBuffer;
 
     HE::PerspectiveCameraController m_CameraController;
 public:
