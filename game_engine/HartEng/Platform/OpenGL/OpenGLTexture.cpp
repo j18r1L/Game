@@ -20,7 +20,7 @@ namespace HE
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
             data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         }
-        if (data)
+        if (data == nullptr)
         {
             HE_CORE_ERROR("Failed to load image from: " + path);
             return;

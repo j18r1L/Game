@@ -40,11 +40,6 @@ namespace HE
         if (s_GLFWWindowCount == 0)
         {
             int success = glfwInit();
-            // TODO ради поддержки macos необходимо явно указать версию OpenGL-a
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
             HE_CORE_ASSERT(success, "Could not initialize GLFW!");
 
             // set error callback for glfw

@@ -217,7 +217,7 @@ namespace HE
             HE_CORE_ASSERT(eol != std::string::npos, "Syntax error!");
             size_t begin = pos + typeTokenLength + 1;
             std::string type = shaderSrc.substr(begin, eol - begin);
-            if (type == "vertex" || type == "fragment" || type == "pixel")
+            if (!(type == "vertex" || type == "fragment" || type == "pixel"))
                 HE_CORE_ERROR("Invalid shader type specificator: " + type);
             //HE_CORE_ASSERT(type == "vertex" || type == "fragment" || type == "pixel", "Invalid shader type specificator: " + type);
 
