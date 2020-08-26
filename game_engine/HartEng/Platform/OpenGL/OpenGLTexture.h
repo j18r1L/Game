@@ -3,6 +3,8 @@
 
 #include "HartEng/Renderer/Texture.h"
 
+#include <glad/glad.h>
+
 namespace HE
 {
     class OpenGLTexture2D: public Texture2D

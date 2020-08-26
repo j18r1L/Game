@@ -1,7 +1,7 @@
 #ifndef OPENGLBUFFER_H
 #define OPENGLBUFFER_H
 
-#include "HartEng/pch.h"
+
 #include "HartEng/Renderer/Buffer.h"
 
 

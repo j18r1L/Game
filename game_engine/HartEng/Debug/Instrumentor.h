@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "HartEng/Log.h"
+#include "HartEng/Core.h"
 
 namespace HE
 {
@@ -45,10 +46,12 @@ namespace HE
                 // Subsequent profiling output meant for the original session will end up in the
                 // newly opened session instead.  That's better than having badly formatted
                 // profiling output.
+                /*
                 if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
                 {
                     HE_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
                 }
+                */
                 InternalEndSession();
             }
             m_OutputStream.open(filepath);
@@ -60,10 +63,12 @@ namespace HE
             }
             else
             {
+                /*
                 if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
                 {
                     HE_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
                 }
+                */
             }
         }
 

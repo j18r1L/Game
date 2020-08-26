@@ -1,4 +1,6 @@
 #include "LinuxInput.h"
+#include "HartEng/Application.h"
+#include <GLFW/glfw3.h>
 
 namespace HE
 {

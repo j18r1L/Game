@@ -1,5 +1,5 @@
 #include "HartEng/pch.h"
-#include "OpenGLTexture.h"
+#include "HartEng/Platform/OpenGL/OpenGLTexture.h"
 
 #include "HartEng/Core.h"
 #include "HartEng/Log.h"

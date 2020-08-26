@@ -2,6 +2,7 @@
 #include "HartEng/Core.h"
 #include "HartEng/Log.h"
 
+#include <glad/glad.h>
 
 namespace HE
 {

@@ -1,13 +1,12 @@
 #ifndef LOG_H
 #define LOG_H
 
-
-
-
-
 #include "HartEng/pch.h"
 
-#include "Core.h"
+#include "HartEng/Core.h"
+
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 namespace HE
 {
@@ -16,12 +15,12 @@ namespace HE
     public:
         static void Init();
 
-        inline static std::shared_ptr<spdlog::logger>& GetCoreLogger()
+        static std::shared_ptr<spdlog::logger>& GetCoreLogger()
         {
             return s_CoreLogger;
         }
 
-        inline static std::shared_ptr<spdlog::logger>& GetClientLogger()
+        static std::shared_ptr<spdlog::logger>& GetClientLogger()
         {
             return s_ClientLogger;
         }

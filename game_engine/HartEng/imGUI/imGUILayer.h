@@ -6,13 +6,10 @@
 #include "HartEng/Layer.h"
 
 
-#include "HartEng/Events/MousesEvent.h"
-#include "HartEng/Events/KeyEvent.h"
-#include "HartEng/Events/ApplicationEvent.h"
+
 
 #include <imgui.h>
-#include <examples/imgui_impl_opengl3.h>
-#include <examples/imgui_impl_glfw.h>
+
 
 namespace HE
 {
