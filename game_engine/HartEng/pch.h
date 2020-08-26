@@ -12,14 +12,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
-#include "spdlog/sinks/basic_file_sink.h"
-#include <spdlog/fmt/ostr.h>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 //#include "imgui.h"
 
 #ifdef HE_PLATFORM_WINDOWS

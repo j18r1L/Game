@@ -1,5 +1,14 @@
 #include "LinuxWindow.h"
+#include "HartEng/Core.h"
+#include "HartEng/Input.h"
 
+#include "HartEng/Keycodes.h"
+#include "HartEng/MouseButtonCodes.h"
+
+#include "HartEng/Platform/OpenGL/OpenGLContext.h"
+#include "HartEng/Events/MousesEvent.h"
+#include "HartEng/Events/KeyEvent.h"
+#include "HartEng/Events/ApplicationEvent.h"
 
 // GLFW platform specific code
 namespace HE

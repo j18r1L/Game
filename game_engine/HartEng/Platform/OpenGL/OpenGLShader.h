@@ -5,6 +5,8 @@
 #include "HartEng/Renderer/Shader.h"
 #include <glm/glm.hpp>
 
+#include <glad/glad.h>
+
 namespace HE
 {
     class OpenGLShader: public Shader

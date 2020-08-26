@@ -1,6 +1,7 @@
 #include "HartEng/Platform/OpenGL/OpenGLRendererAPI.h"
 
 #include "HartEng/pch.h"
+#include <glad/glad.h>
 
 namespace HE
 {

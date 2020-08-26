@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "HartEng/Log.h"
+#include "HartEng/Core.h"
 
 namespace HE
 {
@@ -51,7 +52,6 @@ namespace HE
                     HE_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
                 }
                 */
-                
                 InternalEndSession();
             }
             m_OutputStream.open(filepath);

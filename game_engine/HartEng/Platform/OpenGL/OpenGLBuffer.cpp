@@ -1,5 +1,6 @@
 #include "HartEng/Platform/OpenGL/OpenGLBuffer.h"
-
+#include <glad/glad.h>
+#include "HartEng/pch.h"
 
 namespace HE
 {

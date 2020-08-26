@@ -1,13 +1,11 @@
 #ifndef OPENGLCONTEXT_H
 #define OPENGLCONTEXT_H
 
-#include "HartEng/pch.h"
-#include "HartEng/Core.h"
-#include "HartEng/Log.h"
+
 #include "HartEng/Renderer/GraphicsContext.h"
 
+#include <GLFW/glfw3.h>
 
-//struct GLFWwindow;
 namespace HE
 {
     class OpenGLContext: public GraphicsContext

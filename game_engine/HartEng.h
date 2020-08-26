@@ -22,6 +22,9 @@
 
 // Events
 #include "HartEng/Events/Event.h"
+#include "HartEng/Events/KeyEvent.h"
+#include "HartEng/Events/ApplicationEvent.h"
+#include "HartEng/Events/MousesEvent.h"
 
 // imGUI
 #include "HartEng/imGUI/imGUILayer.h"
