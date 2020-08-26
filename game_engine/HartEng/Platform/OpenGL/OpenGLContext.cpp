@@ -20,19 +20,25 @@ namespace HE
         glfwMakeContextCurrent(m_WindowHandle);
         //Initialize GLAD
         HE_CORE_INFO("Initializing GLAD...");
+        // TODO ради поддержки macos необходимо явно указать версию OpenGL-a
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        //int status =  gladLoadGL();
         HE_CORE_ASSERT(status, "Failed to initialize GLAD!");
 
         HE_CORE_INFO("OpenGL Info:");
         HE_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
         HE_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-        HE_CORE_INFO("  Veesion: {0}", glGetString(GL_VERSION));
+        HE_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
 
         int major = 0;
         int minor = 0;
         glGetIntegerv(GL_MAJOR_VERSION, &major);
         glGetIntegerv(GL_MINOR_VERSION, &minor);
-        HE_CORE_ASSERT(major > 4 || (major == 4 && minor >= 5), "OpenGL 4.5 is required, current OpenGL version is: " + std::to_string(major) + "." + std::to_string(minor));
+        HE_CORE_ASSERT(major > 4 || (major == 4 && minor >= 1), "OpenGL 4.1 is required, current OpenGL version is: " + std::to_string(major) + "." + std::to_string(minor));
 
 
     }

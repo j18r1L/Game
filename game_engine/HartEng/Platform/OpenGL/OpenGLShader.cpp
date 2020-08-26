@@ -18,7 +18,8 @@ namespace HE
             return GL_FRAGMENT_SHADER;
         if (type == "geometry")
             return GL_GEOMETRY_SHADER;
-        HE_CORE_ASSERT(false, "Unknown shader type: " + type);
+        HE_CORE_ERROR("Unknown shader type: " + type);
+        //HE_CORE_ASSERT(false, "Unknown shader type: " + type);
         return 0;
     }
 
@@ -31,7 +32,8 @@ namespace HE
             return "Fragment";
         if (type == GL_GEOMETRY_SHADER)
             return "Geometry";
-        HE_CORE_ASSERT(false, "Unknown shader type");
+        HE_CORE_ERROR("Unknown shader type");
+        //HE_CORE_ASSERT(false, "Unknown shader type");
         return "";
     }
 
@@ -136,7 +138,8 @@ namespace HE
                     HE_CORE_ERROR("{0}", infoLog.data());
                 else
                     HE_CORE_ERROR("Couldn't parse error message!");
-                HE_CORE_ASSERT(false, StringFromShaderType(type) + " shader compilation failure!")
+                HE_CORE_ERROR(StringFromShaderType(type) + " shader compilation failure!");
+                //HE_CORE_ASSERT(false, StringFromShaderType(type) + " shader compilation failure!")
 
                 // In this simple program, we'll just leave
                 break;
@@ -183,7 +186,8 @@ namespace HE
                 HE_CORE_ERROR("{0}", infoLog.data());
             else
                 HE_CORE_ERROR("Couldn't parse error message!");
-            HE_CORE_ASSERT(false, "Shader link failure!")
+            HE_CORE_ERROR("Shader link failure!");
+            //HE_CORE_ASSERT(false, "Shader link failure!")
 
 
             // In this simple program, we'll just leave
@@ -213,7 +217,9 @@ namespace HE
             HE_CORE_ASSERT(eol != std::string::npos, "Syntax error!");
             size_t begin = pos + typeTokenLength + 1;
             std::string type = shaderSrc.substr(begin, eol - begin);
-            HE_CORE_ASSERT(type == "vertex" || type == "fragment" || type == "pixel", "Invalid shader type specificator: " + type);
+            if (!(type == "vertex" || type == "fragment" || type == "pixel"))
+                HE_CORE_ERROR("Invalid shader type specificator: " + type);
+            //HE_CORE_ASSERT(type == "vertex" || type == "fragment" || type == "pixel", "Invalid shader type specificator: " + type);
 
             size_t nextLinePos = shaderSrc.find_first_not_of("\r\n", eol);
             pos = shaderSrc.find(typeToken, nextLinePos);

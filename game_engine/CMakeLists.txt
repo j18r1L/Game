@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.11)
 
 project(game_engine LANGUAGES CXX)
 
@@ -131,7 +131,7 @@ file(GLOB main_project
 
 add_executable(game_engine ${source} ${header} ${main_project} HartEng.h main.cpp )
 
-target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
+#target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
 
 # GLFW
 target_link_libraries(${PROJECT_NAME} "glfw" "${GLFW_LIBRARIES}")

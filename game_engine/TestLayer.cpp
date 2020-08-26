@@ -14,6 +14,8 @@ void TestLayer::OnAttach()
 
     m_ShaderLibrary.Load("../assets/shaders/Grid.glsl");
     m_ShaderLibrary.Load("../assets/shaders/Environment.glsl");
+    //m_ShaderLibrary.Load("Grid.glsl");
+    //m_ShaderLibrary.Load("Environment.glsl");
 
     // Screen quad with environment
     float vertices_cube[] = {
@@ -88,6 +90,7 @@ void TestLayer::OnAttach()
 
     // Square with texture
     auto textureShader = m_ShaderLibrary.Load("../assets/shaders/Texture.glsl");
+    //auto textureShader = m_ShaderLibrary.Load("Texture.glsl");
 
     float vertices_square[5 * 4] = {
         0.0f, -0.5f, -0.5f, 0.0f, 0.0f,
@@ -118,6 +121,7 @@ void TestLayer::OnAttach()
 
     // load texture
     m_Texture = HE::Texture2D::Create("../media/tex_coord.png");
+    //m_Texture = HE::Texture2D::Create("tex_coord.png");
     textureShader->Bind();
     textureShader->SetInt("u_Texture", 0);
     m_Texture->Bind(0);
@@ -150,6 +154,7 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
 
         HE::Renderer::BeginScene(m_CameraController.GetCamera());
         // environment
+        
         auto environmentShader = m_ShaderLibrary.Get("Environment");
         environmentShader->Bind();
         environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionMatrix() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetViewMatrix())));
@@ -176,7 +181,7 @@ void TestLayer::OnUpdate(HE::Timestep& ts)
         textureShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionViewMatrix());
         textureShader->SetMat4("u_Model", glm::mat4(1.0f));
         HE::Renderer::Submit(textureShader, m_SquareVA);
-
+        
         HE::Renderer::EndScene();
     }
 }

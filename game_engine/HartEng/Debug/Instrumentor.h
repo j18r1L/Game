@@ -66,7 +66,7 @@ namespace HE
                 /*
                 if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
                 {
-                    HE_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+                    HE_CORE_ERROR("Instrumentor could not open results file {0}", filepath);
                 }
                 */
             }
