@@ -15,8 +15,7 @@ void TestLayer::OnAttach()
     std::string path_to_project = CMAKE_PATH;
     m_ShaderLibrary.Load(path_to_project + "/../assets/shaders/Grid.glsl");
     m_ShaderLibrary.Load(path_to_project + "/../assets/shaders/Environment.glsl");
-    //m_ShaderLibrary.Load("Grid.glsl");
-    //m_ShaderLibrary.Load("Environment.glsl");
+
 
     // Screen quad with environment
     float vertices_cube[] = {
