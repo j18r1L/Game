@@ -19,11 +19,20 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         glDeleteFramebuffers(1, &m_RendererID);
+        glDeleteTextures(1, &m_ColorAttachment);
+        glDeleteTextures(1, &m_DepthAttachment);
     }
 
     void OpenGLFrameBuffer::Invalidate()
     {
         HE_PROFILE_FUNCTION();
+
+        if (m_RendererID != 0)
+        {
+            glDeleteFramebuffers(1, &m_RendererID);
+            glDeleteTextures(1, &m_ColorAttachment);
+            glDeleteTextures(1, &m_DepthAttachment);
+        }
 
         glGenFramebuffers(1, &m_RendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
@@ -45,6 +54,14 @@ namespace HE
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
+    {
+        m_Specification.Width = width;
+        m_Specification.Height = height;
+
+        Invalidate();
+    }
+
     const FrameBufferSpecification& OpenGLFrameBuffer::GetSpecification() const
     {
         return m_Specification;
@@ -60,6 +77,7 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+        glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
     }
 

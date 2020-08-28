@@ -231,7 +231,6 @@ namespace HE
         }
 
         m_Camera->RecalculateViewMatrix(m_CameraPosition, m_Front, m_Up);
-
     }
 
     void PerspectiveCameraController::OnEvent(Event& e)
@@ -269,5 +268,4 @@ namespace HE
 
         return false;
     }
-
 }

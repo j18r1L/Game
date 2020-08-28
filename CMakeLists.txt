@@ -49,7 +49,7 @@ add_definitions(-DHE_DEBUG)
 add_definitions(-DHE_PROFILE)
 
 # Event's trace
-add_definitions(-DHE_TRACE_EVENTS)
+#add_definitions(-DHE_TRACE_EVENTS)
 
 #using glad if OpenGL
 add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)

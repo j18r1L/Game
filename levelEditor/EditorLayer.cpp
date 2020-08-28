@@ -5,7 +5,8 @@ namespace HE
 {
     EditorLayer::EditorLayer():
         Layer("EditorLayer"),
-        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f)
+        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
+        m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
     {}
 
     void EditorLayer::OnAttach()
@@ -199,13 +200,12 @@ namespace HE
     void EditorLayer::OnImGuiRender()
     {
         HE_PROFILE_FUNCTION();
+
         static bool dockSpaceOpen = true;
         static bool opt_fullscreen_persistant = true;
         bool opt_fullscreen = opt_fullscreen_persistant;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
-        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
-        // because it would be confusing to have two docking targets within each others.
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         if (opt_fullscreen)
         {
@@ -219,16 +219,9 @@ namespace HE
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
 
-        // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
-        // and handle the pass-thru hole, so we ask Begin() to not render a background.
         if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
             window_flags |= ImGuiWindowFlags_NoBackground;
 
-        // Important: note that we proceed even if Begin() returns false (aka window is collapsed).
-        // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
-        // all active windows docked into it will lose their parent and become undocked.
-        // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
-        // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("DockSpace Demo", &dockSpaceOpen, window_flags);
         ImGui::PopStyleVar();
@@ -249,10 +242,6 @@ namespace HE
         {
             if (ImGui::BeginMenu("File"))
             {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows,
-                // which we can't undo at the moment without finer window depth/z control.
-                //ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-
                 if (ImGui::MenuItem("Exit"))
                     Application::Get().Close();
                 ImGui::EndMenu();
@@ -262,10 +251,33 @@ namespace HE
             ImGui::EndMenuBar();
         }
 
-        ImGui::Begin("hello test");
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
+        ImGui::Begin("ViewPort");
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        HE_CORE_INFO("{0}, {1}", m_ViewportSize.x, m_ViewportSize.y);
+        if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
+        {
+            if (m_ViewportSize.x <= 1.0f || m_ViewportSize.y <= 1.0f)
+            {
+                HE_CORE_ERROR("Viewport width or height is below zero!");
+            }
+            else
+            {
+                m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+                m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+            }
+
+        }
+
+
         uint32_t FrameBufferID = m_FrameBuffer->GetColorAttachmentRendererID();
-        ImGui::Image((void*) FrameBufferID, ImVec2{800.0f, 600.0f}, ImVec2{0.0f, 1.0f}, ImVec2{1.0f, 0.0f});
+        ImGui::Image((void*) FrameBufferID, ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0.0f, 1.0f}, ImVec2{1.0f, 0.0f});
+
+        ImGui::PopStyleVar();
+
+        // Viewport end
         ImGui::End();
+
 
         // Docking Space end
         ImGui::End();
@@ -277,7 +289,13 @@ namespace HE
     void EditorLayer::OnEvent(Event &e)
     {
         HE_PROFILE_FUNCTION();
+        EventDispatcher dispatcher(e);
         m_CameraController.OnEvent(e);
+    }
+
+    void OnWindowResized()
+    {
+
     }
 }
 

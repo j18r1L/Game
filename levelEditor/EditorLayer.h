@@ -15,6 +15,9 @@ namespace HE
         std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
         PerspectiveCameraController m_CameraController;
+
+        // Viewport Size
+        glm::vec2 m_ViewportSize;
     public:
         EditorLayer();
 
