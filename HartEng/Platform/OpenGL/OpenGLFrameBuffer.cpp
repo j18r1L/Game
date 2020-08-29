@@ -58,6 +58,7 @@ namespace HE
     {
         m_Specification.Width = width;
         m_Specification.Height = height;
+        glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
         Invalidate();
     }
@@ -77,7 +78,6 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-        glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
     }
 

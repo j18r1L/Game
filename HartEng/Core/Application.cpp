@@ -130,7 +130,7 @@ namespace HE
         m_Minimized = false;
 
         Renderer::OnWindowResize(width, height);
-        return true;
+        return false;
     }
 }
 
