@@ -13,6 +13,7 @@ namespace HE
         std::shared_ptr<VertexArray> m_SquareVA;
         std::shared_ptr<Texture2D> m_Texture;
 
+        Scene *scene;
         PerspectiveCameraController m_CameraController;
     public:
         SandBoxLayer();
