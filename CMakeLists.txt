@@ -123,6 +123,8 @@ file(GLOB game_engine_files
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
 
+    "HartEng/ECS/*.h"
+
 )
 
 file(GLOB level_editor_files
