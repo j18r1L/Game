@@ -1,6 +1,8 @@
 #ifndef CORE_H
 #define CORE_H
 
+#include "HartEng/Core/Log.h"
+
 #ifdef HE_PLATFORM_WINDOWS
         #define DEBUG_BREAK __debugbreak()
     #ifdef HE_BUILD_DLL
@@ -31,6 +33,7 @@
 
     #define HE_ASSERT(x, ...) { if(!(x)) {HE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HE_DEBUG_BREAK(); } }
     #define HE_CORE_ASSERT(x, ...) { if(!(x)) {HE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); HE_DEBUG_BREAK(); } }
+
 #else
     #define HE_ASSERT(x, ...)
     #define HE_CORE_ASSERT(x, ...)

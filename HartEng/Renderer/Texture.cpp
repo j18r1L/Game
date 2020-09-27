@@ -23,5 +23,21 @@ namespace HE
         HE_CORE_ASSERT(false, "Unknown RendererAPI!");
         return nullptr;
     }
+
+    std::shared_ptr<TextureCube> TextureCube::Create(const std::string& path)
+    {
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
+        {
+            return std::make_shared<OpenGLTextureCube>(path);
+        }
+        else if (api == RendererAPI::API::None)
+        {
+            HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
+            return nullptr;
+        }
+        HE_CORE_ASSERT(false, "Unknown RendererAPI!");
+        return nullptr;
+    }
 }
 
