@@ -254,7 +254,6 @@ namespace HE
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
         ImGui::Begin("ViewPort");
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        HE_CORE_INFO("{0}, {1}", m_ViewportSize.x, m_ViewportSize.y);
         if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
         {
             if (m_ViewportSize.x <= 1.0f || m_ViewportSize.y <= 1.0f)

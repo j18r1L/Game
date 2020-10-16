@@ -9,6 +9,8 @@
 #include "HartEng/Core/Layer.h"
 #include "HartEng/Core/Input.h"
 
+// ECS
+#include "HartEng/ECS/Scene.h"
 
 // Renderer
 #include "HartEng/Renderer/Renderer.h"

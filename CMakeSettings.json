@@ -5,7 +5,7 @@
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-      "buildRoot": "${projectDir}\\..\\${name}",
+      "buildRoot": "${projectDir}\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
@@ -13,7 +13,7 @@
       "variables": [
         {
           "name": "CMAKE_INSTALL_PREFIX",
-          "value": "D:/QT/Game/game_engine/install/x64-Debug",
+          "value": "D:/QT/Game/build_vs",
           "type": "PATH"
         }
       ]
