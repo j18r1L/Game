@@ -7,6 +7,8 @@
 
 namespace HE
 {
+    class Component;
+    enum class ComponentType;
     class Entity
     {
     private:
@@ -16,56 +18,25 @@ namespace HE
         std::string name;
 
     public:
-        Entity(const std::string& object_name):
-            name(object_name)
-        {
-            // m_SceneHandle = SceneManager()->getActiveScene();
-        }
+        Entity(const std::string& object_name);
 
-        ~Entity()
-        {
-            //m_SceneHandle->DestroyEntity(name);
-        }
+        ~Entity();
 
-        bool AddComponent(const ComponentType& type, Component& component)
-        {
-            if (HasComponent(type) == false)
-            {
-                m_Components[type] = &component;
-                return true;
-            }
-            return false;
-        }
+        bool AddComponent(const ComponentType& type, Component& component);
 
         // Вернуть компонент из текущего геймобжекта
         // API: GraphicsComponent = entity.GetComponent(GraphicsComponent);
-        Component& GetComponent(const ComponentType& type)
-        {
-            std::unordered_map<ComponentType, Component*>::const_iterator got = m_Components.find(type);
-            return *got->second;
-        }
+        Component& GetComponent(const ComponentType& type);
 
         // Проверить наличие компонента type в геймобжекте
         // API: entity.HasComponent(TransformComponent);
-        bool HasComponent(const ComponentType& type)
-        {
-            return !(m_Components.find(type) == m_Components.end());
-        }
+        bool HasComponent(const ComponentType& type);
 
         // Удалить компонент type из текущего геймобжекта
         // API: entity.RemoveComponent(TransformComponent);
-        void RemoveComponent(ComponentType type)
-        {
-            m_Components.erase(type);
-        }
+        void RemoveComponent(ComponentType type);
 
-        void OnUpdate()
-        {
-            for (auto &item: m_Components)
-            {
-                item.second->OnUpdate();
-            }
-        }
+        void OnUpdate();
     };
 }
 

@@ -8,7 +8,6 @@
 namespace HE
 {
     class Entity;
-
     enum class ComponentType
     {
         UndefinedComponent,
@@ -19,20 +18,14 @@ namespace HE
     class Component
     {
     protected:
-        Entity* m_EntityHandle;
-        ComponentType type;
+        Entity* m_EntityHandle = nullptr;
+        ComponentType m_Type = ComponentType::UndefinedComponent;
     public:
-        virtual ~Component()
-        {
-            //m_EntityHandle->RemoveComponent();
-        }
+        virtual ~Component();
 
         virtual void OnUpdate() = 0;
 
-        ComponentType getType()
-        {
-            return type;
-        }
+        ComponentType getType();
     };
 
     class TransformComponent: public Component
@@ -40,17 +33,9 @@ namespace HE
     private:
         glm::mat4 m_Transform;
     public:
-        TransformComponent():
-            m_Transform(1.0f)
-        {
-            type = ComponentType::TransformComponent;
-        }
+        TransformComponent(Entity* entityHandle);
 
-        TransformComponent(const glm::mat4& transform):
-            m_Transform(transform)
-        {
-            type = ComponentType::TransformComponent;
-        }
+        TransformComponent(Entity* entityHandle, const glm::mat4& transform);
 
         const glm::mat4& GetTransform();
 
@@ -65,27 +50,13 @@ namespace HE
     private:
         glm::vec4 m_Color;
     public:
-        GraphicsComponent():
-            m_Color(1.0f)
-        {
-            type = ComponentType::GraphicsComponent;
-        }
+        GraphicsComponent(Entity* entityHandle);
 
-        GraphicsComponent(const glm::vec4& color):
-            m_Color(color)
-        {
-            type = ComponentType::GraphicsComponent;
-        }
+        GraphicsComponent(Entity* entityHandle, const glm::vec4& color);
 
         const glm::vec4& GetColor();
 
-        void OnUpdate() override
-        {
-            std::cout << "Graphics: " << m_Color.r << ", " << m_Color.g << ", " << m_Color.b << std::endl;
-            // Допустим нужно узнать X из Transform компонента:
-            //float x = m_EntityHandle->GetComponent(TransformComponent).GetTransform()[0][0];
-            //std::cout << "transform_x from Graphics: " << x << std::endl;
-        }
+        void OnUpdate() override;
     };
 }
 

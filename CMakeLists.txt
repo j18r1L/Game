@@ -124,6 +124,7 @@ file(GLOB game_engine_files
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
 
     "HartEng/ECS/*.h"
+    "HartEng/ECS/*.cpp"
 
 )
 

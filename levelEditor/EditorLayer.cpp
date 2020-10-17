@@ -89,9 +89,6 @@ namespace HE
         cubeIB = IndexBuffer::Create(indices_cube, sizeof(indices_cube) / sizeof(uint32_t));
         m_CubeVA->SetIndexBuffer(cubeIB);
 
-
-
-
         // Square with texture
         auto textureShader = m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Texture.glsl");
 
@@ -133,6 +130,7 @@ namespace HE
         fbSpec.Width = Application::Get().GetWindow().GetWidth();
         fbSpec.Height = Application::Get().GetWindow().GetWidth();
         m_FrameBuffer = FrameBuffer::Create(fbSpec);
+
     }
 
     void EditorLayer::OnDetach()

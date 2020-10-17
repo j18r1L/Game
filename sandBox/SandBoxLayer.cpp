@@ -6,7 +6,10 @@ namespace HE
     SandBoxLayer::SandBoxLayer():
         Layer("SandBoxLayer"),
         m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f)
-    {}
+    {
+        m_Scene = std::make_unique<Scene>(Scene("first_scene"));
+        //*m_Scene = Scene("first scene");
+    }
 
     void SandBoxLayer::OnAttach()
     {
@@ -129,6 +132,12 @@ namespace HE
         textureShader->SetInt("u_Texture", 0);
         m_Texture->Bind(0);
 
+        // Create scene
+        // Create new entity with graphics component
+        HE::Entity* entity = m_Scene->CreateEntity("null component");
+        Component* graphicsComponent = new GraphicsComponent(entity);
+        entity->AddComponent(ComponentType::GraphicsComponent, *graphicsComponent);
+
     }
 
     void SandBoxLayer::OnDetach()
@@ -153,6 +162,12 @@ namespace HE
             // Renderer
             RenderCommand::Clear();
         }
+
+        {
+            HE_PROFILE_SCOPE("Update Scene");
+            m_Scene->OnUpdate(ts);
+        }
+
         {
             HE_PROFILE_SCOPE("Renderer Draw");
             Renderer::BeginScene(m_CameraController.GetCamera());
