@@ -7,6 +7,8 @@
 #include "HartEng/ECS/Components/Texture2DComponent.h"
 #include "HartEng/Renderer/Renderer.h"
 
+#include "HartEng/Core/Log.h"
+
 namespace HE
 {
     Scene::Scene(const std::string& scene_name):
@@ -74,6 +76,7 @@ namespace HE
     {
         for (auto& [name, entity]: m_Entities)
         {
+            HE_PROFILE_SCOPE(name.c_str());
             // quad with texture
             MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
             TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));

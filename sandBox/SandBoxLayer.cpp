@@ -207,17 +207,20 @@ namespace HE
             HE_PROFILE_SCOPE("Renderer Draw");
             Renderer::BeginScene(m_CameraController.GetCamera());
 
-            RenderCommand::SetDepthTest(true);
-            m_Scene->OnUpdate(ts);
 
-            /*
             RenderCommand::SetDepthTest(false);
             // environment
             auto environmentShader = m_ShaderLibrary.Get("Environment");
             environmentShader->Bind();
             environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionMatrix() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetViewMatrix())));
             Renderer::Submit(environmentShader, m_CubeVA);
-            */
+
+
+
+            RenderCommand::SetDepthTest(true);
+            m_Scene->OnUpdate(ts);
+
+
 
             Renderer::EndScene();
         }
