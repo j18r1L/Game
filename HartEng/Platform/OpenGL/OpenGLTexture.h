@@ -17,7 +17,7 @@ namespace HE
 
     public:
 
-        OpenGLTexture2D(const std::string& path);
+        OpenGLTexture2D(const std::string& filepath);
         virtual ~OpenGLTexture2D();
 
         void Bind(uint32_t slot = 0) const override;

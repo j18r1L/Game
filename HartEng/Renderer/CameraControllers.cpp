@@ -247,7 +247,6 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         // TODO кастомные настройки fov-a
-        HE_CORE_INFO("{0}", e.GetYOffset());
         if (m_Fov >= 1.0f && m_Fov <= 45.0f)
             m_Fov += glm::radians(e.GetYOffset());
         if (m_Fov <= 1.0f)

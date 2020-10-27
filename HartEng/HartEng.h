@@ -9,6 +9,14 @@
 #include "HartEng/Core/Layer.h"
 #include "HartEng/Core/Input.h"
 
+// ECS
+#include "HartEng/ECS/Scene.h"
+#include "HartEng/ECS/Components/MaterialComponent.h"
+#include "HartEng/ECS/Components/MeshComponent.h"
+#include "HartEng/ECS/Components/SubMeshComponent.h"
+#include "HartEng/ECS/Components/Texture2DComponent.h"
+#include "HartEng/ECS/Components/TransformComponent.h"
+
 
 // Renderer
 #include "HartEng/Renderer/Renderer.h"

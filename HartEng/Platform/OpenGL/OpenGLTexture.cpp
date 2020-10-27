@@ -7,8 +7,8 @@
 
 namespace HE
 {
-    OpenGLTexture2D::OpenGLTexture2D(const std::string& path):
-        m_Path(path),
+    OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath):
+        m_Path(filepath),
         m_DataFormat(0)
     {
         HE_PROFILE_FUNCTION();
@@ -18,11 +18,11 @@ namespace HE
         stbi_uc* data = nullptr;
         {
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-            data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+            data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
         }
         if (data == nullptr)
         {
-            HE_CORE_ERROR("Failed to load image from: " + path);
+            HE_CORE_ERROR("Failed to load image from: " + filepath);
             return;
         }
             

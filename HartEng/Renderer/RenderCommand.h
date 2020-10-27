@@ -27,6 +27,11 @@ namespace HE
             s_RendererAPI->SetViewport(x, y, width, height);
         }
 
+        inline static void SetDepthTest(bool depthTest)
+        {
+            s_RendererAPI->SetDepthTest(depthTest);
+        }
+
         inline static void Clear()
         {
             s_RendererAPI->Clear();

@@ -4,6 +4,7 @@
 #include "HartEng/Renderer/RenderCommand.h"
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Renderer/Shader.h"
+#include "HartEng/ECS/Components/MaterialComponent.h"
 
 namespace HE
 {
@@ -31,6 +32,7 @@ namespace HE
         static void OnWindowResize(uint32_t width, uint32_t height);
 
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
+        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<MaterialComponent> material);
 
         inline static RendererAPI::API GetAPI()
         {

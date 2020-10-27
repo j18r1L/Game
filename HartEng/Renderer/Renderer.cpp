@@ -44,6 +44,29 @@ namespace HE
         //Renderer2D::Shutdown();
     }
 
+    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<MaterialComponent> material)
+    {
+        HE_PROFILE_FUNCTION();
+        shader->Bind();
+        shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
+        shader->SetMat4("u_Model", transform);
+        if (material != nullptr)
+        {
+            auto textures = material->GetTextures();
+            uint32_t i = 0;
+            for (auto& [name, texture]: textures)
+            {
+                shader->SetInt(name, i);
+                texture->Bind(i);
+                i++;
+            }
+        }
+
+        vertexArray->Bind();
+        RenderCommand::DrawIndexed(vertexArray);
+
+    }
+
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray> &vertexArray, const glm::mat4& transform)
     {

@@ -15,12 +15,13 @@
 #ifdef HE_DEBUG
 
     #ifdef HE_PLATFORM_WINDOWS
-        #ifdef HE_SILENT_ASSERTS
-            #define HE_DEBUG_BREAK()
+        #ifdef HE_QT_CTEATOR
+            #define HE_DEBUG_BREAK() // TODO setup debugbreak signal in QT
+            //#define HE_DEBUG_BREAK() Q_ASSERT
         #elif HE_VISUAL_STUDIO
             #define HE_DEBUG_BREAK() __debugbreak()
-        #elif HE_QT_CREATOR
-            #define HE_DEBUG_BREAK() Q_ASSERT
+        #elif HE_SILENT_ASSERTS
+            #define HE_DEBUG_BREAK()
         #else
             #define HE_DEBUG_BREAK() { HE_CORE_ERROR("Other IDE than VISUAL_STUDIO or QT_CREATOR is not correctly supported for debug breaks (no call trace), define HE_SILENT_ASSERTS to mute error, but the message still will be logged"); __asm("int $3\n" : : );}
         #endif
@@ -40,5 +41,7 @@
 
 // Для биндинга эвентов
 #define HE_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+// TODO
+//#define HE_BIND_EVENT_FN(x) [this](auto&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...);}
 
 #endif // CORE_H
