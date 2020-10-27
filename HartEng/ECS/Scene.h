@@ -5,6 +5,8 @@
 #include "HartEng/ECS/Entity.h"
 #include "HartEng/Core/Timestep.h"
 
+
+
 namespace HE
 {
     class Entity;
@@ -26,7 +28,7 @@ namespace HE
 
         Entity* CreateEntity(const std::string& name);
 
-        Entity& getEntity(const std::string& name);
+        Entity* getEntity(const std::string& name);
 
         void DestroyEntity(const std::string& name);
 

@@ -27,16 +27,11 @@ if (UNIX)
 endif (UNIX)
 
 
+# IDE
 if (MSVC)
     add_definitions(-DHE_VISUAL_STUDIO)
 endif (MSVC)
 
-#add_definitions(-DHE_PLATFORM_WINDOWS, -DHE_BUILD_DLL)
-#add_definitions(-DHE_PLATFORM_LINUX)
-#add_definitions(-DHE_PLATFORM_WINDOWS)
-
-# IDE
-#add_definitions(-DHE_VISUAL_STUDIO)
 add_definitions(-DHE_QT_CTEATOR)
 
 # Silent asserts
@@ -126,6 +121,8 @@ file(GLOB game_engine_files
     "HartEng/ECS/*.h"
     "HartEng/ECS/*.cpp"
 
+    "HartEng/ECS/Components/*.h"
+    "HartEng/ECS/Components/*.cpp"
 )
 
 file(GLOB level_editor_files

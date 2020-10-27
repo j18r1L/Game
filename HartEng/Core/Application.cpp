@@ -9,9 +9,9 @@ namespace HE
     Application* Application::s_Instance = nullptr;
 
     Application::Application(const std::string& name):
-        m_Running(true),
         m_Window(std::unique_ptr<Window>(Window::Create(name))),
-        m_ImGuiLayer(new ImGUILayer())
+        m_ImGuiLayer(new ImGUILayer()),
+        m_Running(true)
     {
         HE_CORE_ASSERT(!s_Instance, "Application already exists!");
 

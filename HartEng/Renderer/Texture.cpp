@@ -8,12 +8,12 @@
 
 namespace HE
 {
-    std::shared_ptr<Texture2D> Texture2D::Create(const std::string& path)
+    std::shared_ptr<Texture2D> Texture2D::Create(const std::string& filepath)
     {
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
-            return std::make_shared<OpenGLTexture2D>(path);
+            return std::make_shared<OpenGLTexture2D>(filepath);
         }
         else if (api == RendererAPI::API::None)
         {

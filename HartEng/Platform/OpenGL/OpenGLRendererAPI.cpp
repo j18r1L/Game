@@ -12,6 +12,8 @@ namespace HE
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        glEnable(GL_DEPTH_TEST);
+
     }
 
     void OpenGLRendererAPI::SetClearColor(const glm::vec4 &color)
@@ -34,6 +36,15 @@ namespace HE
 
         // TODO получать на вход флаги что именно отчистить (в будущем framebuffer-ы мб буду заниматься отчисткой)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void OpenGLRendererAPI::SetDepthTest(bool depthTest)
+    {
+        if (depthTest)
+            glEnable(GL_DEPTH_TEST);
+        else
+            glDisable(GL_DEPTH_TEST);
+
     }
 
     void OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray> &vertexArray)

@@ -14,6 +14,7 @@ namespace HE
         void Clear() override;
         void SetClearColor(const glm::vec4 &color) override;
         void SetViewport(uint32_t x, uint32_t y, uint32_t  width, uint32_t  height) override;
+        void SetDepthTest(bool depthTest) override;
 
         void DrawIndexed(const std::shared_ptr<VertexArray> &vertexArray) override;
 

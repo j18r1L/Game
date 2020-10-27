@@ -3,30 +3,31 @@
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/ECS/Scene.h"
-#include "HartEng/ECS/Components.h"
+#include "HartEng/ECS/Component.h"
 
 namespace HE
 {
+    class Scene;
     class Component;
     enum class ComponentType;
     class Entity
     {
     private:
 
-        //Scene* m_SceneHandle;
+        Scene* m_SceneHandle = nullptr;
         std::unordered_map<ComponentType, Component*> m_Components;
-        std::string name;
+        std::string m_Name = "undefind";
 
     public:
-        Entity(const std::string& object_name);
+        Entity(Scene* sceneHandle, const std::string& object_name);
 
-        ~Entity();
+        virtual ~Entity();
 
         bool AddComponent(const ComponentType& type, Component& component);
 
         // Вернуть компонент из текущего геймобжекта
         // API: GraphicsComponent = entity.GetComponent(GraphicsComponent);
-        Component& GetComponent(const ComponentType& type);
+        Component* GetComponent(const ComponentType& type);
 
         // Проверить наличие компонента type в геймобжекте
         // API: entity.HasComponent(TransformComponent);
