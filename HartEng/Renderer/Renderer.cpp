@@ -14,8 +14,17 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        m_SceneData->ProjectionViewMatrix = camera->GetProjectionViewMatrix();
-        m_SceneData->ViewMatrix = camera->GetViewMatrix();
+        m_SceneData->ProjectionView = camera->GetProjectionView();
+        m_SceneData->View = camera->GetView();
+    }
+
+    void Renderer::BeginScene(const glm::mat4& projection, const glm::mat4 transform)
+    {
+        HE_PROFILE_FUNCTION();
+
+        m_SceneData->View = glm::inverse(transform);
+        m_SceneData->ProjectionView = projection * m_SceneData->View;
+
     }
 
 
@@ -48,7 +57,7 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
         shader->Bind();
-        shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
+        shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionView);
         shader->SetMat4("u_Model", transform);
         if (material != nullptr)
         {
@@ -81,8 +90,6 @@ namespace HE
          * shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionViewMatrix);
          * shader->SetMat4("u_Model", transform);
         */
-
-
 
         //Должен добавлять в commandQUE
         vertexArray->Bind();

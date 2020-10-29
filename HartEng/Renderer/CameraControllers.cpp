@@ -15,14 +15,14 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         m_CameraPosition = position;
-        m_Camera->RecalculateViewMatrix(m_CameraPosition, m_CameraRotation);
+        m_Camera->RecalculateView(m_CameraPosition, m_CameraRotation);
     }
     void CameraController::SetRotation(float angle, const glm::vec3& rotation)
     {
         HE_PROFILE_FUNCTION();
 
         m_CameraRotation = glm::angleAxis(glm::radians(angle), rotation);
-        m_Camera->RecalculateViewMatrix(m_CameraPosition, m_CameraRotation);
+        m_Camera->RecalculateView(m_CameraPosition, m_CameraRotation);
     }
 
 
@@ -80,7 +80,7 @@ namespace HE
         {
             m_CameraPosition.y -= m_CameraSpeed * deltaTime;
         }
-        m_Camera->RecalculateViewMatrix(m_CameraPosition, m_CameraRotation);
+        m_Camera->RecalculateView(m_CameraPosition, m_CameraRotation);
     }
 
     void OrthographicCameraController::OnEvent(Event& e)
@@ -230,7 +230,7 @@ namespace HE
             }
         }
 
-        m_Camera->RecalculateViewMatrix(m_CameraPosition, m_Front, m_Up);
+        m_Camera->RecalculateView(m_CameraPosition, m_Front, m_Up);
     }
 
     void PerspectiveCameraController::OnEvent(Event& e)

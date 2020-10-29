@@ -3,6 +3,7 @@
 
 #include "HartEng/HartEng.h"
 
+#define LEVEL_EDITOR
 namespace HE
 {
     class EditorLayer: public Layer
@@ -10,10 +11,11 @@ namespace HE
     private:
         ShaderLibrary m_ShaderLibrary;
         std::shared_ptr<VertexArray> m_CubeVA;
-        std::shared_ptr<VertexArray> m_SquareVA;
-        std::shared_ptr<Texture2D> m_Texture;
+        //std::shared_ptr<VertexArray> m_SquareVA;
+        //std::shared_ptr<Texture2D> m_Texture;
         std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
+        std::unique_ptr<Scene> m_Scene;
         PerspectiveCameraController m_CameraController;
 
         // Viewport Size

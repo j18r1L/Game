@@ -14,6 +14,7 @@ namespace HE
         Texture2DComponent,
         MeshComponent,
         SubMeshComponent,
+        CameraComponent,
     };
 
     class Component

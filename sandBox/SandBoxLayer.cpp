@@ -124,7 +124,7 @@ namespace HE
         squareIB = IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t));
         SquareVA->SetIndexBuffer(squareIB);
 
-        // Create grid entity
+        // ---------------Create grid entity------------
         Entity* gridEntity = m_Scene->CreateEntity("grid");
 
         // Set transform component
@@ -147,7 +147,7 @@ namespace HE
 
 
 
-        // Create square entity
+        // --------Create square entity--------------
         Entity* squareEntity = m_Scene->CreateEntity("square");
 
         // load and create texture
@@ -171,6 +171,18 @@ namespace HE
         squareMeshComponent->AddSubMesh(*squareSubMeshComponent);
         squareEntity->AddComponent(ComponentType::MeshComponent, *squareMeshComponent);
 
+
+        // --------- Create Camera entity ------------------
+        Entity* cameraEntity = m_Scene->CreateEntity("Camera");
+
+        // Set transform component
+        TransformComponent* cameraTransformComponent = dynamic_cast<TransformComponent*>(cameraEntity->GetComponent(ComponentType::TransformComponent));
+        cameraTransformComponent->SetRotation({0.0f, 0.0f, 0.0f});
+
+        // Create camera component
+        float aspectRatio = static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight());
+        CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f,100.0f, true, false);
+        cameraEntity->AddComponent(ComponentType::CameraComponent, *cameraComponent);
 
     }
 
@@ -205,24 +217,17 @@ namespace HE
         */
         {
             HE_PROFILE_SCOPE("Renderer Draw");
-            Renderer::BeginScene(m_CameraController.GetCamera());
 
 
             RenderCommand::SetDepthTest(false);
             // environment
             auto environmentShader = m_ShaderLibrary.Get("Environment");
             environmentShader->Bind();
-            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionMatrix() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetViewMatrix())));
+            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetView())));
             Renderer::Submit(environmentShader, m_CubeVA);
-
-
 
             RenderCommand::SetDepthTest(true);
             m_Scene->OnUpdate(ts);
-
-
-
-            Renderer::EndScene();
         }
     }
 
