@@ -19,6 +19,7 @@ namespace HE
         std::string m_Name = "undefind";
 
     public:
+        Entity() = default;
         Entity(Scene* sceneHandle, const std::string& object_name);
 
         virtual ~Entity();
@@ -38,6 +39,16 @@ namespace HE
         void RemoveComponent(ComponentType type);
 
         void OnUpdate();
+
+        bool operator==(const Entity& other) const
+        {
+            return this == &other && m_SceneHandle == other.m_SceneHandle;
+        }
+
+        bool operator!=(const Entity& other) const
+        {
+            return !(*this == other);
+        }
     };
 }
 

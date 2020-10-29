@@ -2,8 +2,8 @@
 #define EditorLayer_H
 
 #include "HartEng/HartEng.h"
+#include "Panels/SceneHierarchyPanel.h"
 
-#define LEVEL_EDITOR
 namespace HE
 {
     class EditorLayer: public Layer
@@ -15,11 +15,15 @@ namespace HE
         //std::shared_ptr<Texture2D> m_Texture;
         std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
-        std::unique_ptr<Scene> m_Scene;
+        std::shared_ptr<Scene> m_Scene;
         PerspectiveCameraController m_CameraController;
 
         // Viewport Size
         glm::vec2 m_ViewportSize;
+
+
+        // Panels
+        std::shared_ptr<SceneHierarchyPanel> m_SceneHierarchyPanel;
     public:
         EditorLayer();
 

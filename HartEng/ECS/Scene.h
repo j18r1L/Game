@@ -17,6 +17,7 @@ namespace HE
         std::unordered_map<std::string, Entity*> m_Entities;
         std::string name;
         uint32_t objectsCount;
+        friend class SceneHierarchyPanel;
 
     public:
         Scene(const std::string& scene_name);

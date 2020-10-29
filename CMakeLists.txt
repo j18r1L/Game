@@ -126,8 +126,11 @@ file(GLOB game_engine_files
 )
 
 file(GLOB level_editor_files
-    "levelEditor/*.cpp"
     "levelEditor/*.h"
+    "levelEditor/*.cpp"
+
+    "levelEditor/Panels/*.h"
+    "levelEditor/Panels/*.cpp"
 )
 
 file(GLOB sandbox_files

@@ -8,9 +8,9 @@ namespace HE
         m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
         m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
     {
-        m_Scene = std::make_unique<Scene>(Scene("first_scene"));
+        m_Scene = std::make_shared<Scene>(Scene("first_scene"));
+        m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
         RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
-
         m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
         m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     }
@@ -192,6 +192,10 @@ namespace HE
         fbSpec.Height = Application::Get().GetWindow().GetHeight();
         m_FrameBuffer = FrameBuffer::Create(fbSpec);
 
+        // Create scene hirarchy panel
+        m_SceneHierarchyPanel->SetScene(m_Scene);
+
+
     }
 
     void EditorLayer::OnDetach()
@@ -287,6 +291,8 @@ namespace HE
 
             ImGui::EndMenuBar();
         }
+
+        m_SceneHierarchyPanel->OnImGuiRender();
 
         ImGui::Begin("Stats");
 
