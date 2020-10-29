@@ -16,6 +16,7 @@
 #include "HartEng/ECS/Components/SubMeshComponent.h"
 #include "HartEng/ECS/Components/Texture2DComponent.h"
 #include "HartEng/ECS/Components/TransformComponent.h"
+#include "HartEng/ECS/Components/CameraComponent.h"
 
 
 // Renderer

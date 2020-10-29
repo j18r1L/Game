@@ -32,7 +32,8 @@ namespace HE
         std::unordered_map<ComponentType, Component*>::const_iterator component = m_Components.find(type);
         if (component == m_Components.end())
         {
-            HE_CORE_ASSERT(false, "There is no component with type: "); // TODO with wich type?
+            //HE_CORE_WARN("There is no component with type: {0}", type);
+            //HE_CORE_ASSERT(false, "There is no component with type: "); // TODO with wich type?
             return nullptr;
         }
         return component->second;

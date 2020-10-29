@@ -4,8 +4,7 @@
 #include "HartEng/Core/pch.h"
 #include "HartEng/ECS/Entity.h"
 #include "HartEng/Core/Timestep.h"
-
-
+#include "HartEng/Renderer/Cameras.h"
 
 namespace HE
 {
@@ -33,6 +32,9 @@ namespace HE
         void DestroyEntity(const std::string& name);
 
         void OnUpdate(Timestep& ts);
+        void OnUpdate(Timestep& ts, std::shared_ptr<Camera> camera);
+
+        void OnViewportResize(uint32_t width, uint32_t height);
     };
 }
 

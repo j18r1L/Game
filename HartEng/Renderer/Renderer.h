@@ -16,14 +16,15 @@ namespace HE
         // TODO временно, нужно добавить que и буффер для хранения state-ов
         struct SceneData
         {
-            glm::mat4 ProjectionViewMatrix;
-            glm::mat4 ViewMatrix;
+            glm::mat4 ProjectionView;
+            glm::mat4 View;
         };
 
         static SceneData* m_SceneData;
     public:
         // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
         static void BeginScene(std::shared_ptr<Camera> camera);
+        static void BeginScene(const glm::mat4& projection, const glm::mat4 transform);
         static void EndScene();
 
         static void Init();

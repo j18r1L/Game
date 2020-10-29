@@ -7,21 +7,25 @@ namespace HE
         Layer("EditorLayer"),
         m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
         m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
-    {}
+    {
+        m_Scene = std::make_unique<Scene>(Scene("first_scene"));
+        RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
+
+        m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
+        m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    }
 
     void EditorLayer::OnAttach()
     {
         HE_PROFILE_FUNCTION();
 
-        m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
-        m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-
         std::string path_to_project = CMAKE_PATH;
         m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Grid.glsl");
         m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Environment.glsl");
+        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Texture.glsl");
 
 
-        // Screen quad with environment
+        // cube
         float vertices_cube[] = {
             // positions
             -0.5f, -0.5f, -0.5f,
@@ -89,9 +93,10 @@ namespace HE
         cubeIB = IndexBuffer::Create(indices_cube, sizeof(indices_cube) / sizeof(uint32_t));
         m_CubeVA->SetIndexBuffer(cubeIB);
 
-        // Square with texture
-        auto textureShader = m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Texture.glsl");
 
+
+
+        // square
         float vertices_square[5 * 4] = {
             0.0f, -0.5f, -0.5f, 0.0f, 0.0f,
             0.0f, -0.5f, 0.5f, 1.0f, 0.0f,
@@ -100,8 +105,9 @@ namespace HE
         };
 
         //Vertex array
-        m_SquareVA = VertexArray::Create();
-        m_SquareVA->Bind();
+        std::shared_ptr<VertexArray> SquareVA;
+        SquareVA = VertexArray::Create();
+        SquareVA->Bind();
         // Vertex buffer
         std::shared_ptr<VertexBuffer> squareVB;
         squareVB = VertexBuffer::Create(vertices_square, sizeof(vertices_square));
@@ -111,24 +117,79 @@ namespace HE
             {ShaderDataType::Float3, "a_Position"},
             {ShaderDataType::Float2, "a_TexCoord"}
         });
-        m_SquareVA->AddVertexBuffer(squareVB);
+        SquareVA->AddVertexBuffer(squareVB);
         unsigned int indices_square[6] = {0, 1, 2, 2, 3, 0};
         std::shared_ptr<IndexBuffer> squareIB;
         squareIB = IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t));
-        m_SquareVA->SetIndexBuffer(squareIB);
+        SquareVA->SetIndexBuffer(squareIB);
 
-        RenderCommand::SetClearColor(glm::vec4(0., 0., 0., 1.0));
+        // ---------------Create grid entity------------
+        Entity* gridEntity = m_Scene->CreateEntity("grid");
 
-        // load texture
-        m_Texture = Texture2D::Create(path_to_project + "/assets/textures/tex_coord.png");
-        textureShader->Bind();
-        textureShader->SetInt("u_Texture", 0);
-        m_Texture->Bind(0);
+        // Set transform component
+        TransformComponent* gridTransformComponent = dynamic_cast<TransformComponent*>(gridEntity->GetComponent(ComponentType::TransformComponent));
+        gridTransformComponent->SetTranslation({0.0f, -0.5f, 0.0f});
+        gridTransformComponent->SetRotation({0.0f, 90.0f, 0.0f});
+        gridTransformComponent->SetRotation({0.0f, 0.0f, 90.0f});
+        gridTransformComponent->SetScale({1.0f, 10.0f, 10.0f});
+
+        // Create SubMesh
+        SubMeshComponent* gridSubMeshComponent = new SubMeshComponent(gridEntity);
+        gridSubMeshComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Grid");
+        gridSubMeshComponent->SetAttribute("quad", SquareVA);
+        gridEntity->AddComponent(ComponentType::SubMeshComponent, *gridSubMeshComponent);
+
+        // Create mesh
+        MeshComponent* gridMeshComponent = new MeshComponent(gridEntity);
+        gridMeshComponent->AddSubMesh(*gridSubMeshComponent);
+        gridEntity->AddComponent(ComponentType::MeshComponent, *gridMeshComponent);
+
+
+
+        // --------Create square entity--------------
+        Entity* squareEntity = m_Scene->CreateEntity("square");
+
+        // load and create texture
+        Texture2DComponent* squareTexture2DComponent = new Texture2DComponent(squareEntity, path_to_project + "/assets/textures/tex_coord.png");
+        squareEntity->AddComponent(ComponentType::Texture2DComponent, *squareTexture2DComponent);
+
+        // Create material with texture
+        MaterialComponent* squareMaterialComponent = new MaterialComponent(squareEntity);
+        squareMaterialComponent->AddTexture("u_Texture", squareTexture2DComponent);
+        squareEntity->AddComponent(ComponentType::MaterialComponent, *squareMaterialComponent);
+
+        // Create SubMesh
+        SubMeshComponent* squareSubMeshComponent = new SubMeshComponent(squareEntity);
+        squareSubMeshComponent->SetMaterial(*squareMaterialComponent);
+        squareSubMeshComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Texture");
+        squareSubMeshComponent->SetAttribute("quad", SquareVA);
+        squareEntity->AddComponent(ComponentType::SubMeshComponent, *squareSubMeshComponent);
+
+        // Create Mesh
+        MeshComponent* squareMeshComponent = new MeshComponent(squareEntity);
+        squareMeshComponent->AddSubMesh(*squareSubMeshComponent);
+        squareEntity->AddComponent(ComponentType::MeshComponent, *squareMeshComponent);
+
+
+        // --------- Create Camera entity ------------------
+        Entity* cameraEntity = m_Scene->CreateEntity("Camera");
+
+        // Set transform component
+        TransformComponent* cameraTransformComponent = dynamic_cast<TransformComponent*>(cameraEntity->GetComponent(ComponentType::TransformComponent));
+        cameraTransformComponent->SetRotation({0.0f, 0.0f, 0.0f});
+
+        // Create camera component
+        //glm::mat4 projection = glm::perspective(45.0f, static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight()), 0.1f, 100.0f );
+        //CameraComponent* cameraComponent = new CameraComponent(cameraEntity, projection, true);
+
+        float aspectRatio = static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight());
+        CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f,100.0f, true, false);
+        cameraEntity->AddComponent(ComponentType::CameraComponent, *cameraComponent);
 
         // load framebuffer
         FrameBufferSpecification fbSpec;
         fbSpec.Width = Application::Get().GetWindow().GetWidth();
-        fbSpec.Height = Application::Get().GetWindow().GetWidth();
+        fbSpec.Height = Application::Get().GetWindow().GetHeight();
         m_FrameBuffer = FrameBuffer::Create(fbSpec);
 
     }
@@ -153,45 +214,23 @@ namespace HE
             HE_PROFILE_SCOPE("Render prep");
 
             // Renderer
+            m_FrameBuffer->Bind();
             RenderCommand::Clear();
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
-            m_FrameBuffer->Bind();
-            Renderer::BeginScene(m_CameraController.GetCamera());
-            // environment
 
+            // environment
+            RenderCommand::SetDepthTest(false);
             auto environmentShader = m_ShaderLibrary.Get("Environment");
             environmentShader->Bind();
-            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionMatrix() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetViewMatrix())));
+            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetView())));
             Renderer::Submit(environmentShader, m_CubeVA);
 
-            // grid
-            auto gridShader = m_ShaderLibrary.Get("Grid");
-            gridShader->Bind();
-            gridShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionViewMatrix());
-            glm::mat4 transform = glm::mat4(1.0f);
-            transform = glm::translate(transform, glm::vec3(0.0f, -0.5f, 0.0f));
-
-            transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 1.0, 0.0f));
-            transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0, 1.0f));
-            transform = glm::scale(transform, glm::vec3(1.0f, 10.0f, 10.0f));
-
-            gridShader->SetMat4("u_Model", transform);
-            //gridShader->SetMat4("u_Model", glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0, 0.0f)));
-
-            Renderer::Submit(gridShader, m_SquareVA);
-
-            // quad with texture
-            auto textureShader = m_ShaderLibrary.Get("Texture");
-            textureShader->Bind();
-            textureShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjectionViewMatrix());
-            textureShader->SetMat4("u_Model", glm::mat4(1.0f));
-            m_Texture->Bind();
-            Renderer::Submit(textureShader, m_SquareVA);
-
-            Renderer::EndScene();
+            RenderCommand::SetDepthTest(true);
+            m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
             m_FrameBuffer->UnBind();
+
         }
     }
 
@@ -249,6 +288,16 @@ namespace HE
             ImGui::EndMenuBar();
         }
 
+        ImGui::Begin("Stats");
+
+        ImGui::Text("Renderer Stats:");
+        //ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+        //ImGui::Text("Quads: %d", stats.QuadCount);
+        //ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+        //ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+        ImGui::End();
+
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
         ImGui::Begin("ViewPort");
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -262,6 +311,8 @@ namespace HE
             {
                 m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
                 m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+                m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+                m_CameraController.GetCamera()->SetViewportSize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
             }
 
         }
@@ -275,7 +326,6 @@ namespace HE
         // Viewport end
         ImGui::End();
 
-
         // Docking Space end
         ImGui::End();
 
@@ -286,7 +336,7 @@ namespace HE
     void EditorLayer::OnEvent(Event &e)
     {
         HE_PROFILE_FUNCTION();
-        EventDispatcher dispatcher(e);
+        //EventDispatcher dispatcher(e);
         m_CameraController.OnEvent(e);
     }
 
