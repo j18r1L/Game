@@ -25,6 +25,12 @@ namespace HE
     public:
         static std::shared_ptr<Texture2D> Create(const std::string& filepath);
     };
+
+    class TextureCube: public Texture
+    {
+    public:
+        static std::shared_ptr<TextureCube> Create(const std::string& path);
+    };
 }
 
 #endif // TEXTURE_H

@@ -218,6 +218,7 @@ namespace HE
         {
             HE_PROFILE_SCOPE("Renderer Draw");
 
+
             RenderCommand::SetDepthTest(false);
             // environment
             auto environmentShader = m_ShaderLibrary.Get("Environment");
