@@ -10,7 +10,10 @@ namespace HE
     private:
         std::shared_ptr<Scene> m_Scene;
         Entity* m_SelectionContext = nullptr;
+
+
         void DrawEntityNode(std::string name, Entity* entity);
+        void DrawComponents(Entity* entity);
 
 
     public:

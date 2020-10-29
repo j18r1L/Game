@@ -18,9 +18,8 @@ namespace HE
         objectsCount(0)
 
     {
-
+        HE_CORE_INFO("Creating scene with name: {0}", scene_name);
     }
-
 
     Entity* Scene::CreateEntity()
     {
@@ -31,7 +30,6 @@ namespace HE
     Entity* Scene::CreateEntity(const std::string& name)
     {
         float size = m_Entities.max_size();
-        HE_CORE_INFO("{0}", size);
         if (objectsCount == m_Entities.max_size())
         {
             HE_CORE_WARN("Max scene capacity is reached!");
@@ -41,6 +39,7 @@ namespace HE
         // Нужно проверить стоит ли делать такую проверку (имеется ли такой геймобжект в m_Entities)
         if (m_Entities.find(name) == m_Entities.end())
         {
+            HE_CORE_INFO("Creating entity with name: {0}", name);
             Entity* entity = new Entity(this, name);
             m_Entities[name] = entity;
 
@@ -68,6 +67,7 @@ namespace HE
 
     void Scene::DestroyEntity(const std::string& name)
     {
+        HE_CORE_INFO("Destroing entity with name: {0}", name);
         m_Entities.erase(name);
     }
 

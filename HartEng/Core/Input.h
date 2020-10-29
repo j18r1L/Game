@@ -14,6 +14,7 @@ namespace HE
     private:
         static Input* s_Instance;
     public:
+        virtual ~Input() = default;
 
         inline static bool IsKeyPressed(int keycode)
         {

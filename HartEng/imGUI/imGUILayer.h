@@ -15,6 +15,8 @@ namespace HE
 {
     class ImGUILayer: public Layer
     {
+    private:
+        bool m_BlockEvents = false;
     public:
         ImGUILayer();
         ~ImGUILayer();
@@ -25,6 +27,10 @@ namespace HE
 
         void Begin();
         void End();
+        void SetBlockEvents(bool block)
+        {
+            m_BlockEvents = block;
+        }
     };
 }
 
