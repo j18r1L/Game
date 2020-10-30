@@ -11,8 +11,7 @@ namespace HE
         ShaderLibrary m_ShaderLibrary;
         std::shared_ptr<VertexArray> m_CubeVA;
 
-        std::unique_ptr<Scene> m_Scene;
-        PerspectiveCameraController m_CameraController;
+        std::shared_ptr<Scene> m_Scene;
     public:
         SandBoxLayer();
 

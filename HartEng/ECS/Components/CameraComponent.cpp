@@ -2,26 +2,23 @@
 
 namespace HE
 {
-    CameraComponent::CameraComponent(Entity* entityHandle)
+    CameraComponent::CameraComponent()
     {
         m_EntityHandle = nullptr;
         m_Type = ComponentType::CameraComponent;
     }
-    /*
-    CameraComponent::CameraComponent(Entity* entityHandle, const glm::mat4& projection, bool primary, bool fixedAspectRatio):
-        m_Camera(projection),
-        m_Primary(primary),
-        m_FixedAspectRatio(fixedAspectRatio)
+
+    CameraComponent::CameraComponent(Entity* entityHandle)
     {
         m_EntityHandle = entityHandle;
         m_Type = ComponentType::CameraComponent;
     }
-    */
-    CameraComponent::CameraComponent(Entity* entityHandle, float left, float right, float bottom, float top, float nearClip, float farClip, bool primary, bool fixedAspectRatio):
+
+    CameraComponent::CameraComponent(Entity* entityHandle, float size, float nearClip, float farClip, bool primary, bool fixedAspectRatio):
         m_Primary(primary),
         m_FixedAspectRatio(fixedAspectRatio)
     {
-        m_Camera = std::shared_ptr<Camera>(new OrthographicCamera(left, right, bottom, top, nearClip, farClip));
+        m_Camera.SetOrthographic(size, nearClip, farClip);
         m_EntityHandle = entityHandle;
         m_Type = ComponentType::CameraComponent;
     }
@@ -30,7 +27,7 @@ namespace HE
         m_Primary(primary),
         m_FixedAspectRatio(fixedAspectRatio)
     {
-        m_Camera = std::shared_ptr<Camera>(new PerspectiveCamera(fov, aspectRatio, nearClip, farClip));
+        m_Camera.SetPerspective(fov, aspectRatio, nearClip, farClip);
         m_EntityHandle = entityHandle;
         m_Type = ComponentType::CameraComponent;
     }
@@ -55,7 +52,7 @@ namespace HE
         return m_FixedAspectRatio;
     }
 
-    std::shared_ptr<Camera> CameraComponent::GetCamera()
+    SceneCamera& CameraComponent::GetCamera()
     {
         return m_Camera;
     }

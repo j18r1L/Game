@@ -11,8 +11,6 @@ namespace HE
         m_Scene = std::make_shared<Scene>(Scene("first_scene"));
         m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
         RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
-        m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
-        m_CameraController.SetRotation(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
     void EditorLayer::OnAttach()
@@ -183,14 +181,13 @@ namespace HE
         //CameraComponent* cameraComponent = new CameraComponent(cameraEntity, projection, true);
 
         float aspectRatio = static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight());
-        CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f,100.0f, true, false);
+        CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f, 1000.0f, true, false);
         cameraEntity->AddComponent(ComponentType::CameraComponent, *cameraComponent);
 
         // load framebuffer
-        FrameBufferSpecification fbSpec;
-        fbSpec.Width = Application::Get().GetWindow().GetWidth();
-        fbSpec.Height = Application::Get().GetWindow().GetHeight();
-        m_FrameBuffer = FrameBuffer::Create(fbSpec);
+        m_FrameBufferSpec.Width = Application::Get().GetWindow().GetWidth();
+        m_FrameBufferSpec.Height = Application::Get().GetWindow().GetHeight();
+        m_FrameBuffer = FrameBuffer::Create(m_FrameBufferSpec);
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
@@ -207,6 +204,21 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
+        {
+            /*
+            HE_PROFILE_SCOPE("Resize");
+            // Resize
+            if (FrameBufferSpecification spec = m_FrameBuffer->GetSpecification();
+                m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
+                (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+            {
+                m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+                m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+                m_Scene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            }
+            */
+        }
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
@@ -228,7 +240,7 @@ namespace HE
             RenderCommand::SetDepthTest(false);
             auto environmentShader = m_ShaderLibrary.Get("Environment");
             environmentShader->Bind();
-            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetView())));
+            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
             Renderer::Submit(environmentShader, m_CubeVA);
 
             RenderCommand::SetDepthTest(true);
@@ -309,6 +321,8 @@ namespace HE
         m_ViewportFocused = ImGui::IsWindowFocused();
         Application::Get().GetImGuiLayer()->SetBlockEvents(m_ViewportFocused);
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
+
         if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
         {
             if (m_ViewportSize.x <= 1.0f || m_ViewportSize.y <= 1.0f)
@@ -320,10 +334,11 @@ namespace HE
                 m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
                 m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
                 m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
-                m_CameraController.GetCamera()->SetViewportSize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+                m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
             }
 
         }
+
 
 
         uint32_t FrameBufferID = m_FrameBuffer->GetColorAttachmentRendererID();

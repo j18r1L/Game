@@ -4,14 +4,10 @@
 namespace HE
 {
     SandBoxLayer::SandBoxLayer():
-        Layer("SandBoxLayer"),
-        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f)
+        Layer("SandBoxLayer")
     {
-        m_Scene = std::make_unique<Scene>(Scene("first_scene"));
+        m_Scene = std::make_shared<Scene>(Scene("first_scene"));
         RenderCommand::SetClearColor(glm::vec4(0.5, 0., 0.5, 1.0));
-
-        m_CameraController.SetPosition({-1.0f, 0.0f, 0.0f});
-        m_CameraController.SetRotation(0.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
     }
@@ -195,12 +191,6 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        {
-            HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
-
-            // Update
-            m_CameraController.OnUpdate(ts);
-        }
 
         {
             HE_PROFILE_SCOPE("Render prep");
@@ -218,13 +208,14 @@ namespace HE
         {
             HE_PROFILE_SCOPE("Renderer Draw");
 
-
+            /*
             RenderCommand::SetDepthTest(false);
             // environment
             auto environmentShader = m_ShaderLibrary.Get("Environment");
             environmentShader->Bind();
-            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera()->GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetView())));
+            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetView())));
             Renderer::Submit(environmentShader, m_CubeVA);
+            */
 
             RenderCommand::SetDepthTest(true);
             m_Scene->OnUpdate(ts);
@@ -242,7 +233,6 @@ namespace HE
     void SandBoxLayer::OnEvent(Event &e)
     {
         HE_PROFILE_FUNCTION();
-        m_CameraController.OnEvent(e);
     }
 }
 

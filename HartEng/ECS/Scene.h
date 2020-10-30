@@ -33,7 +33,7 @@ namespace HE
         void DestroyEntity(const std::string& name);
 
         void OnUpdate(Timestep& ts);
-        void OnUpdate(Timestep& ts, std::shared_ptr<Camera> camera);
+        void OnUpdate(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
 
         void OnViewportResize(uint32_t width, uint32_t height);
     };

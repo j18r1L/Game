@@ -11,8 +11,8 @@ namespace HE
     private:
         ShaderLibrary m_ShaderLibrary;
         std::shared_ptr<VertexArray> m_CubeVA;
-        //std::shared_ptr<VertexArray> m_SquareVA;
-        //std::shared_ptr<Texture2D> m_Texture;
+
+        FrameBufferSpecification m_FrameBufferSpec;
         std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
         std::shared_ptr<Scene> m_Scene;

@@ -73,7 +73,7 @@ namespace HE
 
     void Scene::OnUpdate(Timestep& ts)
     {
-        std::shared_ptr<Camera> mainCamera = nullptr;
+        Camera* mainCamera = nullptr;
         glm::mat4 transform(1.0f);
         for (auto& [name, entity]: m_Entities)
         {
@@ -83,7 +83,7 @@ namespace HE
                 if (cameraComponent->GetPrimary())
                 {
                     transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent))->GetTransform();
-                    mainCamera = cameraComponent->GetCamera();
+                    mainCamera = &cameraComponent->GetCamera();
                     break;
                 }
             }
@@ -128,7 +128,7 @@ namespace HE
         }
     }
 
-    void Scene::OnUpdate(Timestep& ts, std::shared_ptr<Camera> camera)
+    void Scene::OnUpdate(Timestep& ts, PerspectiveCamera& camera)
     {
         Renderer::BeginScene(camera);
 
@@ -170,7 +170,7 @@ namespace HE
                 if (!cameraComponent->GetFixedAspectRatio())
                 {
                     auto camera = cameraComponent->GetCamera();
-                    camera->SetViewportSize(width, height);
+                    camera.SetViewportSize(width, height);
 
                 }
 
