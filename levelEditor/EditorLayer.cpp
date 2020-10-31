@@ -177,9 +177,6 @@ namespace HE
         cameraTransformComponent->SetRotation({0.0f, 0.0f, 0.0f});
 
         // Create camera component
-        //glm::mat4 projection = glm::perspective(45.0f, static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight()), 0.1f, 100.0f );
-        //CameraComponent* cameraComponent = new CameraComponent(cameraEntity, projection, true);
-
         float aspectRatio = static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight());
         CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f, 1000.0f, true, false);
         cameraEntity->AddComponent(ComponentType::CameraComponent, *cameraComponent);
@@ -244,6 +241,7 @@ namespace HE
             Renderer::Submit(environmentShader, m_CubeVA);
 
             RenderCommand::SetDepthTest(true);
+            //m_Scene->OnUpdate(ts); // Use runtime camera
             m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
             m_FrameBuffer->UnBind();
 
@@ -306,15 +304,6 @@ namespace HE
 
         m_SceneHierarchyPanel->OnImGuiRender();
 
-        ImGui::Begin("Stats");
-
-        ImGui::Text("Renderer Stats:");
-        //ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        //ImGui::Text("Quads: %d", stats.QuadCount);
-        //ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        //ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-        ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
         ImGui::Begin("ViewPort");

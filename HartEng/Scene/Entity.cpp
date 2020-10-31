@@ -1,4 +1,4 @@
-#include "HartEng/ECS/Entity.h"
+#include "HartEng/Scene/Entity.h"
 
 #include "HartEng/Core/pch.h"
 
@@ -21,6 +21,10 @@ namespace HE
         {
             m_Components[type] = &component;
             return true;
+        }
+        else
+        {
+            HE_CORE_WARN("Failed to add component! This Component already exists!");
         }
         return false;
     }
@@ -51,6 +55,11 @@ namespace HE
     void Entity::RemoveComponent(ComponentType type)
     {
         m_Components.erase(type);
+    }
+
+    void Entity::RenameEntity(std::string name)
+    {
+        m_Name = name;
     }
 
     void Entity::OnUpdate()

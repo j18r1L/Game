@@ -1,4 +1,4 @@
-#include "HartEng/ECS/Component.h"
+#include "HartEng/Scene/Component.h"
 
 namespace HE
 {

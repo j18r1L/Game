@@ -1,7 +1,7 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include "HartEng/ECS/Entity.h"
+#include "HartEng/Scene/Entity.h"
 
 namespace HE
 {

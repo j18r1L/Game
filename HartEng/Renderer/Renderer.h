@@ -4,7 +4,7 @@
 #include "HartEng/Renderer/RenderCommand.h"
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Renderer/Shader.h"
-#include "HartEng/ECS/Components/MaterialComponent.h"
+#include "HartEng/Scene/Components/MaterialComponent.h"
 
 namespace HE
 {

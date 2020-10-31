@@ -1,4 +1,4 @@
-#include "SceneCamera.h"
+#include "HartEng/Scene/SceneCamera.h"
 
 namespace HE
 {
@@ -38,6 +38,12 @@ namespace HE
     void SceneCamera::SetViewportSize(uint32_t width, uint32_t height)
     {
         m_AspectRatio = (float)width / (float)height;
+        RecalculateProjection();
+    }
+
+    void SceneCamera::SetProjectionType(ProjectionType type)
+    {
+        m_ProjectionType = type;
         RecalculateProjection();
     }
 

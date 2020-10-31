@@ -4,11 +4,12 @@
 #include "HartEng/Core/pch.h"
 
 #include "glm/glm.hpp"
-#include "HartEng/ECS/Components/Texture2DComponent.h"
-#include "HartEng/ECS/Component.h"
+#include "HartEng/Scene/Components/Texture2DComponent.h"
+#include "HartEng/Scene/Component.h"
 
 namespace HE
 {
+    // В будущем будет содержать шейдер и название юниформ, дату для них
     class MaterialComponent: public Component
     {
 

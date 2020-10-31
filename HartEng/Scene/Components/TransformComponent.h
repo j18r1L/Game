@@ -1,7 +1,7 @@
 #ifndef TRANSFORMCOMPONENT_H
 #define TRANSFORMCOMPONENT_H
 
-#include "HartEng/ECS/Component.h"
+#include "HartEng/Scene/Component.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 
@@ -12,7 +12,7 @@ namespace HE
     private:
         glm::mat4 m_Transform = glm::mat4(1.0f);
         glm::vec3 m_Translation = glm::vec3(0.0f);
-        glm::quat m_Rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+        glm::quat m_Rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 m_Scale = glm::vec3(1.0f);
 
         void Recalculate();

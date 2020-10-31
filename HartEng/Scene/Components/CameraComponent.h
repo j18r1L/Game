@@ -1,8 +1,8 @@
 #ifndef CAMERACOMPONENT_H
 #define CAMERACOMPONENT_H
 
-#include "HartEng/ECS/SceneCamera.h"
-#include "HartEng/ECS/Component.h"
+#include "HartEng/Scene/SceneCamera.h"
+#include "HartEng/Scene/Component.h"
 
 namespace HE
 {

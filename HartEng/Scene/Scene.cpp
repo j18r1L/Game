@@ -1,11 +1,11 @@
-#include "HartEng/ECS/Scene.h"
+#include "HartEng/Scene/Scene.h"
 
-#include "HartEng/ECS/Components/TransformComponent.h"
-#include "HartEng/ECS/Components/MaterialComponent.h"
-#include "HartEng/ECS/Components/MeshComponent.h"
-#include "HartEng/ECS/Components/SubMeshComponent.h"
-#include "HartEng/ECS/Components/Texture2DComponent.h"
-#include "HartEng/ECS/Components/CameraComponent.h"
+#include "HartEng/Scene/Components/TransformComponent.h"
+#include "HartEng/Scene/Components/MaterialComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/SubMeshComponent.h"
+#include "HartEng/Scene/Components/Texture2DComponent.h"
+#include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Renderer/Renderer.h"
 
 #include "HartEng/Core/Log.h"
@@ -14,8 +14,8 @@ namespace HE
 {
     Scene::Scene(const std::string& scene_name):
         m_Entities(),
-        name(scene_name),
-        objectsCount(0)
+        m_Name(scene_name),
+        m_ObjectsCount(0)
 
     {
         HE_CORE_INFO("Creating scene with name: {0}", scene_name);
@@ -23,14 +23,14 @@ namespace HE
 
     Entity* Scene::CreateEntity()
     {
-        std::string entityName = "__obj_" + name + "_" + std::to_string(objectsCount);
+        std::string entityName = "__obj_" + m_Name + "_" + std::to_string(m_ObjectsCount);
         return CreateEntity(entityName);
     }
 
     Entity* Scene::CreateEntity(const std::string& name)
     {
         float size = m_Entities.max_size();
-        if (objectsCount == m_Entities.max_size())
+        if (m_ObjectsCount == m_Entities.max_size())
         {
             HE_CORE_WARN("Max scene capacity is reached!");
             return nullptr;
@@ -46,7 +46,7 @@ namespace HE
             // Добавляем компененты, которые всегда должны быть в entity, например TransformComponent
             Component* transformComponent = new TransformComponent(entity);
             entity->AddComponent(ComponentType::TransformComponent, *transformComponent);
-            objectsCount++;
+            m_ObjectsCount++;
 
             return entity;
         }
@@ -56,13 +56,13 @@ namespace HE
 
     Entity* Scene::getEntity(const std::string& name)
     {
-        std::unordered_map<std::string, Entity*>::const_iterator entity = m_Entities.find(name);
-        if (entity == m_Entities.end())
+        auto entityIterator = m_Entities.find(name);
+        if (entityIterator == m_Entities.end())
         {
             HE_CORE_ASSERT(false, "There is no entity with name: " + name);
             return nullptr;
         }
-        return entity->second;
+        return entityIterator->second;
     }
 
     void Scene::DestroyEntity(const std::string& name)
@@ -176,5 +176,14 @@ namespace HE
 
             }
         }
+    }
+
+    void Scene::RenameEntity(std::string oldName, std::string newName)
+    {
+        Entity* entity = m_Entities.find(oldName)->second;
+
+        m_Entities[newName] = entity;
+        entity->RenameEntity(newName);
+        m_Entities.erase(oldName);
     }
 }
