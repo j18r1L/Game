@@ -10,12 +10,12 @@ namespace HE
 
 
 
-    void Renderer::BeginScene(std::shared_ptr<Camera> camera)
+    void Renderer::BeginScene(PerspectiveCamera& camera)
     {
         HE_PROFILE_FUNCTION();
 
-        m_SceneData->ProjectionView = camera->GetProjectionView();
-        m_SceneData->View = camera->GetView();
+        m_SceneData->ProjectionView = camera.GetProjectionView();
+        m_SceneData->View = camera.GetView();
     }
 
     void Renderer::BeginScene(const glm::mat4& projection, const glm::mat4 transform)

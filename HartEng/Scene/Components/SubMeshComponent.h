@@ -3,8 +3,8 @@
 
 #include "HartEng/Core/pch.h"
 
-#include "HartEng/ECS/Component.h"
-#include "HartEng/ECS/Components/MaterialComponent.h"
+#include "HartEng/Scene/Component.h"
+#include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Renderer/VertexArray.h"
 #include "HartEng/Renderer/Shader.h"
 

@@ -8,79 +8,62 @@
 #include <string>
 namespace HE
 {
-
-
-    void CameraController::SetPosition(const glm::vec3& position)
-    {
-        HE_PROFILE_FUNCTION();
-
-        m_CameraPosition = position;
-        m_Camera->RecalculateView(m_CameraPosition, m_CameraRotation);
-    }
-    void CameraController::SetRotation(float angle, const glm::vec3& rotation)
-    {
-        HE_PROFILE_FUNCTION();
-
-        m_CameraRotation = glm::angleAxis(glm::radians(angle), rotation);
-        m_Camera->RecalculateView(m_CameraPosition, m_CameraRotation);
-    }
-
-
 /////////////////////////////////////////// Orthographic Camera /////////////////////////////////////////////
 
-    OrthographicCameraController::OrthographicCameraController(float width, float heigth, float zNear, float zFar):
-        m_ZoomLevel(1.0f)
+    OrthographicCameraController::OrthographicCameraController(float width, float height, bool rotation):
+        m_AspectRatio(width / height),
+        m_Rotation(rotation),
+        m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel)
     {
         HE_PROFILE_FUNCTION();
-
-        m_AspectRatio = (width / heigth);
-        m_Znear = zNear;
-        m_Zfar = zFar;
-        m_Camera = std::shared_ptr<OrthographicCamera>(new OrthographicCamera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, m_Znear, m_Zfar));
     }
 
-    OrthographicCameraController::OrthographicCameraController(float aspectRatio, float zNear, float zFar):
-        m_ZoomLevel(1.0f)
-    {
-        HE_PROFILE_FUNCTION();
-
-        m_AspectRatio = aspectRatio;
-        m_Znear = zNear;
-        m_Zfar = zFar;
-        m_Camera = std::shared_ptr<OrthographicCamera>(new OrthographicCamera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, m_Znear, m_Zfar));
-    }
 
     void OrthographicCameraController::OnUpdate(Timestep ts)
     {
         HE_PROFILE_FUNCTION();
 
+        glm::vec3 cameraPosition = m_Camera.GetPosition();
+        float cameraRotation = m_Camera.GetRotation();
         // TODO поставить кастомные коды
-        float deltaTime = ts;
-        if (Input::IsKeyPressed(HE_KEY_W))
-        {
-            m_CameraPosition.z += m_CameraSpeed * deltaTime;
-        }
-        if (Input::IsKeyPressed(HE_KEY_S))
-        {
-            m_CameraPosition.z -= m_CameraSpeed * deltaTime;
-        }
         if (Input::IsKeyPressed(HE_KEY_A))
         {
-            m_CameraPosition.x -= m_CameraSpeed * deltaTime;
+            cameraPosition.x -= cos(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
+            cameraPosition.y -= sin(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
         }
-        if (Input::IsKeyPressed(HE_KEY_D))
+        else if (Input::IsKeyPressed(HE_KEY_D))
         {
-            m_CameraPosition.x += m_CameraSpeed * deltaTime;
+            cameraPosition.x += cos(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
+            cameraPosition.y += sin(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
         }
-        if (Input::IsKeyPressed(HE_KEY_Q))
+
+        if (Input::IsKeyPressed(HE_KEY_W))
         {
-            m_CameraPosition.y += m_CameraSpeed * deltaTime;
+            cameraPosition.x += -sin(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
+            cameraPosition.y += cos(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
         }
-        if (Input::IsKeyPressed(HE_KEY_E))
+        else if (Input::IsKeyPressed(HE_KEY_S))
         {
-            m_CameraPosition.y -= m_CameraSpeed * deltaTime;
+            cameraPosition.x -= -sin(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
+            cameraPosition.y -= cos(glm::radians(cameraRotation)) * m_CameraTranslationSpeed * ts;
         }
-        m_Camera->RecalculateView(m_CameraPosition, m_CameraRotation);
+        if (m_Rotation)
+        {
+            if (Input::IsKeyPressed(HE_KEY_Q))
+                cameraRotation += m_CameraRotationSpeed * ts;
+            if (Input::IsKeyPressed(HE_KEY_E))
+                cameraRotation -= m_CameraRotationSpeed * ts;
+
+            if (cameraRotation > 180.0f)
+                cameraRotation -= 360.0f;
+            else if (cameraRotation <= -180.0f)
+                cameraRotation += 360.0f;
+
+            m_Camera.SetRotation(cameraRotation);
+        }
+
+        m_Camera.SetPosition(cameraPosition);
+        m_CameraTranslationSpeed = m_ZoomLevel;
     }
 
     void OrthographicCameraController::OnEvent(Event& e)
@@ -96,18 +79,23 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        m_ZoomLevel -= e.GetYOffset();
-
-        std::dynamic_pointer_cast<OrthographicCamera>(m_Camera)->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+        m_ZoomLevel -= e.GetYOffset() * 0.25f;
+        m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+        m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
         return false;
+    }
+
+    void OrthographicCameraController::OnResize(float width, float height)
+    {
+        m_AspectRatio = width / height;
+        m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
     }
 
     bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
     {
         HE_PROFILE_FUNCTION();
 
-        m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-        std::dynamic_pointer_cast<OrthographicCamera>(m_Camera)->SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+        OnResize((float)e.GetWidth(), (float)e.GetHeight());
 
         return false;
     }
@@ -115,52 +103,38 @@ namespace HE
 
     /////////////////////////////////////////// Perspective Camera /////////////////////////////////////////////
 
-    PerspectiveCameraController::PerspectiveCameraController(float fov, float width, float heigth, float zNear, float zFar):
+    PerspectiveCameraController::PerspectiveCameraController(float fov, float width, float height, float zNear, float zFar):
+        m_AspectRatio(width / height),
         m_Fov(fov),
-        m_CameraSensivity(0.1f),
-        m_LastMousePosition(width / 2, heigth / 2),
-        m_Up(0.0f, 1.0f, 0.0f),
-        m_Front(glm::vec3(0.0f, 1.0f, -1.0f)),
-        m_Right(glm::vec3(1.0f, 0.0f, 0.0f)),
-        m_WorldUp(m_Up)
+        m_LastMousePosition(width / 2.0f, height / 2.0f),
+        m_Near(zNear),
+        m_Far(zFar),
+        m_Camera(fov, m_AspectRatio, zNear, zFar)
     {
         HE_PROFILE_FUNCTION();
 
-        m_CameraRotation = glm::quat();
-        //glm::vec3 angles = glm::eulerAngles(m_CameraRotation) * 3.14159f / 180.f; //XYZ as pitch, yaw, and roll
-        //m_Front = glm::normalize(glm::vec3(glm::cos(angles.y) * glm::cos(angles.x), glm::sin(angles.x), glm::sin(angles.y) * glm::cos(angles.x)));
-        //m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
-        //m_Up = glm::normalize(glm::cross(m_Right, m_Front));
-
-        m_AspectRatio = (width / heigth);
-        m_Znear = zNear;
-        m_Zfar = zFar;
-        m_Camera = std::shared_ptr<PerspectiveCamera>(new PerspectiveCamera(m_Fov, m_AspectRatio, m_Znear, m_Zfar));
+        m_Front = {0.0f, 1.0f, -1.0f};
+        m_Up = {0.0f, 1.0f, 0.0f};
+        m_WorldUp = m_Up;
+        m_Right = {1.0f, 0.0f, 0.0f};
     }
 
     PerspectiveCameraController::PerspectiveCameraController(float fov, float aspectRatio, float zNear, float zFar):
+        m_AspectRatio(aspectRatio),
         m_Fov(fov),
-        m_CameraSensivity(0.1f),
-        m_LastMousePosition(0.0f, 0.0f), // TODO возможно надо изменить, так как мышка сперва оказывается не в 0.0, 0.0
-        m_Up(0.0f, 1.0f, 0.0f),
-        m_Front(glm::vec3(0.0f, 1.0f, -1.0f)),
-        m_Right(glm::vec3(1.0f, 0.0f, 0.0f)),
-        m_WorldUp(m_Up)
+        m_LastMousePosition(0.0f, 0.0f),
+        m_Near(zNear),
+        m_Far(zFar),
+        m_Camera(fov, m_AspectRatio, zNear, zFar)
     {
         HE_PROFILE_FUNCTION();
 
-        m_CameraRotation = glm::quat();
-        //glm::vec3 angles = glm::eulerAngles(m_CameraRotation) * 3.14159f / 180.f; //XYZ as pitch, yaw, and roll
-        //m_Front = glm::normalize(glm::vec3(glm::cos(angles.y) * glm::cos(angles.x), glm::sin(angles.x), glm::sin(angles.y) * glm::cos(angles.x)));
-        //m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
-        //m_Up = glm::normalize(glm::cross(m_Right, m_Front));
-
-
-        m_AspectRatio = aspectRatio;
-        m_Znear = zNear;
-        m_Zfar = zFar;
-        m_Camera = std::shared_ptr<PerspectiveCamera>(new PerspectiveCamera(m_Fov, m_AspectRatio, m_Znear, m_Zfar));
+        m_Front = {0.0f, 1.0f, -1.0f};
+        m_Up = {0.0f, 1.0f, 0.0f};
+        m_WorldUp = m_Up;
+        m_Right = {1.0f, 0.0f, 0.0f};
     }
+
 
     void PerspectiveCameraController::OnUpdate(Timestep ts)
     {
@@ -180,57 +154,56 @@ namespace HE
             offset *= m_CameraSensivity;
 
             // TODO quaternion realization
-            /*
-            glm::vec3 angles = glm::eulerAngles(m_CameraRotation); //XYZ as pitch, yaw, and roll
-            angles += glm::vec3(glm::radians(offset.y), glm::radians(offset.x), 0.0f);
-            m_CameraRotation = glm::quat(glm::vec3(angles.x, angles.y, angles.z));
-            m_Front = glm::normalize(glm::vec3(glm::cos(angles.y) * glm::cos(angles.x), glm::sin(angles.x), glm::sin(angles.y) * glm::cos(angles.x)));
-            m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
-            m_Up = glm::normalize(glm::cross(m_Right, m_Front));
-            */
-
             // euler angles realization
+
             m_Yaw += glm::radians(offset.x);
             m_Pitch += glm::radians(offset.y);
-            glm::vec3 angles = glm::eulerAngles(m_CameraRotation); //XYZ as pitch, yaw, and roll
-            m_CameraRotation = glm::quat(glm::vec3(m_Pitch, m_Yaw, angles.z));
-
             m_Front = glm::normalize(glm::vec3(glm::cos(m_Yaw) * glm::cos(m_Pitch), glm::sin(m_Pitch), glm::sin(m_Yaw) * glm::cos(m_Pitch)));
             m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
             m_Up = glm::normalize(glm::cross(m_Right, m_Front));
+
+            glm::quat cameraRotation = m_Camera.GetRotation();
+            cameraRotation = glm::quat(glm::vec3(m_Pitch, m_Yaw, 0.0f));
+
+            //m_Camera.SetRotation(cameraRotation);
+
         }
 
         {
+            glm::vec3 cameraPosition = m_Camera.GetPosition();
             HE_PROFILE_SCOPE("Position - PerspectiveCameraController::OnUpdate");
             // Position
-            float velocity = m_CameraSpeed * ts;
+            float velocity = m_CameraTranslationSpeed * ts;
             if (Input::IsKeyPressed(HE_KEY_W)) // forawrd
             {
-                m_CameraPosition += m_Front * velocity;
+                cameraPosition += m_Front * velocity;
             }
             if (Input::IsKeyPressed(HE_KEY_S)) // backward
             {
-                m_CameraPosition -= m_Front * velocity;
+                cameraPosition -= m_Front * velocity;
             }
-            if (Input::IsKeyPressed(HE_KEY_D)) // dight
+            if (Input::IsKeyPressed(HE_KEY_D)) // right
             {
-                m_CameraPosition += m_Right * velocity;
+                cameraPosition += m_Right * velocity;
             }
             if (Input::IsKeyPressed(HE_KEY_A)) // left
             {
-                m_CameraPosition -= m_Right * velocity;
+                cameraPosition -= m_Right * velocity;
             }
             if (Input::IsKeyPressed(HE_KEY_Q)) // up
             {
-                m_CameraPosition += m_Up * velocity;
+                cameraPosition += m_Up * velocity;
             }
             if (Input::IsKeyPressed(HE_KEY_E)) // down
             {
-                m_CameraPosition -= m_Up * velocity;
+                cameraPosition -= m_Up * velocity;
             }
+            m_Camera.SetPosition(cameraPosition);
+            m_Camera.RecalculateView(m_Front, m_Up); // dirty hack
         }
 
-        m_Camera->RecalculateView(m_CameraPosition, m_Front, m_Up);
+
+
     }
 
     void PerspectiveCameraController::OnEvent(Event& e)
@@ -253,17 +226,22 @@ namespace HE
             m_Fov = 1.0f;
         if (m_Fov >= 45.0f)
             m_Fov = 45.0f;
-        std::dynamic_pointer_cast<PerspectiveCamera>(m_Camera)->SetProjection(m_Fov, m_AspectRatio, m_Znear, m_Zfar);
+        m_Camera.SetProjection(m_Fov, m_AspectRatio, m_Near, m_Far);
+
         return false;
+    }
+
+    void PerspectiveCameraController::OnResize(float width, float height)
+    {
+        m_AspectRatio = width / height;
+        m_Camera.SetProjection(m_Fov, m_AspectRatio, m_Near, m_Far);
     }
 
     bool PerspectiveCameraController::OnWindowResized(WindowResizeEvent& e)
     {
         HE_PROFILE_FUNCTION();
 
-        //glm::eulerAngles(m_CameraRotation);
-        m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-        std::dynamic_pointer_cast<PerspectiveCamera>(m_Camera)->SetProjection(m_Fov, m_AspectRatio, m_Znear, m_Zfar);
+        OnResize((float)e.GetWidth(), (float)e.GetHeight());
 
         return false;
     }

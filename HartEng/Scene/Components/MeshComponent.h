@@ -1,7 +1,7 @@
 #ifndef MESHCOMPONENT_H
 #define MESHCOMPONENT_H
 
-#include "HartEng/ECS/Components/SubMeshComponent.h"
+#include "HartEng/Scene/Components/SubMeshComponent.h"
 
 namespace HE
 {

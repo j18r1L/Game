@@ -1,11 +1,11 @@
-#include "HartEng/ECS/Scene.h"
+#include "HartEng/Scene/Scene.h"
 
-#include "HartEng/ECS/Components/TransformComponent.h"
-#include "HartEng/ECS/Components/MaterialComponent.h"
-#include "HartEng/ECS/Components/MeshComponent.h"
-#include "HartEng/ECS/Components/SubMeshComponent.h"
-#include "HartEng/ECS/Components/Texture2DComponent.h"
-#include "HartEng/ECS/Components/CameraComponent.h"
+#include "HartEng/Scene/Components/TransformComponent.h"
+#include "HartEng/Scene/Components/MaterialComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/SubMeshComponent.h"
+#include "HartEng/Scene/Components/Texture2DComponent.h"
+#include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Renderer/Renderer.h"
 
 #include "HartEng/Core/Log.h"
@@ -14,25 +14,23 @@ namespace HE
 {
     Scene::Scene(const std::string& scene_name):
         m_Entities(),
-        name(scene_name),
-        objectsCount(0)
+        m_Name(scene_name),
+        m_ObjectsCount(0)
 
     {
-
+        HE_CORE_INFO("Creating scene with name: {0}", scene_name);
     }
-
 
     Entity* Scene::CreateEntity()
     {
-        std::string entityName = "__obj_" + name + "_" + std::to_string(objectsCount);
+        std::string entityName = "__obj_" + m_Name + "_" + std::to_string(m_ObjectsCount);
         return CreateEntity(entityName);
     }
 
     Entity* Scene::CreateEntity(const std::string& name)
     {
         float size = m_Entities.max_size();
-        HE_CORE_INFO("{0}", size);
-        if (objectsCount == m_Entities.max_size())
+        if (m_ObjectsCount == m_Entities.max_size())
         {
             HE_CORE_WARN("Max scene capacity is reached!");
             return nullptr;
@@ -41,13 +39,14 @@ namespace HE
         // Нужно проверить стоит ли делать такую проверку (имеется ли такой геймобжект в m_Entities)
         if (m_Entities.find(name) == m_Entities.end())
         {
+            HE_CORE_INFO("Creating entity with name: {0}", name);
             Entity* entity = new Entity(this, name);
             m_Entities[name] = entity;
 
             // Добавляем компененты, которые всегда должны быть в entity, например TransformComponent
             Component* transformComponent = new TransformComponent(entity);
             entity->AddComponent(ComponentType::TransformComponent, *transformComponent);
-            objectsCount++;
+            m_ObjectsCount++;
 
             return entity;
         }
@@ -57,23 +56,24 @@ namespace HE
 
     Entity* Scene::getEntity(const std::string& name)
     {
-        std::unordered_map<std::string, Entity*>::const_iterator entity = m_Entities.find(name);
-        if (entity == m_Entities.end())
+        auto entityIterator = m_Entities.find(name);
+        if (entityIterator == m_Entities.end())
         {
             HE_CORE_ASSERT(false, "There is no entity with name: " + name);
             return nullptr;
         }
-        return entity->second;
+        return entityIterator->second;
     }
 
     void Scene::DestroyEntity(const std::string& name)
     {
+        HE_CORE_INFO("Destroing entity with name: {0}", name);
         m_Entities.erase(name);
     }
 
     void Scene::OnUpdate(Timestep& ts)
     {
-        std::shared_ptr<Camera> mainCamera = nullptr;
+        Camera* mainCamera = nullptr;
         glm::mat4 transform(1.0f);
         for (auto& [name, entity]: m_Entities)
         {
@@ -83,7 +83,7 @@ namespace HE
                 if (cameraComponent->GetPrimary())
                 {
                     transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent))->GetTransform();
-                    mainCamera = cameraComponent->GetCamera();
+                    mainCamera = &cameraComponent->GetCamera();
                     break;
                 }
             }
@@ -128,7 +128,7 @@ namespace HE
         }
     }
 
-    void Scene::OnUpdate(Timestep& ts, std::shared_ptr<Camera> camera)
+    void Scene::OnUpdate(Timestep& ts, PerspectiveCamera& camera)
     {
         Renderer::BeginScene(camera);
 
@@ -170,11 +170,20 @@ namespace HE
                 if (!cameraComponent->GetFixedAspectRatio())
                 {
                     auto camera = cameraComponent->GetCamera();
-                    camera->SetViewportSize(width, height);
+                    camera.SetViewportSize(width, height);
 
                 }
 
             }
         }
+    }
+
+    void Scene::RenameEntity(std::string oldName, std::string newName)
+    {
+        Entity* entity = m_Entities.find(oldName)->second;
+
+        m_Entities[newName] = entity;
+        entity->RenameEntity(newName);
+        m_Entities.erase(oldName);
     }
 }

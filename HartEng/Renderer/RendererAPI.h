@@ -16,6 +16,7 @@ namespace HE
         };
 
     public:
+        virtual ~RendererAPI() = default;
         inline static API GetAPI()
         {
             return s_API;

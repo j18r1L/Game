@@ -48,6 +48,7 @@ namespace HE
         //friend class EventDispatcher;
 
     public:
+        virtual ~Event() = default;
         // Был ли обработан эвент или нет, нужен для того чтобы предотварить эвент от падения ниже по слоям обработки игры
         bool Handled = false;
 

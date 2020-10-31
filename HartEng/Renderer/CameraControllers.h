@@ -10,94 +10,79 @@
 
 namespace HE
 {
-    class CameraController
-    {
-    protected:
-        glm::vec3 m_CameraPosition = {0.0f, 0.0f, 0.0f};
-        glm::quat m_CameraRotation;
-        float m_CameraSpeed = 1.0f;
-        float m_Znear = 0.0f, m_Zfar = 10.0f;
-
-        float m_AspectRatio;
-
-        std::shared_ptr<Camera> m_Camera;
-
-    public:
-        virtual void OnUpdate(Timestep ts) = 0;
-        virtual void OnEvent(Event& e) = 0;
-
-        void SetPosition(const glm::vec3& position);
-        void SetRotation(float angle, const glm::vec3& rotation);
-
-
-        virtual std::shared_ptr<Camera> GetCamera()
-        {
-            return m_Camera;
-        }
-
-        virtual const std::shared_ptr<Camera> GetCamera() const
-        {
-            return m_Camera;
-        }
-        const glm::vec3& GetPosition() const
-        {
-            return m_CameraPosition;
-        }
-        const glm::quat& GetRotation() const
-        {
-            return m_CameraRotation;
-        }
-
-    };
 
     /////////////////////////////////////////// Orthographic Camera /////////////////////////////////////////////
 
 
-    class OrthographicCameraController: public CameraController
+    class OrthographicCameraController
     {
     private:
-        float m_ZoomLevel;
+        float m_AspectRatio = 0.0f;
+        float m_ZoomLevel = 1.0f;
+
+        bool m_Rotation = false;
+
+        float m_CameraTranslationSpeed = 5.0f, m_CameraRotationSpeed = 180.0f;
+
+        OrthographicCamera m_Camera;
 
         bool OnMouseScroll(MouseScrolledEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);
 
     public:
-        OrthographicCameraController(float width, float heigth, float zNear = -1.0f, float zFar = 1.0f);
-        OrthographicCameraController(float aspectRatio, float zNear = -1.0f, float zFar = 1.0f);
+        OrthographicCameraController(float width, float height, bool rotation);
+        OrthographicCameraController(float aspectRatio, bool rotation);
 
-        virtual void OnUpdate(Timestep ts) override;
-        virtual void OnEvent(Event& e) override;
+        void OnUpdate(Timestep ts);
+        void OnEvent(Event& e);
+        void OnResize(float width, float height);
+
+        OrthographicCamera& GetCamera() { return m_Camera; }
+        const OrthographicCamera& GetCamera() const { return m_Camera; }
+
+        float GetZoomLevel() const { return m_ZoomLevel; }
+        void SetZoomLevel(float level) { m_ZoomLevel = level; }
     };
 
     /////////////////////////////////////////// Perspective Camera /////////////////////////////////////////////
 
 
-    class PerspectiveCameraController: public CameraController
+    class PerspectiveCameraController
     {
     private:
-        float m_Fov;
-        float m_CameraSensivity;
+        float m_AspectRatio = 0.0f;
+        float m_Fov = 45.0f;
+        float m_CameraSensivity = 0.15f;
+        float m_CameraTranslationSpeed = 1.0f;
 
         glm::vec2 m_LastMousePosition;
 
-        glm::vec3 m_Front;
-        glm::vec3 m_Up;
-        glm::vec3 m_WorldUp;
-        glm::vec3 m_Right;
+        glm::vec3 m_Front = {0.0f, 1.0f, -1.0f};
+        glm::vec3 m_Up = {0.0f, 1.0f, 0.0f};
+        glm::vec3 m_WorldUp = {0.0f, 1.0f, 0.0f};
+        glm::vec3 m_Right = {1.0f, 0.0f, 0.0f};
 
 
         float m_Yaw = 0.0f;
         float m_Pitch = 0.0f;
+        float m_Near = 0.1f;
+        float m_Far = 1000.0f;
+
+        PerspectiveCamera m_Camera;
 
         bool OnMouseScroll(MouseScrolledEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);
 
     public:
+        PerspectiveCameraController(float fov, float width, float height, float zNear, float zFar);
         PerspectiveCameraController(float fov, float aspect_ratio, float zNear, float zFar);
-        PerspectiveCameraController(float fov, float width, float heigth, float zNear, float zFar);
 
-        virtual void OnUpdate(Timestep ts) override;
-        virtual void OnEvent(Event& e) override;
+        void OnUpdate(Timestep ts);
+        void OnEvent(Event& e);
+        void OnResize(float width, float height);
+
+        PerspectiveCamera& GetCamera() { return m_Camera; }
+        const PerspectiveCamera& GetCamera() const { return m_Camera; }
 
     };
 

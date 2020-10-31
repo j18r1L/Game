@@ -1,7 +1,7 @@
 #ifndef TEXTURE2DCOMPONENT_H
 #define TEXTURE2DCOMPONENT_H
 
-#include "HartEng/ECS/Component.h"
+#include "HartEng/Scene/Component.h"
 #include "HartEng/Renderer/Texture.h"
 
 namespace HE

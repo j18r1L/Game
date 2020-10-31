@@ -21,7 +21,10 @@ namespace HE
             PushLayer(new EditorLayer());
         }
 
-        ~LevelEditor() {}
+        ~LevelEditor()
+        {
+
+        }
     };
 
 

@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include "HartEng/Core/pch.h"
-#include "HartEng/ECS/Entity.h"
+#include "HartEng/Scene/Entity.h"
 #include "HartEng/Core/Timestep.h"
 #include "HartEng/Renderer/Cameras.h"
 
@@ -15,8 +15,9 @@ namespace HE
     private:
 
         std::unordered_map<std::string, Entity*> m_Entities;
-        std::string name;
-        uint32_t objectsCount;
+        std::string m_Name;
+        uint32_t m_ObjectsCount;
+        friend class SceneHierarchyPanel;
 
     public:
         Scene(const std::string& scene_name);
@@ -32,9 +33,11 @@ namespace HE
         void DestroyEntity(const std::string& name);
 
         void OnUpdate(Timestep& ts);
-        void OnUpdate(Timestep& ts, std::shared_ptr<Camera> camera);
+        void OnUpdate(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
 
         void OnViewportResize(uint32_t width, uint32_t height);
+
+        void RenameEntity(std::string oldName, std::string newName);
     };
 }
 

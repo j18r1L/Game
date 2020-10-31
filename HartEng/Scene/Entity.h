@@ -2,8 +2,8 @@
 #define ENTITY_H
 
 #include "HartEng/Core/pch.h"
-#include "HartEng/ECS/Scene.h"
-#include "HartEng/ECS/Component.h"
+#include "HartEng/Scene/Scene.h"
+#include "HartEng/Scene/Component.h"
 
 namespace HE
 {
@@ -19,6 +19,7 @@ namespace HE
         std::string m_Name = "undefind";
 
     public:
+        Entity() = default;
         Entity(Scene* sceneHandle, const std::string& object_name);
 
         virtual ~Entity();
@@ -28,6 +29,7 @@ namespace HE
         // Вернуть компонент из текущего геймобжекта
         // API: GraphicsComponent = entity.GetComponent(GraphicsComponent);
         Component* GetComponent(const ComponentType& type);
+        const std::string& GetName() const { return m_Name; }
 
         // Проверить наличие компонента type в геймобжекте
         // API: entity.HasComponent(TransformComponent);
@@ -37,7 +39,19 @@ namespace HE
         // API: entity.RemoveComponent(TransformComponent);
         void RemoveComponent(ComponentType type);
 
+        // This function can be called only in Scene class!
+        void RenameEntity(std::string name);
         void OnUpdate();
+
+        bool operator==(const Entity& other) const
+        {
+            return this == &other && m_SceneHandle == other.m_SceneHandle;
+        }
+
+        bool operator!=(const Entity& other) const
+        {
+            return !(*this == other);
+        }
     };
 }
 

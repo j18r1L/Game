@@ -4,7 +4,7 @@
 #include "HartEng/Renderer/RenderCommand.h"
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Renderer/Shader.h"
-#include "HartEng/ECS/Components/MaterialComponent.h"
+#include "HartEng/Scene/Components/MaterialComponent.h"
 
 namespace HE
 {
@@ -23,7 +23,7 @@ namespace HE
         static SceneData* m_SceneData;
     public:
         // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
-        static void BeginScene(std::shared_ptr<Camera> camera);
+        static void BeginScene(PerspectiveCamera& camera); // This used only in level editor as non-runtime camera
         static void BeginScene(const glm::mat4& projection, const glm::mat4 transform);
         static void EndScene();
 

@@ -118,16 +118,19 @@ file(GLOB game_engine_files
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"
     "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
 
-    "HartEng/ECS/*.h"
-    "HartEng/ECS/*.cpp"
+    "HartEng/Scene/*.h"
+    "HartEng/Scene/*.cpp"
 
-    "HartEng/ECS/Components/*.h"
-    "HartEng/ECS/Components/*.cpp"
+    "HartEng/Scene/Components/*.h"
+    "HartEng/Scene/Components/*.cpp"
 )
 
 file(GLOB level_editor_files
-    "levelEditor/*.cpp"
     "levelEditor/*.h"
+    "levelEditor/*.cpp"
+
+    "levelEditor/Panels/*.h"
+    "levelEditor/Panels/*.cpp"
 )
 
 file(GLOB sandbox_files

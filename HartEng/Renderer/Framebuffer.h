@@ -9,7 +9,7 @@ namespace HE
     struct FrameBufferSpecification
     {
         // Struct of properties
-        uint32_t Width, Height;
+        uint32_t Width = 0.0f, Height = 0.0f;
         //FramebufferFormat Format =
         uint32_t Samples = 1;
 
@@ -20,7 +20,7 @@ namespace HE
     class FrameBuffer
     {
     public:
-        virtual ~FrameBuffer() {}
+        virtual ~FrameBuffer() = default;
 
         virtual uint32_t GetColorAttachmentRendererID() const = 0;
         virtual const FrameBufferSpecification& GetSpecification() const = 0;
