@@ -55,4 +55,32 @@ namespace HE
         glfwGetCursorPos(window, &xpos, &ypos);
         return {xpos, ypos};
     }
+
+    void LinuxInput::SetMouseXImpl(float mousePosX)
+    {
+        // Берем указатель на экран
+        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        glfwSetCursorPos(window, mousePosX, ypos);
+
+    }
+    void LinuxInput::SetMouseYImpl(float mousePosY)
+    {
+        // Берем указатель на экран
+        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        glfwSetCursorPos(window, xpos, mousePosY);
+    }
+
+    void LinuxInput::SetMousePositionImpl(float mousePosX, float mousePosY)
+    {
+        // Берем указатель на экран
+        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+
+        glfwSetCursorPos(window, mousePosX, mousePosY);
+    }
 }
