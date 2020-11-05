@@ -37,9 +37,11 @@ namespace HE
         virtual void Shutdown();
 
     public:
-        static void GLFWCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
         LinuxWindow(const WindowProps& props);
         virtual ~LinuxWindow();
+
+
+        static void GLFWCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 
         // Вызывается каждый кадр
         void OnUpdate() override;

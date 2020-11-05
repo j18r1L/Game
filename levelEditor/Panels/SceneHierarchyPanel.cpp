@@ -127,18 +127,34 @@ namespace HE
                     transform->SetTranslation(position);
                 }
 
+
+
                 glm::quat rotation = transform->GetRotation();
                 glm::vec3 angles = glm::eulerAngles(rotation);
+                /*
                 if (ImGui::DragFloat3("Rotation", glm::value_ptr(angles), 0.1f))
                 {
                     transform->SetRotation(angles);
                 }
+                */
+                if (ImGui::InputFloat("", &angles.x))
+                    transform->SetScale(angles);
+                ImGui::SameLine();
+                if (ImGui::InputFloat("", &angles.y))
+                        transform->SetScale(angles);
+                ImGui::SameLine();
+                if (ImGui::InputFloat("", &angles.z))
+                        transform->SetScale(angles);
+
+
+
 
                 glm::vec3 scale = transform->GetScale();
                 if (ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.1f))
                 {
                     transform->SetScale(scale);
                 }
+
 
                 ImGui::TreePop();
             }
