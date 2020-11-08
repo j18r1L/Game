@@ -17,12 +17,5 @@ namespace HE
     {
         return m_SubMeshes;
     }
-
-    /*
-    std::vector<SubMeshComponent*>& MeshComponent::GetSubMeshes()
-    {
-        return m_SubMeshes;
-    }
-    */
 }
 

@@ -9,6 +9,8 @@
 #include "HartEng/Renderer/Renderer.h"
 
 #include "HartEng/Core/Log.h"
+#include <iostream>
+#include <memory>
 
 namespace HE
 {
@@ -29,6 +31,8 @@ namespace HE
 
     Entity* Scene::CreateEntity(const std::string& name)
     {
+        HE_PROFILE_FUNCTION();
+
         float size = m_Entities.max_size();
         if (m_ObjectsCount == m_Entities.max_size())
         {
@@ -44,8 +48,7 @@ namespace HE
             m_Entities[name] = entity;
 
             // Добавляем компененты, которые всегда должны быть в entity, например TransformComponent
-            Component* transformComponent = new TransformComponent(entity);
-            entity->AddComponent(ComponentType::TransformComponent, *transformComponent);
+            entity->AddComponent(ComponentType::TransformComponent);
             m_ObjectsCount++;
 
             return entity;
@@ -56,10 +59,12 @@ namespace HE
 
     Entity* Scene::getEntity(const std::string& name)
     {
+        HE_PROFILE_FUNCTION();
+
         auto entityIterator = m_Entities.find(name);
         if (entityIterator == m_Entities.end())
         {
-            HE_CORE_ASSERT(false, "There is no entity with name: " + name);
+            HE_CORE_ASSERT(false, "There is no entity with name: {0}", name);
             return nullptr;
         }
         return entityIterator->second;
@@ -71,65 +76,72 @@ namespace HE
         m_Entities.erase(name);
     }
 
+    // Runtime
     void Scene::OnUpdate(Timestep& ts)
     {
+        HE_PROFILE_FUNCTION();
+
         Camera* mainCamera = nullptr;
         glm::mat4 transform(1.0f);
-        for (auto& [name, entity]: m_Entities)
         {
-            CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
-            if (cameraComponent)
-            {
-                if (cameraComponent->GetPrimary())
-                {
-                    transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent))->GetTransform();
-                    mainCamera = &cameraComponent->GetCamera();
-                    break;
-                }
-            }
+            HE_PROFILE_SCOPE("OnUpdate: find mainCamera");
 
-        }
-        if (mainCamera)
-        {
-            Renderer::BeginScene(mainCamera->GetProjection(), transform);
-
-            // Render all entities
+            // Find mainCamera
             for (auto& [name, entity]: m_Entities)
             {
-                HE_PROFILE_SCOPE(name.c_str());
-                // quad with texture
-                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
-                TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
-                if (meshComponent)
+                CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
+                if (cameraComponent)
                 {
-                    auto squareSubMeshes = meshComponent->GetSubMeshes();
-                    for (auto& subMesh: squareSubMeshes)
+                    if (cameraComponent->GetPrimary())
                     {
-                        auto material = subMesh->GetMaterial();
-                        auto shader = subMesh->GetShader();
-                        shader->Bind();
-                        auto attribute = subMesh->GetAttribute();
-                        for (auto& [name, VAO]: attribute)
-                        {
-                            Renderer::Submit(shader, VAO, transformComponent->GetTransform(), material);
-                        }
+                        transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent))->GetTransform();
+                        mainCamera = &cameraComponent->GetCamera();
+                        break;
                     }
                 }
 
-                // TODO
-                // Update transform / physics first...
-
-                // Then update graphics...
-
-                //entity->OnUpdate();
             }
-
-            Renderer::EndScene();
         }
+
+        {
+            HE_PROFILE_SCOPE("OnUpdate: Scene submit");
+
+            if (mainCamera)
+            {
+                Renderer::BeginScene(mainCamera->GetProjection(), transform);
+
+                // Render all entities
+                for (auto& [name, entity]: m_Entities)
+                {
+                    HE_PROFILE_SCOPE(name.c_str());
+                    // quad with texture
+                    MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
+                    TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+                    if (meshComponent)
+                    {
+                        auto& subMeshes = meshComponent->GetSubMeshes();
+                        for (auto& subMesh: subMeshes)
+                        {
+                            auto material = subMesh->GetMaterial();
+                            auto shader = material->GetShader();
+                            shader->Bind();
+                            auto& attribute = subMesh->GetAttribute();
+                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+
+                        }
+                    }
+                }
+                Renderer::EndScene();
+            }
+        }
+
     }
 
+    // Not runtime
     void Scene::OnUpdate(Timestep& ts, PerspectiveCamera& camera)
     {
+        HE_PROFILE_FUNCTION();
+
         Renderer::BeginScene(camera);
 
         // Render all entities
@@ -141,17 +153,14 @@ namespace HE
             TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
             if (meshComponent)
             {
-                auto squareSubMeshes = meshComponent->GetSubMeshes();
-                for (auto& subMesh: squareSubMeshes)
+                auto& subMeshes = meshComponent->GetSubMeshes();
+                for (auto& subMesh: subMeshes)
                 {
                     auto material = subMesh->GetMaterial();
-                    auto shader = subMesh->GetShader();
+                    auto shader = material->GetShader();
                     shader->Bind();
-                    auto attribute = subMesh->GetAttribute();
-                    for (auto& [name, VAO]: attribute)
-                    {
-                        Renderer::Submit(shader, VAO, transformComponent->GetTransform(), material);
-                    }
+                    auto& attribute = subMesh->GetAttribute();
+                    Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
                 }
             }
         }
@@ -161,6 +170,8 @@ namespace HE
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)
     {
+        HE_PROFILE_FUNCTION();
+
         // Resize all our non-FixedAspectRatio cameras
         for (auto& [name, entity]: m_Entities)
         {
@@ -173,17 +184,18 @@ namespace HE
                     camera.SetViewportSize(width, height);
 
                 }
-
             }
         }
     }
 
     void Scene::RenameEntity(std::string oldName, std::string newName)
     {
+        HE_PROFILE_FUNCTION();
+
         Entity* entity = m_Entities.find(oldName)->second;
 
         m_Entities[newName] = entity;
-        entity->RenameEntity(newName);
+        entity->SetName(newName);
         m_Entities.erase(oldName);
     }
 }

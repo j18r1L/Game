@@ -19,7 +19,6 @@ namespace HE
         void AddSubMesh(SubMeshComponent& subMesh);
 
         const std::vector<SubMeshComponent*>& GetSubMeshes() const;
-        //std::vector<SubMeshComponent*>& GetSubMeshes();
 
     };
 }

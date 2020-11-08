@@ -8,12 +8,6 @@ namespace HE
         m_EntityHandle = entityHandle;
         m_Type = ComponentType::TransformComponent;
     }
-    TransformComponent::TransformComponent(Entity* entityHandle, const glm::mat4& transform):
-        m_Transform(transform)
-    {
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::TransformComponent;
-    }
 
     void TransformComponent::Recalculate()
     {

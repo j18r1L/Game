@@ -1,9 +1,25 @@
 #include "HartEng/Scene/Entity.h"
 
 #include "HartEng/Core/pch.h"
+#include "HartEng/Scene/Components/TransformComponent.h"
+#include "HartEng/Scene/Components/MaterialComponent.h"
+#include "HartEng/Scene/Components/Texture2DComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/SubMeshComponent.h"
+#include "HartEng/Scene/Components/CameraComponent.h"
 
 namespace HE
 {
+    const char* ComponentsTypes[] = {
+        "UndefinedComponent",
+        "TransformComponent",
+        "MaterialComponent",
+        "Texture2DComponent",
+        "MeshComponent",
+        "SubMeshComponent",
+        "CameraComponent",
+    };
+
     Entity::Entity(Scene* sceneHandle, const std::string& name):
         m_SceneHandle(sceneHandle),
         m_Name(name)
@@ -15,60 +31,100 @@ namespace HE
         m_SceneHandle->DestroyEntity(m_Name);
     }
 
-    bool Entity::AddComponent(const ComponentType& type, Component& component)
+    Component* Entity::AddComponent(ComponentType type, Component* component)
     {
+        HE_PROFILE_FUNCTION();
+
         if (HasComponent(type) == false)
         {
-            m_Components[type] = &component;
-            return true;
+            m_Components[type] = component;
+            return component;
         }
         else
         {
-            HE_CORE_WARN("Failed to add component! This Component already exists!");
+            HE_CORE_WARN("Failed to add component with type: '{0}'! This Component already exists in entity with name: '{1}'!", ComponentsTypes[(int)type], m_Name);
         }
-        return false;
+        return nullptr;
+    }
+
+    Component* Entity::AddComponent(ComponentType type)
+    {
+        HE_PROFILE_FUNCTION();
+
+        if (HasComponent(type) == false)
+        {
+            Component* component = nullptr;
+            switch (type)
+            {
+            case (ComponentType::TransformComponent):
+                component = new TransformComponent(this); break;
+            case (ComponentType::MaterialComponent):
+                component = new MaterialComponent(this); break;
+            case (ComponentType::MeshComponent):
+                component = new MeshComponent(this); break;
+            case (ComponentType::SubMeshComponent):
+                component = new SubMeshComponent(this); break;
+            case (ComponentType::Texture2DComponent):
+                component = new Texture2DComponent(this); break;
+            case (ComponentType::CameraComponent):
+                component = new CameraComponent(this); break;
+            case (ComponentType::UndefinedComponent):
+                HE_CORE_WARN("Cant create component with UndefinedType in entity with name: '{0}'", m_Name); break;
+            }
+
+            m_Components[type] = component;
+            return component;
+        }
+        else
+        {
+            HE_CORE_WARN("Failed to add component with type: '{0}'! This Component already exists in entity with name: '{1}'!", ComponentsTypes[(int)type], m_Name);
+        }
+        return nullptr;
     }
 
     // Вернуть компонент из текущего геймобжекта
-    // API: GraphicsComponent = entity.GetComponent(GraphicsComponent);
-    Component* Entity::GetComponent(const ComponentType& type)
+    Component* Entity::GetComponent(ComponentType type)
     {
+        HE_PROFILE_FUNCTION();
+
         std::unordered_map<ComponentType, Component*>::const_iterator component = m_Components.find(type);
         if (component == m_Components.end())
         {
-            //HE_CORE_WARN("There is no component with type: {0}", type);
-            //HE_CORE_ASSERT(false, "There is no component with type: "); // TODO with wich type?
+            HE_CORE_WARN("There is no component with type: '{0}' in entity with name: '{1}'!",  ComponentsTypes[(int)type], m_Name);
             return nullptr;
         }
         return component->second;
     }
 
-    // Проверить наличие компонента type в геймобжекте
-    // API: entity.HasComponent(TransformComponent);
-    bool Entity::HasComponent(const ComponentType& type)
+    const std::string& Entity::GetName() const
     {
+        return m_Name;
+    }
+
+    // Проверить наличие компонента type в геймобжекте
+    bool Entity::HasComponent(ComponentType type)
+    {
+        HE_PROFILE_FUNCTION();
+
         return !(m_Components.find(type) == m_Components.end());
     }
 
     // Удалить компонент type из текущего геймобжекта
-    // API: entity.RemoveComponent(TransformComponent);
     void Entity::RemoveComponent(ComponentType type)
     {
+        HE_PROFILE_FUNCTION();
+
         m_Components.erase(type);
     }
 
-    void Entity::RenameEntity(std::string name)
+    void Entity::SetName(const std::string& name)
     {
         m_Name = name;
     }
 
     void Entity::OnUpdate()
     {
-        /*
-        for (auto &item: m_Components)
-        {
-            item.second->OnUpdate();
-        }
-        */
+        HE_PROFILE_FUNCTION();
+
     }
 }

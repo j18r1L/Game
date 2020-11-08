@@ -6,7 +6,8 @@
 
 namespace HE
 {
-    SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<Scene>& scene)
+    SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<Scene>& scene, std::shared_ptr<ShaderLibrary> shaderLibrary):
+        m_ShaderLibrary(shaderLibrary)
     {
         SetScene(scene);
     }
@@ -14,6 +15,11 @@ namespace HE
     void SceneHierarchyPanel::SetScene(const std::shared_ptr<Scene>& scene)
     {
         m_Scene = scene;
+    }
+
+    void SceneHierarchyPanel::SetShaderLibrary(std::shared_ptr<ShaderLibrary> shaderLibrary)
+    {
+        m_ShaderLibrary = shaderLibrary;
     }
 
     void SceneHierarchyPanel::OnImGuiRender()
@@ -59,9 +65,17 @@ namespace HE
             {
                 if (ImGui::MenuItem("Camera"))
                 {
-                    // TODO redo creating new component
-                    CameraComponent* cameraComponent = new CameraComponent();
-                    m_SelectionContext->AddComponent(ComponentType::CameraComponent, *cameraComponent);
+                    m_SelectionContext->AddComponent(ComponentType::CameraComponent);
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Material"))
+                {
+                    m_SelectionContext->AddComponent(ComponentType::MaterialComponent);
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Mesh"))
+                {
+                    m_SelectionContext->AddComponent(ComponentType::MaterialComponent);
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::EndPopup();
@@ -259,7 +273,28 @@ namespace HE
                     }
                     ImGui::EndPopup();
                 }
-                auto& textures = dynamic_cast<MaterialComponent*>(entity->GetComponent(ComponentType::MaterialComponent))->GetTextures();
+
+                MaterialComponent* material = dynamic_cast<MaterialComponent*>(entity->GetComponent(ComponentType::MaterialComponent));
+                auto& shaderName = material->GetShaderName();
+                auto& shaders = m_ShaderLibrary->GetShaders();
+                if (ImGui::BeginCombo("Shader", shaderName.c_str()))
+                {
+                    for (auto& [name, shader]: shaders)
+                    {
+                        bool isSelected = shaderName == name;
+                        if (ImGui::Selectable(name.c_str(), isSelected))
+                        {
+                            material->SetShader(m_ShaderLibrary, name);
+                        }
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+                auto& textures = material->GetTextures();
+                // Shader name
+                ImGui::Text("Shader name: %s", material->GetShaderName().c_str());
+
                 for (auto& [name, texture]: textures)
                 {
                     if (ImGui::TreeNodeEx((void*)(name.c_str()), treeNodeFlags, name.c_str()))
@@ -304,63 +339,53 @@ namespace HE
                 {
                     if (ImGui::TreeNodeEx((void*)(subMesh), treeNodeFlags, "SubMeshes"))
                     {
-                        // Shader name
-                        ImGui::Text("Shader name: %s", subMesh->GetShaderName().c_str());
-                        // For every vertexArray
-                        for (auto& [name, vertexArray]: subMesh->GetAttribute())
-                        {
-                            if (ImGui::TreeNodeEx((void*)(name.c_str()), treeNodeFlags, name.c_str()))
-                            {
-                                // vertex arrays name
-                                ImGui::Text("VertexArray name: %s", name.c_str());
+                        auto& vertexArray = subMesh->GetAttribute();
+                        auto& name = subMesh->GetName();
 
-                                // For every vertexBuffer in one VertexArray
-                                for (auto& vertexBuffer: vertexArray->GetVertexBuffers())
+                        // vertex array name
+                        ImGui::Text("VertexArray name: %s", name.c_str());
+
+                        // For every vertexBuffer in one VertexArray
+                        for (auto& vertexBuffer: vertexArray->GetVertexBuffers())
+                        {
+                            if (ImGui::TreeNodeEx((void*)(vertexBuffer.get()), treeNodeFlags, "VertexBuffer"))
+                            {
+                                // Buffer array layout
+                                auto& bufferLayout = vertexBuffer->GetLayout();
+                                // Stride
+                                ImGui::Text("Stride: %d", bufferLayout.GetStride());
+                                // For evety bufferElement in one vertexBuffer
+                                for (auto& bufferElement: bufferLayout.GetElements())
                                 {
-                                    if (ImGui::TreeNodeEx((void*)(vertexBuffer.get()), treeNodeFlags, "VertexBuffer"))
+                                    if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlags, bufferElement.Name.c_str()))
                                     {
-                                        // Buffer array layout
-                                        auto& bufferLayout = vertexBuffer->GetLayout();
-                                        // Stride
-                                        ImGui::Text("Stride: %d", bufferLayout.GetStride());
-                                        // For evety bufferElement in one vertexBuffer
-                                        for (auto& bufferElement: bufferLayout.GetElements())
-                                        {
-                                            if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlags, bufferElement.Name.c_str()))
-                                            {
-                                                ImGui::Text("Name: %s", bufferElement.Name.c_str());
-                                                ImGui::Text("Offset: %d", bufferElement.Offset);
-                                                ImGui::Text("Size: %d", bufferElement.Size);
-                                                ImGui::Text("Normalized: %s", bufferElement.Normalized ? "true" : "false");
-                                                const char* shaderDataType[] = {
-                                                    "None",
-                                                    "Float",
-                                                    "Float2",
-                                                    "Float3",
-                                                    "Float4",
-                                                    "Mat3",
-                                                    "Mat4",
-                                                    "Int",
-                                                    "Int2",
-                                                    "Int3",
-                                                    "Int4",
-                                                    "Bool"
-                                                };
-                                                ImGui::Text("Data type: %s", shaderDataType[(int)bufferElement.Type]);
-                                                ImGui::TreePop();
-                                            }
-                                        }
+                                        ImGui::Text("Name: %s", bufferElement.Name.c_str());
+                                        ImGui::Text("Offset: %d", bufferElement.Offset);
+                                        ImGui::Text("Size: %d", bufferElement.Size);
+                                        ImGui::Text("Normalized: %s", bufferElement.Normalized ? "true" : "false");
+                                        const char* shaderDataType[] = {
+                                            "None",
+                                            "Float",
+                                            "Float2",
+                                            "Float3",
+                                            "Float4",
+                                            "Mat3",
+                                            "Mat4",
+                                            "Int",
+                                            "Int2",
+                                            "Int3",
+                                            "Int4",
+                                            "Bool"
+                                        };
+                                        ImGui::Text("Data type: %s", shaderDataType[(int)bufferElement.Type]);
                                         ImGui::TreePop();
                                     }
                                 }
                                 ImGui::TreePop();
                             }
-
-
-                            // Index array count
-                            ImGui::Text("IndexArray count: %d", vertexArray->GetIndexBuffer()->GetCount());
-
                         }
+                        // Index array count
+                        ImGui::Text("IndexArray count: %d", vertexArray->GetIndexBuffer()->GetCount());
                         ImGui::TreePop();
                     }
                 }
@@ -370,7 +395,6 @@ namespace HE
                 if (removeComponent)
                     entity->RemoveComponent(ComponentType::MeshComponent);
             }
-
         }
     }
 }

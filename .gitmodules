@@ -13,3 +13,6 @@
 [submodule "game_engine/HartEng/vendor/GLM"]
 	path = game_engine/HartEng/vendor/GLM
 	url = https://github.com/g-truc/glm.git
+[submodule "HartEng/vendor/Assimp"]
+	path = HartEng/vendor/Assimp
+	url = https://github.com/assimp/assimp.git

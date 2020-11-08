@@ -3,61 +3,47 @@
 namespace HE
 {
     SubMeshComponent::SubMeshComponent(Entity* entityHandle):
-        m_Material(nullptr),
-        m_ShaderLibrary(nullptr),
-        m_ShaderName("undefind")
+        m_Material(nullptr)
     {
         m_EntityHandle = entityHandle;
         m_Type = ComponentType::SubMeshComponent;
     }
 
-    SubMeshComponent::SubMeshComponent(Entity* entityHandle, std::shared_ptr<MaterialComponent> materialComponent, std::shared_ptr<ShaderLibrary> shaderLibrary, const std::string& shaderName):
-        m_Material(materialComponent),
-        m_ShaderLibrary(shaderLibrary),
-        m_ShaderName(shaderName)
+    void SubMeshComponent::SetAttribute(std::shared_ptr<VertexArray> vertexArray)
     {
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::SubMeshComponent;
+        m_VertexArray = vertexArray;
     }
 
-    void SubMeshComponent::SetAttribute(const std::string& name, std::shared_ptr<VertexArray> vertexArray)
+    void SubMeshComponent::SetName(const std::string& name)
     {
-        m_VertexArrays[name] = vertexArray;
+        m_Name = name;
     }
+
     void SubMeshComponent::SetMaterial(const MaterialComponent& materialComponent)
     {
         m_Material = std::make_shared<MaterialComponent>(materialComponent);
     }
 
-    void SubMeshComponent::SetShader(std::shared_ptr<ShaderLibrary> shaderLibrary, const std::string& shaderName)
+    void SubMeshComponent::SetMaterial(MaterialComponent* materialComponent)
     {
-        m_ShaderLibrary = shaderLibrary;
-        m_ShaderName = shaderName;
+        m_Material.reset(materialComponent);
     }
 
-    const std::unordered_map<std::string, std::shared_ptr<VertexArray>>& SubMeshComponent::GetAttribute() const
+    const std::shared_ptr<VertexArray>& SubMeshComponent::GetAttribute() const
     {
-        return m_VertexArrays;
+        return m_VertexArray;
     }
 
+    const std::string& SubMeshComponent::GetName() const
+    {
+        return m_Name;
+    }
 
     std::shared_ptr<MaterialComponent> SubMeshComponent::GetMaterial() const
     {
         return m_Material;
     }
-    std::shared_ptr<Shader> SubMeshComponent::GetShader() const
-    {
-        return m_ShaderLibrary->Get(m_ShaderName);
-    }
 
-    const std::shared_ptr<ShaderLibrary>& SubMeshComponent::GetShaderLibrary() const
-    {
-        return m_ShaderLibrary;
-    }
-    const std::string& SubMeshComponent::GetShaderName() const
-    {
-        return m_ShaderName;
-    }
 
 }
 

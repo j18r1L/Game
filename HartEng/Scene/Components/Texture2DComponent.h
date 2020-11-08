@@ -9,18 +9,15 @@ namespace HE
     class Texture2DComponent: public Component
     {
     private:
-        std::shared_ptr<Texture2D> m_Texture;
+        std::shared_ptr<Texture2D> m_Texture = nullptr;
 
     public:
         Texture2DComponent();
         Texture2DComponent(Entity* entityHandle);
-        Texture2DComponent(Entity* entityHandle, const std::string& filepath);
-        Texture2DComponent(Entity* entityHandle, std::shared_ptr<Texture2D> texture);
-        Texture2DComponent(Texture2DComponent&& other) = default;
-        Texture2DComponent(Texture2DComponent& other) = default;
         virtual ~Texture2DComponent() = default;
 
         void SetImage(std::shared_ptr<Texture2D> texture);
+        void SetImage(const std::string& filepath);
 
         const Texture2D& GetTexture() const;
         void Bind(uint32_t id) const;
