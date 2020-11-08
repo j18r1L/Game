@@ -10,6 +10,7 @@ namespace HE
     private:
         std::shared_ptr<Scene> m_Scene;
         Entity* m_SelectionContext = nullptr;
+        std::shared_ptr<ShaderLibrary> m_ShaderLibrary = nullptr;
         std::string m_DeletedEntity = "";
 
 
@@ -19,9 +20,10 @@ namespace HE
 
     public:
         SceneHierarchyPanel() = default;
-        SceneHierarchyPanel(const std::shared_ptr<Scene>& scene);
+        SceneHierarchyPanel(const std::shared_ptr<Scene>& scene, std::shared_ptr<ShaderLibrary> shaderLibrary = nullptr);
 
         void SetScene(const std::shared_ptr<Scene>& scene);
+        void SetShaderLibrary(std::shared_ptr<ShaderLibrary> shaderLibrary);
 
         void OnImGuiRender();
     };

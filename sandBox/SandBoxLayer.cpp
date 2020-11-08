@@ -22,163 +22,47 @@ namespace HE
         m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Texture.glsl");
 
 
-        // cube
-        float vertices_cube[] = {
-            // positions
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
+        // Create backpack entity
+        Entity* backpackEntity = m_Scene->CreateEntity("Backpack");
+        // create material, mesh, submesh components
+        LoadMesh::CreateMesh(backpackEntity, path_to_project + "/assets/obj/backpack/untitled.obj");
 
-            -0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-        };
-        //Vertex array
-        m_CubeVA = VertexArray::Create();
-        m_CubeVA->Bind();
-        // Vertex buffer
-        std::shared_ptr<VertexBuffer> cubeVB;
-        cubeVB = VertexBuffer::Create(vertices_cube, sizeof(vertices_cube));
-        cubeVB->Bind();
-        cubeVB->SetLayout({
-            {ShaderDataType::Float3, "a_Position"}
-        });
-        m_CubeVA->AddVertexBuffer(cubeVB);
-        unsigned int indices_cube[] = {
-            0, 1, 2, 3, 4, 5, 6,
-            7, 8, 9, 10, 11, 12,
-            13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23, 24,
-            25, 26, 27, 28, 29, 30,
-            31, 32, 33, 34, 35,
-        };
-        std::shared_ptr<IndexBuffer> cubeIB;
-        cubeIB = IndexBuffer::Create(indices_cube, sizeof(indices_cube) / sizeof(uint32_t));
-        m_CubeVA->SetIndexBuffer(cubeIB);
+        // Add shader to material
+        auto backpackMaterialComponent = dynamic_cast<MaterialComponent*>(backpackEntity->GetComponent(ComponentType::MaterialComponent));
+        backpackMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Texture");
 
 
-
-
-        // square
-        float vertices_square[5 * 4] = {
-            0.0f, -0.5f, -0.5f, 0.0f, 0.0f,
-            0.0f, -0.5f, 0.5f, 1.0f, 0.0f,
-            0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
-            0.0f, 0.5f, -0.5f, 0.0f, 1.0f,
-        };
-
-        //Vertex array
-        std::shared_ptr<VertexArray> SquareVA;
-        SquareVA = VertexArray::Create();
-        SquareVA->Bind();
-        // Vertex buffer
-        std::shared_ptr<VertexBuffer> squareVB;
-        squareVB = VertexBuffer::Create(vertices_square, sizeof(vertices_square));
-        squareVB->Bind();
-
-        squareVB->SetLayout({
-            {ShaderDataType::Float3, "a_Position"},
-            {ShaderDataType::Float2, "a_TexCoord"}
-        });
-        SquareVA->AddVertexBuffer(squareVB);
-        unsigned int indices_square[6] = {0, 1, 2, 2, 3, 0};
-        std::shared_ptr<IndexBuffer> squareIB;
-        squareIB = IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t));
-        SquareVA->SetIndexBuffer(squareIB);
-
-        // ---------------Create grid entity------------
-        Entity* gridEntity = m_Scene->CreateEntity("grid");
-
+        // Create grid entity
+        Entity* gridEntity = m_Scene->CreateEntity("Grid");
+        LoadMesh::CreateMesh(gridEntity, path_to_project + "/assets/obj/quad/quad.obj");
+        // Add shader to material
+        auto gridMaterialComponent = dynamic_cast<MaterialComponent*>(gridEntity->GetComponent(ComponentType::MaterialComponent));
+        gridMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Grid");
         // Set transform component
         TransformComponent* gridTransformComponent = dynamic_cast<TransformComponent*>(gridEntity->GetComponent(ComponentType::TransformComponent));
-        gridTransformComponent->SetTranslation({0.0f, -0.5f, 0.0f});
+        gridTransformComponent->SetTranslation({10.0f, -0.5f, 10.0f});
         gridTransformComponent->SetRotation({0.0f, 90.0f, 0.0f});
         gridTransformComponent->SetRotation({0.0f, 0.0f, 90.0f});
         gridTransformComponent->SetScale({1.0f, 10.0f, 10.0f});
 
-        // Create SubMesh
-        SubMeshComponent* gridSubMeshComponent = new SubMeshComponent(gridEntity);
-        gridSubMeshComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Grid");
-        gridSubMeshComponent->SetAttribute("quad", SquareVA);
-        gridEntity->AddComponent(ComponentType::SubMeshComponent, *gridSubMeshComponent);
 
-        // Create mesh
-        MeshComponent* gridMeshComponent = new MeshComponent(gridEntity);
-        gridMeshComponent->AddSubMesh(*gridSubMeshComponent);
-        gridEntity->AddComponent(ComponentType::MeshComponent, *gridMeshComponent);
-
-
-
-        // --------Create square entity--------------
-        Entity* squareEntity = m_Scene->CreateEntity("square");
-
-        // load and create texture
-        Texture2DComponent* squareTexture2DComponent = new Texture2DComponent(squareEntity, path_to_project + "/assets/textures/tex_coord.png");
-        squareEntity->AddComponent(ComponentType::Texture2DComponent, *squareTexture2DComponent);
-
-        // Create material with texture
-        MaterialComponent* squareMaterialComponent = new MaterialComponent(squareEntity);
-        squareMaterialComponent->AddTexture("u_Texture", squareTexture2DComponent);
-        squareEntity->AddComponent(ComponentType::MaterialComponent, *squareMaterialComponent);
-
-        // Create SubMesh
-        SubMeshComponent* squareSubMeshComponent = new SubMeshComponent(squareEntity);
-        squareSubMeshComponent->SetMaterial(*squareMaterialComponent);
-        squareSubMeshComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Texture");
-        squareSubMeshComponent->SetAttribute("quad", SquareVA);
-        squareEntity->AddComponent(ComponentType::SubMeshComponent, *squareSubMeshComponent);
-
-        // Create Mesh
-        MeshComponent* squareMeshComponent = new MeshComponent(squareEntity);
-        squareMeshComponent->AddSubMesh(*squareSubMeshComponent);
-        squareEntity->AddComponent(ComponentType::MeshComponent, *squareMeshComponent);
+        // Create environment entity
+        environmentEntity = new Entity();
+        environmentEntity->AddComponent(ComponentType::TransformComponent);
+        LoadMesh::CreateMesh(environmentEntity, path_to_project + "/assets/obj/cube/cube.obj");
+        // Add shader to material
+        auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
+        environmentMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Environment");
 
 
         // --------- Create Camera entity ------------------
         Entity* cameraEntity = m_Scene->CreateEntity("Camera");
 
-        // Set transform component
-        TransformComponent* cameraTransformComponent = dynamic_cast<TransformComponent*>(cameraEntity->GetComponent(ComponentType::TransformComponent));
-        cameraTransformComponent->SetRotation({0.0f, 0.0f, 0.0f});
-
         // Create camera component
         float aspectRatio = static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight());
-        CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f,100.0f, true, false);
-        cameraEntity->AddComponent(ComponentType::CameraComponent, *cameraComponent);
+        CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(cameraEntity->AddComponent(ComponentType::CameraComponent));
+        cameraComponent->SetPrimary(true);
+        cameraComponent->SetPerspective(45.0f, aspectRatio, 0.1f, 1000.0f);
 
     }
 
@@ -199,23 +83,21 @@ namespace HE
             RenderCommand::Clear();
         }
 
-        /*
-        {
-            HE_PROFILE_SCOPE("Update Scene");
-            m_Scene->OnUpdate(ts);
-        }
-        */
         {
             HE_PROFILE_SCOPE("Renderer Draw");
 
-            /*
-            RenderCommand::SetDepthTest(false);
             // environment
+            RenderCommand::SetDepthTest(false);
+            MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
+            glm::mat4 transform = dynamic_cast<TransformComponent*>(environmentEntity->GetComponent(ComponentType::TransformComponent))->GetTransform();
+            glm::mat4 projection = dynamic_cast<CameraComponent*>(m_Scene->getEntity("Camera")->GetComponent(ComponentType::CameraComponent))->GetCamera().GetProjection();
             auto environmentShader = m_ShaderLibrary.Get("Environment");
+            auto& subMeshes = meshComponent->GetSubMeshes();
             environmentShader->Bind();
-            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera()->GetView())));
-            Renderer::Submit(environmentShader, m_CubeVA);
-            */
+
+            environmentShader->SetMat4("u_ProjectionView", projection * glm::mat4(glm::mat3(glm::inverse(transform))));
+            auto& attribute = subMeshes[0]->GetAttribute();
+            Renderer::Submit(environmentShader, attribute);
 
             RenderCommand::SetDepthTest(true);
             m_Scene->OnUpdate(ts);

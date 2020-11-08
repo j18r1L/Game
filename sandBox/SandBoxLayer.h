@@ -9,7 +9,7 @@ namespace HE
     {
     private:
         ShaderLibrary m_ShaderLibrary;
-        std::shared_ptr<VertexArray> m_CubeVA;
+        Entity* environmentEntity;
 
         std::shared_ptr<Scene> m_Scene;
     public:

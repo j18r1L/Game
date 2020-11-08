@@ -14,6 +14,7 @@ namespace HE
         BufferLayout m_Layout;
     public:
         OpenGLVertexBuffer(float* vertices, uint32_t size);
+        OpenGLVertexBuffer(void* vertices, uint32_t size);
         ~OpenGLVertexBuffer();
         void Bind() const override;
         void UnBind() const override;

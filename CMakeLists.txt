@@ -71,6 +71,10 @@ add_subdirectory("${GLM_DIR}")
 set(SPDLOG_DIR "${LIB_DIR}/spdlog")
 add_subdirectory("${SPDLOG_DIR}")
 
+# assimp
+set(ASSIMP_DIR "${LIB_DIR}/Assimp")
+add_subdirectory("${ASSIMP_DIR}")
+
 # imGUI
 set(imGUI_DIR "${LIB_DIR}/imGUI")
 include_directories(${imGUI_DIR})
@@ -82,6 +86,8 @@ include_directories("${ENTT_DIR}/include/")
 # stb
 set(STB_DIR "${LIB_DIR}/stb")
 include_directories("${STB_DIR}")
+
+
 
 file(GLOB game_engine_files
     "HartEng/HartEng.h"
@@ -162,6 +168,10 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 target_link_libraries(${PROJECT_NAME} "glad" "${GLAD_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 
+# assimp
+target_link_libraries(${PROJECT_NAME} "assimp" "${ASSIMP_LIBRARIES}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${ASSIMP_DIR}/include")
+
 # GLM
 target_link_libraries(${PROJECT_NAME} "glm" "${GLM_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
@@ -169,6 +179,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
 # spdlog
 target_link_libraries(${PROJECT_NAME} "spdlog" "${SPDLOG_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${SPDLOG_DIR}/include")
+
+
+
 
 
 
