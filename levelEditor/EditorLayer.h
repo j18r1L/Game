@@ -10,7 +10,7 @@ namespace HE
     {
     private:
         ShaderLibrary m_ShaderLibrary;
-        std::shared_ptr<VertexArray> m_CubeVA;
+        Entity* environmentEntity;
 
         FrameBufferSpecification m_FrameBufferSpec;
         std::shared_ptr<FrameBuffer> m_FrameBuffer;

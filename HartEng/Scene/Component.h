@@ -29,6 +29,8 @@ namespace HE
 
         virtual ~Component();
 
+        void SetEntity(Entity* entity);
+
         ComponentType getType() const;
     };
 }

@@ -76,6 +76,11 @@ namespace HE
         return m_Shaders[name];
     }
 
+    const std::unordered_map<std::string, std::shared_ptr<Shader>> ShaderLibrary::GetShaders() const
+    {
+        return m_Shaders;
+    }
+
     bool ShaderLibrary::Exists(const std::string& name) const
     {
         return m_Shaders.find(name) != m_Shaders.end();

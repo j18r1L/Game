@@ -14,24 +14,6 @@ namespace HE
         m_Type = ComponentType::CameraComponent;
     }
 
-    CameraComponent::CameraComponent(Entity* entityHandle, float size, float nearClip, float farClip, bool primary, bool fixedAspectRatio):
-        m_Primary(primary),
-        m_FixedAspectRatio(fixedAspectRatio)
-    {
-        m_Camera.SetOrthographic(size, nearClip, farClip);
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::CameraComponent;
-    }
-
-    CameraComponent::CameraComponent(Entity* entityHandle, float fov, float aspectRatio, float nearClip, float farClip, bool primary, bool fixedAspectRatio):
-        m_Primary(primary),
-        m_FixedAspectRatio(fixedAspectRatio)
-    {
-        m_Camera.SetPerspective(fov, aspectRatio, nearClip, farClip);
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::CameraComponent;
-    }
-
     void CameraComponent::SetPrimary(bool primary)
     {
         m_Primary = primary;
@@ -40,6 +22,16 @@ namespace HE
     void CameraComponent::SetFixedAspectRatio(bool fixedAspectRatio)
     {
         m_FixedAspectRatio = fixedAspectRatio;
+    }
+
+    void CameraComponent::SetOrthographic(float size, float nearClip, float farClip)
+    {
+        m_Camera.SetOrthographic(size, nearClip, farClip);
+    }
+
+    void CameraComponent::SetPerspective(float fov, float aspectRatio, float nearClip, float farClip)
+    {
+        m_Camera.SetPerspective(fov, aspectRatio, nearClip, farClip);
     }
 
     bool CameraComponent::GetPrimary() const

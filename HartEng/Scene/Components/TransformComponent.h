@@ -18,7 +18,6 @@ namespace HE
         void Recalculate();
     public:
         TransformComponent(Entity* entityHandle);
-        TransformComponent(Entity* entityHandle, const glm::mat4& transform);
         virtual ~TransformComponent() = default;
 
         void SetTranslation(const glm::vec3& translate);

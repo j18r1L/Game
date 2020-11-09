@@ -15,11 +15,11 @@ namespace HE
     public:
         CameraComponent();
         CameraComponent(Entity* entityHandle);
-        CameraComponent(Entity* entityHandle, float fov, float aspectRatio, float nearClip, float farClip, bool primary = false, bool fixedAspectRatio = false);
-        CameraComponent(Entity* entityHandle, float size, float nearClip, float farClip, bool primary = false, bool fixedAspectRatio = false);
 
         void SetPrimary(bool primary);
         void SetFixedAspectRatio(bool fixedAspectRatio);
+        void SetOrthographic(float size, float nearClip, float farClip);
+        void SetPerspective(float fov, float aspectRatio, float nearClip, float farClip);
 
         bool GetPrimary() const;
         bool GetFixedAspectRatio() const;

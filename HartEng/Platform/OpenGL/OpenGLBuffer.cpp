@@ -15,6 +15,17 @@ namespace HE
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
     }
 
+    OpenGLVertexBuffer::OpenGLVertexBuffer(void* vertices, uint32_t size)
+    {
+        HE_PROFILE_FUNCTION();
+
+        glGenBuffers(1, &m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+
+        //TODO заменить захардкоженный STATIC DRAW
+        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    }
+
     OpenGLVertexBuffer::~OpenGLVertexBuffer()
     {
         HE_PROFILE_FUNCTION();
