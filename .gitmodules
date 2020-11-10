@@ -1,6 +1,6 @@
 [submodule "HartEng/vendor/spdlog"]
 	path = HartEng/vendor/spdlog
-	url = https://github.com/gabime/spdlog
+	url = https://github.com/gabime/spdlog.git
 [submodule "HartEng/vendor/GLFW"]
 	path = HartEng/vendor/GLFW
 	url = https://github.com/glfw/glfw.git
