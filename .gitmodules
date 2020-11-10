@@ -1,17 +1,17 @@
-[submodule "game_engine/HartEng/vendor/spdlog"]
-	path = game_engine/HartEng/vendor/spdlog
+[submodule "HartEng/vendor/spdlog"]
+	path = HartEng/vendor/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "game_engine/HartEng/vendor/GLFW"]
-	path = game_engine/HartEng/vendor/GLFW
+[submodule "HartEng/vendor/GLFW"]
+	path = HartEng/vendor/GLFW
 	url = https://github.com/glfw/glfw.git
-[submodule "game_engine/HartEng/vendor/GLAD"]
-	path = game_engine/HartEng/vendor/GLAD
+[submodule "HartEng/vendor/GLAD"]
+	path = HartEng/vendor/GLAD
 	url = https://github.com/Dav1dde/glad.git
-[submodule "game_engine/HartEng/vendor/imGUI"]
-	path = game_engine/HartEng/vendor/imGUI
+[submodule "HartEng/vendor/imGUI"]
+	path = HartEng/vendor/imGUI
 	url = https://github.com/ocornut/imgui.git
-[submodule "game_engine/HartEng/vendor/GLM"]
-	path = game_engine/HartEng/vendor/GLM
+[submodule "HartEng/vendor/GLM"]
+	path = HartEng/vendor/GLM
 	url = https://github.com/g-truc/glm.git
 [submodule "HartEng/vendor/Assimp"]
 	path = HartEng/vendor/Assimp
