@@ -118,11 +118,11 @@ file(GLOB game_engine_files
     "HartEng/vendor/imGUI/*.h"
     "HartEng/vendor/imGUI/*.cpp"
 
-    "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.h"
-    "HartEng/vendor/imGUI/examples/imgui_impl_opengl3.cpp"
+    "HartEng/vendor/imGUI/backends/imgui_impl_opengl3.h"
+    "HartEng/vendor/imGUI/backends/imgui_impl_opengl3.cpp"
 
-    "HartEng/vendor/imGUI/examples/imgui_impl_glfw.h"
-    "HartEng/vendor/imGUI/examples/imgui_impl_glfw.cpp"
+    "HartEng/vendor/imGUI/backends/imgui_impl_glfw.h"
+    "HartEng/vendor/imGUI/backends/imgui_impl_glfw.cpp"
 
     "HartEng/Scene/*.h"
     "HartEng/Scene/*.cpp"
