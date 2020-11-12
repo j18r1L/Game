@@ -70,5 +70,9 @@ namespace HE
     {
         return m_ShaderName;
     }
+    std::string MaterialComponent::GetShaderNameCopy()
+    {
+        return m_ShaderName;
+    }
 }
 

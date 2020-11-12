@@ -35,11 +35,17 @@ namespace HE
         // check for errors
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
-            HE_CORE_ERROR("Cant load mesh using assimp: %s", importer.GetErrorString());
+            HE_CORE_ERROR("Cant load mesh using assimp: {0}", importer.GetErrorString());
             return;
         }
         // retrieve the directory path of the filepath
+        // using usual slashes
         std::string directory = filePath.substr(0, filePath.find_last_of('/'));
+        if (filePath.find('/') == std::string::npos)
+        {
+            // using backsided slashes
+            directory = filePath.substr(0, filePath.find_last_of('\\'));
+        }
         //std::string name = filePath.substr(filePath.find_last_of('/'), filePath.size());
 
         // process ASSIMP's root node recursively
@@ -56,8 +62,13 @@ namespace HE
             // the node object only contains indices to index the actual objects in the scene.
             // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->AddComponent(ComponentType::MeshComponent));
-            ProcessMesh(entity, *meshComponent, mesh, scene, directory);
+            MeshComponent* meshComponent = nullptr;
+            if (entity->HasComponent(ComponentType::MeshComponent))
+                meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
+            else
+                meshComponent = dynamic_cast<MeshComponent*>(entity->AddComponent(ComponentType::MeshComponent));
+            if (meshComponent != nullptr)
+                ProcessMesh(entity, *meshComponent, mesh, scene, directory);
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
         for(unsigned int i = 0; i < node->mNumChildren; i++)
@@ -181,7 +192,13 @@ namespace HE
             aiString str;
             mat->GetTexture(type, i, &str);
 
-            std::string filename = directory + '/' + str.C_Str();
+            std::string filename = directory + "/" + str.C_Str();
+            if (directory.find('/') == std::string::npos)
+            {
+                // using backsided slash
+                filename = directory + "\\" + str.C_Str();
+            }
+
             materialComponent.AddTexture(str.C_Str(), filename);
         }
     }
