@@ -153,8 +153,6 @@ namespace HE
 
     void SceneHierarchyPanel::DrawTransform(Entity* entity)
     {
-        const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
-
         TransformComponent* transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
 
         glm::vec3 position = transform->GetTranslation();
@@ -405,9 +403,10 @@ namespace HE
                         // Stride
                         ImGui::Text("Stride: %d", bufferLayout.GetStride());
                         // For evety bufferElement in one vertexBuffer
+                        const ImGuiTreeNodeFlags treeNodeFlagsBufferElement = ImGuiTreeNodeFlags_AllowItemOverlap;
                         for (auto& bufferElement: bufferLayout.GetElements())
                         {
-                            if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlags, bufferElement.Name.c_str()))
+                            if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlagsBufferElement, bufferElement.Name.c_str()))
                             {
                                 ImGui::Text("Name: %s", bufferElement.Name.c_str());
                                 ImGui::Text("Offset: %d", bufferElement.Offset);
