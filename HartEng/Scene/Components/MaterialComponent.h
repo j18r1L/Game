@@ -21,7 +21,7 @@ namespace HE
         glm::vec3 m_Emissive = glm::vec3(0.0f);
 
         std::shared_ptr<ShaderLibrary> m_ShaderLibrary = nullptr;
-        std::string m_ShaderName = "undefind shader";
+        std::string m_ShaderName = "undefined";
     public:
         MaterialComponent();
         MaterialComponent(Entity* entityHandle);
@@ -38,6 +38,7 @@ namespace HE
         const glm::vec3& GetEmissive() const;
         const std::shared_ptr<ShaderLibrary>& GetShaderLibrary() const;
         const std::string& GetShaderName() const;
+        std::string GetShaderNameCopy();
         std::shared_ptr<Shader> GetShader() const;
     };
 }

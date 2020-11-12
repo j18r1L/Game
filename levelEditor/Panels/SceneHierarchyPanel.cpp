@@ -75,7 +75,7 @@ namespace HE
                 }
                 if (ImGui::MenuItem("Mesh"))
                 {
-                    m_SelectionContext->AddComponent(ComponentType::MaterialComponent);
+                    m_SelectionContext->AddComponent(ComponentType::MeshComponent);
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::EndPopup();
@@ -120,12 +120,10 @@ namespace HE
         // Entity name
         auto& name = entity->GetName();
 
-        // TODO redo renaming
-        char buffer[256];
-        memset(buffer, 0, sizeof(buffer));
-        strcpy_s(buffer, sizeof(buffer), name.c_str());
-        if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-            m_Scene->RenameEntity(name, buffer);
+        static std::string EntityName(256, '\0');
+        EntityName = name;
+        if (ImGui::InputText("Name", &EntityName[0], 256))
+            m_Scene->RenameEntity(name, EntityName);
 
 
         if (entity->HasComponent(ComponentType::TransformComponent))
@@ -326,13 +324,57 @@ namespace HE
                     ImGui::OpenPopup("Component Settings");
 
                 bool removeComponent = false;
+                static bool createMesh = false;
                 if (ImGui::BeginPopup("Component Settings"))
                 {
                     if (ImGui::MenuItem("Remove Component"))
                     {
                         removeComponent = true;
                     }
+                    if (ImGui::MenuItem("Load new mesh"))
+                    {
+
+                        createMesh = true;
+
+                    }
                     ImGui::EndPopup();
+                }
+                if (createMesh)
+                {
+                    ImGui::Begin("New mesh");
+                    static std::string MeshName(256, '\0');
+                    ImGui::InputText("Path", &MeshName[0], 256);
+
+
+                    if (ImGui::Button("Accept"))
+                    {
+                        createMesh = false;
+                        bool HasMaterial = false;
+                        std::shared_ptr<ShaderLibrary> shaderLibrary = nullptr;
+                        std::string shaderName = "undefined";
+                        if (m_SelectionContext->HasComponent(ComponentType::MaterialComponent))
+                        {
+                            HasMaterial = true;
+                            MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(m_SelectionContext->GetComponent(ComponentType::MaterialComponent));
+                            shaderLibrary = materialComponent->GetShaderLibrary();
+                            shaderName = materialComponent->GetShaderNameCopy();
+                            m_SelectionContext->RemoveComponent(ComponentType::MaterialComponent);
+
+                        }
+                        if (m_SelectionContext->HasComponent(ComponentType::MeshComponent))
+                            m_SelectionContext->RemoveComponent(ComponentType::MeshComponent);
+
+                        if (m_SelectionContext->HasComponent(ComponentType::SubMeshComponent))
+                            m_SelectionContext->RemoveComponent(ComponentType::SubMeshComponent);
+                        LoadMesh::CreateMesh(m_SelectionContext, MeshName);
+                        if (HasMaterial)
+                        {
+                            // Add shader to material
+                            MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(m_SelectionContext->GetComponent(ComponentType::MaterialComponent));
+                            materialComponent->SetShader(shaderLibrary, shaderName);
+                        }
+                    }
+                    ImGui::End();
                 }
                 auto& submeshes = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent))->GetSubMeshes();
                 for (auto& subMesh: submeshes)

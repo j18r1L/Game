@@ -12,6 +12,7 @@ namespace HE
         Entity* m_SelectionContext = nullptr;
         std::shared_ptr<ShaderLibrary> m_ShaderLibrary = nullptr;
         std::string m_DeletedEntity = "";
+        std::string m_PathToNewMesh = "";
 
 
         void DrawEntityNode(std::string name, Entity* entity);

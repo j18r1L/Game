@@ -181,7 +181,7 @@ namespace HE
         Application::Get().GetImGuiLayer()->SetBlockEvents(m_ViewportFocused);
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-
+        // Resize
         if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
         {
             if (m_ViewportSize.x <= 1.0f || m_ViewportSize.y <= 1.0f)

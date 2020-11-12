@@ -157,10 +157,19 @@ namespace HE
                 for (auto& subMesh: subMeshes)
                 {
                     auto material = subMesh->GetMaterial();
-                    auto shader = material->GetShader();
-                    shader->Bind();
-                    auto& attribute = subMesh->GetAttribute();
-                    Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+                    auto shaderLibrary = material->GetShaderLibrary();
+                    if (shaderLibrary != nullptr)
+                    {
+                        if (shaderLibrary->Exists(material->GetShaderName()))
+                        {
+                            auto shader = material->GetShader();
+                            shader->Bind();
+                            auto& attribute = subMesh->GetAttribute();
+                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+                        }
+                    }
+
+
                 }
             }
         }
@@ -175,14 +184,17 @@ namespace HE
         // Resize all our non-FixedAspectRatio cameras
         for (auto& [name, entity]: m_Entities)
         {
-            CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
-            if (cameraComponent)
+            if (entity->HasComponent(ComponentType::CameraComponent))
             {
-                if (!cameraComponent->GetFixedAspectRatio())
+                CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
+                if (cameraComponent)
                 {
-                    auto camera = cameraComponent->GetCamera();
-                    camera.SetViewportSize(width, height);
+                    if (!cameraComponent->GetFixedAspectRatio())
+                    {
+                        auto camera = cameraComponent->GetCamera();
+                        camera.SetViewportSize(width, height);
 
+                    }
                 }
             }
         }
