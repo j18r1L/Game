@@ -96,6 +96,13 @@ namespace HE
         return component->second;
     }
 
+    const std::unordered_map<ComponentType, Component*>& Entity::GetComponents()
+    {
+        HE_PROFILE_FUNCTION();
+
+        return m_Components;
+    }
+
     const std::string& Entity::GetName() const
     {
         return m_Name;
@@ -122,9 +129,4 @@ namespace HE
         m_Name = name;
     }
 
-    void Entity::OnUpdate()
-    {
-        HE_PROFILE_FUNCTION();
-
-    }
 }

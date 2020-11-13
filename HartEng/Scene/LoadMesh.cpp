@@ -198,8 +198,9 @@ namespace HE
                 // using backsided slash
                 filename = directory + "\\" + str.C_Str();
             }
-
-            materialComponent.AddTexture(str.C_Str(), filename);
+            std::string name(str.C_Str());
+            name = name.substr(0, name.find_last_of('.'));
+            materialComponent.AddTexture(name, filename);
         }
     }
 }
