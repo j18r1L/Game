@@ -51,6 +51,7 @@ add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
 
 set(LIB_DIR "${CMAKE_SOURCE_DIR}/HartEng/vendor")
 
+######## CMAKE LIBS ##########
 # GLFW
 set(GLFW_DIR "${LIB_DIR}/GLFW")
 set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
@@ -75,13 +76,17 @@ add_subdirectory("${SPDLOG_DIR}")
 set(ASSIMP_DIR "${LIB_DIR}/Assimp")
 add_subdirectory("${ASSIMP_DIR}")
 
+# yaml
+set(YAML_DIR "${LIB_DIR}/yaml")
+set(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "Generate tools")
+set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "Generate shared libs")
+set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "Build tests")
+add_subdirectory("${YAML_DIR}")
+
+########### NO CMAKE LIBS ############
 # imGUI
 set(imGUI_DIR "${LIB_DIR}/imGUI")
 include_directories(${imGUI_DIR})
-
-# entt
-set(ENTT_DIR "${LIB_DIR}/entt")
-include_directories("${ENTT_DIR}/include/")
 
 # stb
 set(STB_DIR "${LIB_DIR}/stb")
@@ -171,6 +176,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 # assimp
 target_link_libraries(${PROJECT_NAME} "assimp" "${ASSIMP_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${ASSIMP_DIR}/include")
+
+# yaml
+target_link_libraries(${PROJECT_NAME} "yaml-cpp" "${YAML_LIBRARIES}")
+target_include_directories(${PROJECT_NAME} PRIVATE "${YAML_DIR}/include")
 
 # GLM
 target_link_libraries(${PROJECT_NAME} "glm" "${GLM_LIBRARIES}")

@@ -16,3 +16,6 @@
 [submodule "HartEng/vendor/Assimp"]
 	path = HartEng/vendor/Assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "HartEng/vendor/yaml"]
+	path = HartEng/vendor/yaml
+	url = https://github.com/jbeder/yaml-cpp.git
