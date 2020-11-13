@@ -18,6 +18,11 @@ namespace HE
         void DrawEntityNode(std::string name, Entity* entity);
         void DrawComponents(Entity* entity);
 
+        void DrawTransform(Entity* entity);
+        void DrawCamera(Entity* entity);
+        void DrawMaterial(Entity* entity);
+        void DrawMesh(Entity* entity);
+
 
     public:
         SceneHierarchyPanel() = default;

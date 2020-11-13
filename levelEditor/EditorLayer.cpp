@@ -28,7 +28,7 @@ namespace HE
         // Create backpack entity
         Entity* backpackEntity = m_Scene->CreateEntity("Backpack");
         // create material, mesh, submesh components
-        LoadMesh::CreateMesh(backpackEntity, path_to_project + "/assets/obj/backpack/untitled.obj");
+        LoadMesh::CreateMesh(backpackEntity, path_to_project + "/assets/obj/backpack/backpack.obj");
 
         // Add shader to material
         auto backpackMaterialComponent = dynamic_cast<MaterialComponent*>(backpackEntity->GetComponent(ComponentType::MaterialComponent));
