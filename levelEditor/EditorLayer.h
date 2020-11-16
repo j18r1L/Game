@@ -21,6 +21,8 @@ namespace HE
         // Viewport Size
         glm::vec2 m_ViewportSize;
         bool m_ViewportFocused = true;
+        bool m_Play = false;
+        bool m_Pause = false;
 
 
         // Panels

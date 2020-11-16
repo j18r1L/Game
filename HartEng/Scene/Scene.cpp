@@ -104,9 +104,9 @@ namespace HE
             // Find mainCamera
             for (auto& [name, entity]: m_Entities)
             {
-                CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
-                if (cameraComponent)
+                if (entity->HasComponent(ComponentType::CameraComponent))
                 {
+                    CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
                     if (cameraComponent->GetPrimary())
                     {
                         transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent))->GetTransform();
@@ -114,6 +114,8 @@ namespace HE
                         break;
                     }
                 }
+                
+                
 
             }
         }
@@ -125,24 +127,28 @@ namespace HE
             {
                 Renderer::BeginScene(mainCamera->GetProjection(), transform);
 
-                // Render all entities
+                // For all entities
                 for (auto& [name, entity]: m_Entities)
                 {
                     HE_PROFILE_SCOPE(name.c_str());
-                    // quad with texture
-                    MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
-                    TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
-                    if (meshComponent)
-                    {
-                        auto& subMeshes = meshComponent->GetSubMeshes();
-                        for (auto& subMesh: subMeshes)
-                        {
-                            auto material = subMesh->GetMaterial();
-                            auto shader = material->GetShader();
-                            shader->Bind();
-                            auto& attribute = subMesh->GetAttribute();
-                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
 
+                    // Render only entities with mesh
+                    if (entity->HasComponent(ComponentType::MeshComponent))
+                    {
+                        MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
+                        TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+                        if (meshComponent)
+                        {
+                            auto& subMeshes = meshComponent->GetSubMeshes();
+                            for (auto& subMesh : subMeshes)
+                            {
+                                auto material = subMesh->GetMaterial();
+                                auto shader = material->GetShader();
+                                shader->Bind();
+                                auto& attribute = subMesh->GetAttribute();
+                                Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+
+                            }
                         }
                     }
                 }
