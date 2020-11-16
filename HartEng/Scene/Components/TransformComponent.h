@@ -11,7 +11,7 @@ namespace HE
     {
     private:
         glm::mat4 m_Transform = glm::mat4(1.0f);
-        glm::vec3 m_Translation = glm::vec3(0.0f);
+        glm::vec3 m_Position = glm::vec3(0.0f);
         glm::quat m_Rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 m_Scale = glm::vec3(1.0f);
 
@@ -20,14 +20,14 @@ namespace HE
         TransformComponent(Entity* entityHandle);
         virtual ~TransformComponent() = default;
 
-        void SetTranslation(const glm::vec3& translate);
+        void SetPosition(const glm::vec3& position);
         void SetRotation(const glm::quat& rotation);
         void SetRotation(const glm::vec3& angles);
         void SetScale(const glm::vec3& scale);
         void SetTransform(const glm::mat4& transform);
-        void SetTRC(const glm::vec3& translate, const glm::vec3& angles, const glm::vec3& scale);
+        void SetPRC(const glm::vec3& translate, const glm::vec3& angles, const glm::vec3& scale);
 
-        const glm::vec3& GetTranslation() const;
+        const glm::vec3& GetPosition() const;
         const glm::quat& GetRotation() const;
         const glm::vec3& GetScale() const;
         const glm::mat4& GetTransform() const;

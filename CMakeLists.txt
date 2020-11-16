@@ -41,7 +41,7 @@ add_definitions(-DHE_QT_CTEATOR)
 add_definitions(-DHE_DEBUG)
 
 # Profile
-add_definitions(-DHE_PROFILE)
+#add_definitions(-DHE_PROFILE)
 
 # Event's trace
 #add_definitions(-DHE_TRACE_EVENTS)
@@ -78,9 +78,9 @@ add_subdirectory("${ASSIMP_DIR}")
 
 # yaml
 set(YAML_DIR "${LIB_DIR}/yaml")
-set(YAML_CPP_BUILD_TOOLS OFF CACHE INTERNAL "Generate tools")
-set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "Generate shared libs")
-set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "Build tests")
+#set(YAML_CPP_BUILD_TOOLS ON CACHE INTERNAL "Generate tools")
+#set(YAML_BUILD_SHARED_LIBS ON CACHE INTERNAL "Generate shared libs")
+#set(YAML_CPP_BUILD_TESTS OFF CACHE INTERNAL "Build tests")
 add_subdirectory("${YAML_DIR}")
 
 ########### NO CMAKE LIBS ############
