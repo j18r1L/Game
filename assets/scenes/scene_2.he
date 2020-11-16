@@ -1,0 +1,43 @@
+Scene: first_scene
+Entities:
+  - Entity: Backpack
+    TransformComponent:
+      Position: [0, 0, -6.30000019]
+      Rotation: [0, 0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      FilePath: D:/Projects/Game/assets/obj/backpack/backpack.obj
+    MaterialComponent:
+      ShaderName: Texture
+      FilePath: D:/Projects/Game/assets/shaders/Texture.glsl
+  - Entity: Grid
+    TransformComponent:
+      Position: [10, -0.5, 10]
+      Rotation: [0, 0, 0.707106769, 0.707106769]
+      Scale: [1, 10, 10]
+    MeshComponent:
+      FilePath: D:/Projects/Game/assets/obj/quad/quad.obj
+    MaterialComponent:
+      ShaderName: Grid
+      FilePath: D:/Projects/Game/assets/shaders/Grid.glsl
+  - Entity: "Camera\x00irst_scene_2"
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 45
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: "Empty\x00first_scene_3"
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0, 0]
+      Scale: [1, 1, 1]

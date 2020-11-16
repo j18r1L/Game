@@ -47,7 +47,8 @@ namespace HE
         Compile(sources);
     }
 
-    OpenGLShader::OpenGLShader(const std::string& path)
+    OpenGLShader::OpenGLShader(const std::string& path):
+        m_FilePath(path)
     {
         HE_PROFILE_FUNCTION();
         std::string source = ReadFile(path);
@@ -245,6 +246,11 @@ namespace HE
     const std::string& OpenGLShader::GetName() const
     {
         return m_Name;
+    }
+
+    const std::string& OpenGLShader::GetFilePath() const
+    {
+        return m_FilePath;
     }
 
     uint32_t OpenGLShader::GetUniformLocation(const std::string& name) const

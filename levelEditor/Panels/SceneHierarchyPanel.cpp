@@ -118,9 +118,9 @@ namespace HE
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
 
         // Entity name
-        auto& name = entity->GetName();
-
+        std::string name = entity->GetName();
         static std::string EntityName(256, '\0');
+        EntityName.assign("\0");
         EntityName = name;
         if (ImGui::InputText("Name", &EntityName[0], 256))
             m_Scene->RenameEntity(name, EntityName);
@@ -155,10 +155,10 @@ namespace HE
     {
         TransformComponent* transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
 
-        glm::vec3 position = transform->GetTranslation();
+        glm::vec3 position = transform->GetPosition();
         if (ImGui::DragFloat3("Position", glm::value_ptr(position), 0.1f))
         {
-            transform->SetTranslation(position);
+            transform->SetPosition(position);
         }
 
 
@@ -372,76 +372,83 @@ namespace HE
 
                 if (m_SelectionContext->HasComponent(ComponentType::SubMeshComponent))
                     m_SelectionContext->RemoveComponent(ComponentType::SubMeshComponent);
-                LoadMesh::CreateMesh(m_SelectionContext, MeshName);
-                if (HasMaterial)
+                if (LoadMesh::CreateMesh(m_SelectionContext, MeshName))
                 {
-                    // Add shader to material
-                    MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(m_SelectionContext->GetComponent(ComponentType::MaterialComponent));
-                    materialComponent->SetShader(shaderLibrary, shaderName);
+                    if (HasMaterial)
+                    {
+                        // Add shader to material
+                        MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(m_SelectionContext->GetComponent(ComponentType::MaterialComponent));
+                        materialComponent->SetShader(shaderLibrary, shaderName);
+                    }
                 }
+                
             }
             ImGui::End();
         }
-        auto& submeshes = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent))->GetSubMeshes();
-        for (auto& subMesh: submeshes)
+        if (entity->HasComponent(ComponentType::MeshComponent))
         {
-            if (ImGui::TreeNodeEx((void*)(subMesh), treeNodeFlags, "SubMeshes"))
+            auto& submeshes = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent))->GetSubMeshes();
+            for (auto& subMesh : submeshes)
             {
-                auto& vertexArray = subMesh->GetAttribute();
-                auto& name = subMesh->GetName();
-
-                // vertex array name
-                ImGui::Text("VertexArray name: %s", name.c_str());
-
-                // For every vertexBuffer in one VertexArray
-                for (auto& vertexBuffer: vertexArray->GetVertexBuffers())
+                if (ImGui::TreeNodeEx((void*)(subMesh), treeNodeFlags, "SubMeshes"))
                 {
-                    if (ImGui::TreeNodeEx((void*)(vertexBuffer.get()), treeNodeFlags, "VertexBuffer"))
-                    {
-                        // Buffer array layout
-                        auto& bufferLayout = vertexBuffer->GetLayout();
-                        // Stride
-                        ImGui::Text("Stride: %d", bufferLayout.GetStride());
-                        // For evety bufferElement in one vertexBuffer
-                        const ImGuiTreeNodeFlags treeNodeFlagsBufferElement = ImGuiTreeNodeFlags_AllowItemOverlap;
-                        for (auto& bufferElement: bufferLayout.GetElements())
-                        {
-                            if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlagsBufferElement, bufferElement.Name.c_str()))
-                            {
-                                ImGui::Text("Name: %s", bufferElement.Name.c_str());
-                                ImGui::Text("Offset: %d", bufferElement.Offset);
-                                ImGui::Text("Size: %d", bufferElement.Size);
-                                ImGui::Text("Normalized: %s", bufferElement.Normalized ? "true" : "false");
-                                const char* shaderDataType[] = {
-                                    "None",
-                                    "Float",
-                                    "Float2",
-                                    "Float3",
-                                    "Float4",
-                                    "Mat3",
-                                    "Mat4",
-                                    "Int",
-                                    "Int2",
-                                    "Int3",
-                                    "Int4",
-                                    "Bool"
-                                };
-                                ImGui::Text("Data type: %s", shaderDataType[(int)bufferElement.Type]);
-                                ImGui::TreePop();
-                            }
-                        }
-                        ImGui::TreePop();
-                    }
-                }
-                // Index array count
-                ImGui::Text("IndexArray count: %d", vertexArray->GetIndexBuffer()->GetCount());
-                ImGui::TreePop();
-            }
-        }
+                    auto& vertexArray = subMesh->GetAttribute();
+                    auto& name = subMesh->GetName();
 
-        // Remove Component
-        if (removeComponent)
-            entity->RemoveComponent(ComponentType::MeshComponent);
+                    // vertex array name
+                    ImGui::Text("VertexArray name: %s", name.c_str());
+
+                    // For every vertexBuffer in one VertexArray
+                    for (auto& vertexBuffer : vertexArray->GetVertexBuffers())
+                    {
+                        if (ImGui::TreeNodeEx((void*)(vertexBuffer.get()), treeNodeFlags, "VertexBuffer"))
+                        {
+                            // Buffer array layout
+                            auto& bufferLayout = vertexBuffer->GetLayout();
+                            // Stride
+                            ImGui::Text("Stride: %d", bufferLayout.GetStride());
+                            // For evety bufferElement in one vertexBuffer
+                            const ImGuiTreeNodeFlags treeNodeFlagsBufferElement = ImGuiTreeNodeFlags_AllowItemOverlap;
+                            for (auto& bufferElement : bufferLayout.GetElements())
+                            {
+                                if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlagsBufferElement, bufferElement.Name.c_str()))
+                                {
+                                    ImGui::Text("Name: %s", bufferElement.Name.c_str());
+                                    ImGui::Text("Offset: %d", bufferElement.Offset);
+                                    ImGui::Text("Size: %d", bufferElement.Size);
+                                    ImGui::Text("Normalized: %s", bufferElement.Normalized ? "true" : "false");
+                                    const char* shaderDataType[] = {
+                                        "None",
+                                        "Float",
+                                        "Float2",
+                                        "Float3",
+                                        "Float4",
+                                        "Mat3",
+                                        "Mat4",
+                                        "Int",
+                                        "Int2",
+                                        "Int3",
+                                        "Int4",
+                                        "Bool"
+                                    };
+                                    ImGui::Text("Data type: %s", shaderDataType[(int)bufferElement.Type]);
+                                    ImGui::TreePop();
+                                }
+                            }
+                            ImGui::TreePop();
+                        }
+                    }
+                    // Index array count
+                    ImGui::Text("IndexArray count: %d", vertexArray->GetIndexBuffer()->GetCount());
+                    ImGui::TreePop();
+                }
+            }
+
+            // Remove Component
+            if (removeComponent)
+                entity->RemoveComponent(ComponentType::MeshComponent);
+        }
+        
     }
 }
 

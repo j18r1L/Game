@@ -20,6 +20,7 @@ namespace HE
         virtual void UnBind() const = 0;
 
         virtual const std::string& GetName() const = 0;
+        virtual const std::string& GetFilePath() const = 0;
 
         //virtual void UploadVSUniformBuffer();
         //virtual void UploadVSRendererBuffer();

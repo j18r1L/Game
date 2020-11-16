@@ -28,7 +28,7 @@ namespace HE
 
     Entity::~Entity()
     {
-        m_SceneHandle->DestroyEntity(m_Name);
+        //m_SceneHandle->DestroyEntity(m_Name);
     }
 
     Component* Entity::AddComponent(ComponentType type, Component* component)
