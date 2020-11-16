@@ -21,35 +21,6 @@ namespace HE
 
         std::string path_to_project = CMAKE_PATH;
         m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Environment.glsl");
-        /*
-        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Grid.glsl");
-        
-        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Texture.glsl");
-
-        
-        // Create backpack entity
-        Entity* backpackEntity = m_Scene->CreateEntity("Backpack");
-        // create material, mesh, submesh components
-        LoadMesh::CreateMesh(backpackEntity, path_to_project + "/assets/obj/backpack/backpack.obj");
-
-        // Add shader to material
-        auto backpackMaterialComponent = dynamic_cast<MaterialComponent*>(backpackEntity->GetComponent(ComponentType::MaterialComponent));
-        backpackMaterialComponent->SetShader(m_ShaderLibrary, "Texture");
-
-
-        // Create grid entity
-        Entity* gridEntity = m_Scene->CreateEntity("Grid");
-        LoadMesh::CreateMesh(gridEntity, path_to_project + "/assets/obj/quad/quad.obj");
-        // Add shader to material
-        auto gridMaterialComponent = dynamic_cast<MaterialComponent*>(gridEntity->GetComponent(ComponentType::MaterialComponent));
-        gridMaterialComponent->SetShader(m_ShaderLibrary, "Grid");
-        // Set transform component
-        TransformComponent* gridTransformComponent = dynamic_cast<TransformComponent*>(gridEntity->GetComponent(ComponentType::TransformComponent));
-        gridTransformComponent->SetPosition({10.0f, -0.5f, 10.0f});
-        gridTransformComponent->SetRotation({0.0f, 90.0f, 0.0f});
-        gridTransformComponent->SetRotation({0.0f, 0.0f, 90.0f});
-        gridTransformComponent->SetScale({1.0f, 10.0f, 10.0f});
-        */
         
         // Create environment entity
         environmentEntity = new Entity();
@@ -72,8 +43,8 @@ namespace HE
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(m_ShaderLibrary);
         
-        //SceneSerializer serializer(m_Scene);
-        //serializer.Deserialize(path_to_project + "/assets/scenes/example.he");
+        SceneSerializer serializer(m_Scene, m_ShaderLibrary);
+        serializer.Deserialize(path_to_project + "/assets/scenes/scene_2.he");
 
 
 
@@ -124,8 +95,15 @@ namespace HE
             
 
             RenderCommand::SetDepthTest(true);
-            //m_Scene->OnUpdate(ts); // Use runtime camera
-            m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
+            if (m_Play && !m_Pause)
+            {
+                m_Scene->OnUpdate(ts); // Use runtime camera
+            }
+            else
+            {
+                m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
+            }
+            
             m_FrameBuffer->UnBind();
 
         }
@@ -176,20 +154,39 @@ namespace HE
         {
             if (ImGui::BeginMenu("File"))
             {
+                
+                if (ImGui::MenuItem("New Scene"))
+                    if (m_Scene)
+                        m_Scene->Clear();
+
+                if (ImGui::MenuItem("Open Scene"))
+                    loadScene = true;
+
+                if (ImGui::MenuItem("Save Scene"))
+                    saveScene = true;
+
                 if (ImGui::MenuItem("Exit"))
                     Application::Get().Close();
+
+
                 ImGui::EndMenu();
+
             }
-            if (ImGui::BeginMenu("Scenes"))
+            if (ImGui::BeginMenu("Scene"))
             {
-                if (ImGui::MenuItem("Save Scene"))
+                if (ImGui::MenuItem("Play"))
                 {
-                    saveScene = true;
+                    m_Play = true;
+                    m_Pause = false;
                 }
-                if (ImGui::MenuItem("Load Scene"))
+                if (ImGui::MenuItem("Pause"))
+                    m_Pause = !m_Pause;
+                if (ImGui::MenuItem("Stop"))
                 {
-                    loadScene = true;
+                    m_Play = false;
+                    m_Pause = false;
                 }
+                    
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -202,7 +199,7 @@ namespace HE
             if (saveScene)
                 loadSceneWindowName = "Save Scene";
             if (loadScene)
-                loadSceneWindowName = "Load Scene";
+                loadSceneWindowName = "Open Scene";
             ImGui::Begin(loadSceneWindowName.c_str());
             static std::string FilePath(256, '\0');
             ImGui::InputText("Path", &FilePath[0], 256);
