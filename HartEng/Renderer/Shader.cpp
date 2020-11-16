@@ -44,8 +44,9 @@ namespace HE
 
     void ShaderLibrary::Add(const std::string& name, const std::shared_ptr<Shader> shader)
     {
-        HE_CORE_ASSERT(!Exists(name), "Shader already exists!");
-        m_Shaders[name] = shader;
+        //HE_CORE_TRACE(!Exists(name), "Shader already exists!");
+        if (!Exists(name))
+            m_Shaders[name] = shader;
     }
 
     void ShaderLibrary::Add(const std::shared_ptr<Shader> shader)

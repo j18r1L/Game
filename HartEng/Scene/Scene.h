@@ -28,9 +28,12 @@ namespace HE
 
         Entity* CreateEntity(const std::string& name);
 
-        Entity* getEntity(const std::string& name);
+        Entity* GetEntity(const std::string& name);
+        const std::unordered_map<std::string, Entity*>& GetEntities();
+        const std::string& GetName() const;
 
         void DestroyEntity(const std::string& name);
+        void Clear();
 
         void OnUpdate(Timestep& ts);
         void OnUpdate(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera

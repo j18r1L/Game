@@ -24,7 +24,7 @@ namespace HE
     };
 
 
-    void LoadMesh::CreateMesh(Entity* entity, const std::string& filePath)
+    bool LoadMesh::CreateMesh(Entity* entity, const std::string& filePath)
     {
         HE_PROFILE_FUNCTION();
 
@@ -36,7 +36,7 @@ namespace HE
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
             HE_CORE_ERROR("Cant load mesh using assimp: {0}", importer.GetErrorString());
-            return;
+            return false;
         }
         // retrieve the directory path of the filepath
         // using usual slashes
@@ -49,10 +49,11 @@ namespace HE
         //std::string name = filePath.substr(filePath.find_last_of('/'), filePath.size());
 
         // process ASSIMP's root node recursively
-        ProcessNode(entity, scene->mRootNode, scene, directory);
+        ProcessNode(entity, scene->mRootNode, scene, directory, filePath);
+        return true;
     }
 
-    void LoadMesh::ProcessNode(Entity* entity, aiNode *node, const aiScene *scene, const std::string& directory)
+    void LoadMesh::ProcessNode(Entity* entity, aiNode *node, const aiScene *scene, const std::string& directory, const std::string& filePath)
     {
         HE_PROFILE_FUNCTION();
 
@@ -68,12 +69,17 @@ namespace HE
             else
                 meshComponent = dynamic_cast<MeshComponent*>(entity->AddComponent(ComponentType::MeshComponent));
             if (meshComponent != nullptr)
+            {
+                meshComponent->SetPath(filePath);
                 ProcessMesh(entity, *meshComponent, mesh, scene, directory);
+
+            }
+                
         }
         // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
         for(unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(entity, node->mChildren[i], scene, directory);
+            ProcessNode(entity, node->mChildren[i], scene, directory, filePath);
         }
     }
 

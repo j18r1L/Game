@@ -20,7 +20,7 @@ namespace HE
         m_ObjectsCount(0)
 
     {
-        HE_CORE_INFO("Creating scene with name: {0}", scene_name);
+        HE_CORE_TRACE("Creating scene with name: {0}", scene_name);
     }
 
     Entity* Scene::CreateEntity()
@@ -43,7 +43,7 @@ namespace HE
         // Нужно проверить стоит ли делать такую проверку (имеется ли такой геймобжект в m_Entities)
         if (m_Entities.find(name) == m_Entities.end())
         {
-            HE_CORE_INFO("Creating entity with name: {0}", name);
+            HE_CORE_TRACE("Creating entity with name: {0}", name);
             Entity* entity = new Entity(this, name);
             m_Entities[name] = entity;
 
@@ -57,7 +57,7 @@ namespace HE
         return nullptr;
     }
 
-    Entity* Scene::getEntity(const std::string& name)
+    Entity* Scene::GetEntity(const std::string& name)
     {
         HE_PROFILE_FUNCTION();
 
@@ -70,10 +70,25 @@ namespace HE
         return entityIterator->second;
     }
 
+    const std::unordered_map<std::string, Entity*>& Scene::GetEntities()
+    {
+        return m_Entities;
+    }
+
+    const std::string& Scene::GetName() const
+    {
+        return m_Name;
+    }
+
     void Scene::DestroyEntity(const std::string& name)
     {
-        HE_CORE_INFO("Destroing entity with name: {0}", name);
+        HE_CORE_TRACE("Destroing entity with name: {0}", name);
         m_Entities.erase(name);
+    }
+
+    void Scene::Clear()
+    {
+        m_Entities.clear();
     }
 
     // Runtime
@@ -144,17 +159,17 @@ namespace HE
 
         Renderer::BeginScene(camera);
 
-        // Render all entities
+        // For all entities
         for (auto& [name, entity]: m_Entities)
         {
             HE_PROFILE_SCOPE(name.c_str());
-            // quad with texture
-            MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
-            TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
-            if (meshComponent)
+            // Render only entities with mesh
+            if (entity->HasComponent(ComponentType::MeshComponent))
             {
+                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
+                TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
                 auto& subMeshes = meshComponent->GetSubMeshes();
-                for (auto& subMesh: subMeshes)
+                for (auto& subMesh : subMeshes)
                 {
                     auto material = subMesh->GetMaterial();
                     auto shaderLibrary = material->GetShaderLibrary();

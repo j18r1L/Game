@@ -13,6 +13,16 @@ namespace HE
         m_SubMeshes.push_back(&subMesh);
     }
 
+    void MeshComponent::SetPath(const std::string& path)
+    {
+        m_Path = path;
+    }
+
+    const std::string& MeshComponent::GetPath()
+    {
+        return m_Path;
+    }
+
     const std::vector<SubMeshComponent*>& MeshComponent::GetSubMeshes() const
     {
         return m_SubMeshes;

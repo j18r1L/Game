@@ -10,6 +10,7 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
+      /*
       "variables": [
         {
           "name": "CMAKE_INSTALL_PREFIX",
@@ -17,6 +18,7 @@
           "type": "PATH"
         }
       ]
+    */
     }
   ]
 }

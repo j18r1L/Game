@@ -9,7 +9,7 @@ namespace HE
     class EditorLayer: public Layer
     {
     private:
-        ShaderLibrary m_ShaderLibrary;
+        std::shared_ptr<ShaderLibrary> m_ShaderLibrary;
         Entity* environmentEntity;
 
         FrameBufferSpecification m_FrameBufferSpec;

@@ -9,6 +9,7 @@ namespace HE
     {
     private:
         std::vector<SubMeshComponent*> m_SubMeshes;
+        std::string m_Path;
         // AABB m_BoundingVolume;
         // std::vector<Node*> m_Nodes;
 
@@ -17,6 +18,8 @@ namespace HE
         virtual ~MeshComponent() = default;
 
         void AddSubMesh(SubMeshComponent& subMesh);
+        void SetPath(const std::string& path);
+        const std::string& GetPath();
 
         const std::vector<SubMeshComponent*>& GetSubMeshes() const;
 

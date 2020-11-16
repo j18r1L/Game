@@ -40,7 +40,7 @@ namespace HE
         gridMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Grid");
         // Set transform component
         TransformComponent* gridTransformComponent = dynamic_cast<TransformComponent*>(gridEntity->GetComponent(ComponentType::TransformComponent));
-        gridTransformComponent->SetTranslation({10.0f, -0.5f, 10.0f});
+        gridTransformComponent->SetPosition({10.0f, -0.5f, 10.0f});
         gridTransformComponent->SetRotation({0.0f, 90.0f, 0.0f});
         gridTransformComponent->SetRotation({0.0f, 0.0f, 90.0f});
         gridTransformComponent->SetScale({1.0f, 10.0f, 10.0f});
@@ -90,7 +90,7 @@ namespace HE
             RenderCommand::SetDepthTest(false);
             MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
             glm::mat4 transform = dynamic_cast<TransformComponent*>(environmentEntity->GetComponent(ComponentType::TransformComponent))->GetTransform();
-            glm::mat4 projection = dynamic_cast<CameraComponent*>(m_Scene->getEntity("Camera")->GetComponent(ComponentType::CameraComponent))->GetCamera().GetProjection();
+            glm::mat4 projection = dynamic_cast<CameraComponent*>(m_Scene->GetEntity("Camera")->GetComponent(ComponentType::CameraComponent))->GetCamera().GetProjection();
             auto environmentShader = m_ShaderLibrary.Get("Environment");
             auto& subMeshes = meshComponent->GetSubMeshes();
             environmentShader->Bind();

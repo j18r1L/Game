@@ -10,6 +10,7 @@ namespace HE
     {
         m_Scene = std::make_shared<Scene>(Scene("first_scene"));
         m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
+        m_ShaderLibrary = std::make_shared<ShaderLibrary>(ShaderLibrary());
 
         RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
     }
@@ -19,12 +20,13 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         std::string path_to_project = CMAKE_PATH;
+        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Environment.glsl");
+        /*
+        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Grid.glsl");
+        
+        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Texture.glsl");
 
-        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Grid.glsl");
-        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Environment.glsl");
-        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Texture.glsl");
-
-
+        
         // Create backpack entity
         Entity* backpackEntity = m_Scene->CreateEntity("Backpack");
         // create material, mesh, submesh components
@@ -32,7 +34,7 @@ namespace HE
 
         // Add shader to material
         auto backpackMaterialComponent = dynamic_cast<MaterialComponent*>(backpackEntity->GetComponent(ComponentType::MaterialComponent));
-        backpackMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Texture");
+        backpackMaterialComponent->SetShader(m_ShaderLibrary, "Texture");
 
 
         // Create grid entity
@@ -40,23 +42,26 @@ namespace HE
         LoadMesh::CreateMesh(gridEntity, path_to_project + "/assets/obj/quad/quad.obj");
         // Add shader to material
         auto gridMaterialComponent = dynamic_cast<MaterialComponent*>(gridEntity->GetComponent(ComponentType::MaterialComponent));
-        gridMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Grid");
+        gridMaterialComponent->SetShader(m_ShaderLibrary, "Grid");
         // Set transform component
         TransformComponent* gridTransformComponent = dynamic_cast<TransformComponent*>(gridEntity->GetComponent(ComponentType::TransformComponent));
-        gridTransformComponent->SetTranslation({10.0f, -0.5f, 10.0f});
+        gridTransformComponent->SetPosition({10.0f, -0.5f, 10.0f});
         gridTransformComponent->SetRotation({0.0f, 90.0f, 0.0f});
         gridTransformComponent->SetRotation({0.0f, 0.0f, 90.0f});
         gridTransformComponent->SetScale({1.0f, 10.0f, 10.0f});
-
-
+        */
+        
         // Create environment entity
         environmentEntity = new Entity();
         environmentEntity->AddComponent(ComponentType::TransformComponent);
-        LoadMesh::CreateMesh(environmentEntity, path_to_project + "/assets/obj/cube/cube.obj");
-        // Add shader to material
-        auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
-        environmentMaterialComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Environment");
-
+        if (LoadMesh::CreateMesh(environmentEntity, path_to_project + "/assets/obj/cube/cube.obj"))
+        {
+            // Add shader to material
+            auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
+            environmentMaterialComponent->SetShader(m_ShaderLibrary, "Environment");
+        }
+        
+        
 
         // load framebuffer
         m_FrameBufferSpec.Width = Application::Get().GetWindow().GetWidth();
@@ -65,7 +70,10 @@ namespace HE
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
-        m_SceneHierarchyPanel->SetShaderLibrary(std::make_shared<ShaderLibrary>(m_ShaderLibrary));
+        m_SceneHierarchyPanel->SetShaderLibrary(m_ShaderLibrary);
+        
+        //SceneSerializer serializer(m_Scene);
+        //serializer.Deserialize(path_to_project + "/assets/scenes/example.he");
 
 
 
@@ -97,18 +105,23 @@ namespace HE
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
+            
             // environment
             RenderCommand::SetDepthTest(false);
-            MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
-            auto environmentShader = m_ShaderLibrary.Get("Environment");
-            auto& subMeshes = meshComponent->GetSubMeshes();
-            for (auto& subMesh: subMeshes)
+            if (environmentEntity->HasComponent(ComponentType::MeshComponent))
             {
-                environmentShader->Bind();
-                environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
-                auto& attribute = subMesh->GetAttribute();
-                Renderer::Submit(environmentShader, attribute);
+                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
+                auto environmentShader = m_ShaderLibrary->Get("Environment");
+                auto& subMeshes = meshComponent->GetSubMeshes();
+                for (auto& subMesh : subMeshes)
+                {
+                    environmentShader->Bind();
+                    environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
+                    auto& attribute = subMesh->GetAttribute();
+                    Renderer::Submit(environmentShader, attribute);
+                }
             }
+            
 
             RenderCommand::SetDepthTest(true);
             //m_Scene->OnUpdate(ts); // Use runtime camera
@@ -158,7 +171,7 @@ namespace HE
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
 
-
+        static bool loadScene = false, saveScene = false; // SaveScene flag, LoadScene flag
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -167,10 +180,52 @@ namespace HE
                     Application::Get().Close();
                 ImGui::EndMenu();
             }
-
-
+            if (ImGui::BeginMenu("Scenes"))
+            {
+                if (ImGui::MenuItem("Save Scene"))
+                {
+                    saveScene = true;
+                }
+                if (ImGui::MenuItem("Load Scene"))
+                {
+                    loadScene = true;
+                }
+                ImGui::EndMenu();
+            }
             ImGui::EndMenuBar();
         }
+
+        if (saveScene || loadScene)
+        {
+            SceneSerializer serializer(m_Scene, m_ShaderLibrary);
+            std::string loadSceneWindowName = "";
+            if (saveScene)
+                loadSceneWindowName = "Save Scene";
+            if (loadScene)
+                loadSceneWindowName = "Load Scene";
+            ImGui::Begin(loadSceneWindowName.c_str());
+            static std::string FilePath(256, '\0');
+            ImGui::InputText("Path", &FilePath[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                if (saveScene)
+                {
+                    serializer.Serialize(FilePath);
+                    saveScene = false;
+                }
+                    
+                else if (loadScene)
+                {
+                    serializer.Deserialize(FilePath);
+                    loadScene = false;
+                }
+                    
+            }
+            ImGui::End();
+        }
+        
 
         m_SceneHierarchyPanel->OnImGuiRender();
 
