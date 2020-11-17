@@ -1,4 +1,5 @@
 #include "TransformComponent.h"
+#include <glm/gtx/euler_angles.hpp>
 
 namespace HE
 {
@@ -12,27 +13,22 @@ namespace HE
     void TransformComponent::Recalculate()
     {
         m_Transform = glm::translate(glm::mat4(1.0f), m_Position) *
-                glm::mat4_cast(m_Rotation) *
+                glm::orientate4(m_Rotation) *
                 glm::scale(glm::mat4(1.0f), m_Scale);
     }
 
-    void TransformComponent::SetPosition(const glm::vec3& translate)
+    void TransformComponent::SetPosition(const glm::vec3& position)
     {
-        m_Position = translate;
+        m_Position = position;
         Recalculate();
     }
 
     void TransformComponent::SetRotation(const glm::vec3& angles)
     {
-        m_Rotation = glm::quat(glm::radians(angles));
+        m_Rotation = glm::radians(angles);
         Recalculate();
     }
 
-    void TransformComponent::SetRotation(const glm::quat& rotation)
-    {
-        m_Rotation = rotation;
-        Recalculate();
-    }
     void TransformComponent::SetScale(const glm::vec3& scale)
     {
         m_Scale = scale;
@@ -42,10 +38,10 @@ namespace HE
     {
         m_Transform = transform;
     }
-    void TransformComponent::SetPRC(const glm::vec3& translate, const glm::vec3& angles, const glm::vec3& scale)
+    void TransformComponent::SetPRS(const glm::vec3& position, const glm::vec3& angles, const glm::vec3& scale)
     {
-        m_Position = translate;
-        m_Rotation = glm::quat(glm::radians(angles));
+        m_Position = position;
+        m_Rotation = glm::radians(angles);
         m_Scale = scale;
         Recalculate();
     }
@@ -53,7 +49,7 @@ namespace HE
     {
         return m_Position;
     }
-    const glm::quat& TransformComponent::GetRotation() const
+    const glm::vec3& TransformComponent::GetRotation() const
     {
         return m_Rotation;
     }

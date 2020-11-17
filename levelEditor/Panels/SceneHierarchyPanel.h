@@ -22,6 +22,7 @@ namespace HE
         void DrawCamera(Entity* entity);
         void DrawMaterial(Entity* entity);
         void DrawMesh(Entity* entity);
+        void DrawLight(Entity* entity);
 
 
     public:

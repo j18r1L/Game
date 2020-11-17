@@ -20,6 +20,7 @@ namespace HE
         void SerializeCamera(YAML::Emitter& out, Entity* entity);
         void SerializeMesh(YAML::Emitter& out, Entity* entity);
         void SerializeMaterial(YAML::Emitter& out, Entity* entity);
+        void SerializeLight(YAML::Emitter& out, Entity* entity);
     public:
         SceneSerializer(const std::shared_ptr<Scene>& scene, const std::shared_ptr<ShaderLibrary>& shaderLibrary);
 

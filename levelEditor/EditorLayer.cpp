@@ -21,6 +21,7 @@ namespace HE
 
         std::string path_to_project = CMAKE_PATH;
         m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Environment.glsl");
+        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Fong.glsl");
         
         // Create environment entity
         environmentEntity = new Entity();

@@ -4,12 +4,14 @@
 #include <fstream>
 #include "HartEng/Core/Log.h"
 #include "HartEng/Scene/LoadMesh.h"
+#include "HartEng/Scene/SceneCamera.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/MeshComponent.h"
 #include "HartEng/Scene/Components/SubMeshComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
 
 namespace YAML
 {
@@ -126,14 +128,9 @@ namespace HE
         {
             out << YAML::BeginMap; // Transform component
 
-            auto& position = transformComponent->GetPosition();
-            out << YAML::Key << "Position" << YAML::Value << position;
-
-            auto& rotation = transformComponent->GetRotation();
-            out << YAML::Key << "Rotation" << YAML::Value << rotation;
-
-            auto& scale = transformComponent->GetScale();
-            out << YAML::Key << "Scale" << YAML::Value << scale;
+            out << YAML::Key << "Position" << YAML::Value << transformComponent->GetPosition();
+            out << YAML::Key << "Rotation" << YAML::Value << glm::degrees(transformComponent->GetRotation());
+            out << YAML::Key << "Scale" << YAML::Value << transformComponent->GetScale();
 
             out << YAML::EndMap; // Transform component
         }
@@ -186,6 +183,25 @@ namespace HE
             out << YAML::EndMap; // Material component
         }
     }
+
+    void SceneSerializer::SerializeLight(YAML::Emitter& out, Entity* entity)
+    {
+        LightComponent* lightComponent = dynamic_cast<LightComponent*>(entity->GetComponent(ComponentType::LightComponent));
+        out << YAML::Key << "LightComponent";
+        {
+            out << YAML::BeginMap; // Light component
+
+            out << YAML::Key << "LightType" << YAML::Value << lightComponent->GetLightType();
+            out << YAML::Key << "Direction" << YAML::Value << lightComponent->GetDirection();
+            out << YAML::Key << "Color" << YAML::Value << lightComponent->GetColor();
+            out << YAML::Key << "Intensity" << YAML::Value << lightComponent->GetIntensity();
+            out << YAML::Key << "Range" << YAML::Value << lightComponent->GetRange();
+            out << YAML::Key << "InnerConeAngle" << YAML::Value << lightComponent->GetInnerConeAngle();
+            out << YAML::Key << "OuterConeAngle" << YAML::Value << lightComponent->GetOuterConeAngle();
+
+            out << YAML::EndMap; // Light component
+        }
+    }
     
     void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity* entity)
     {
@@ -202,9 +218,13 @@ namespace HE
             SerializeMesh(out, entity);
         if (entity->HasComponent(ComponentType::MaterialComponent))
             SerializeMaterial(out, entity);
+        if (entity->HasComponent(ComponentType::LightComponent))
+            SerializeLight(out, entity);
 
         out << YAML::EndMap; // Entity
     }
+
+    
     
     void SceneSerializer::Serialize(const std::string& filepath)
     {
@@ -252,7 +272,7 @@ namespace HE
         }
         HE_CORE_TRACE("Deserializing scene '{0}'", sceneName);
 
-        auto& entities = data["Entities"];
+        auto entities = data["Entities"];
         if (entities)
         {
             for (auto& entity : entities)
@@ -267,7 +287,7 @@ namespace HE
                     // Entities always have transform
                     TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(deserializedEntity->GetComponent(ComponentType::TransformComponent));
                     transformComponent->SetPosition(deserializedTransformComponent["Position"].as<glm::vec3>());
-                    transformComponent->SetRotation(deserializedTransformComponent["Rotation"].as<glm::quat>());
+                    transformComponent->SetRotation(deserializedTransformComponent["Rotation"].as<glm::vec3>());
                     transformComponent->SetScale(deserializedTransformComponent["Scale"].as<glm::vec3>());
                 }
 
@@ -278,6 +298,7 @@ namespace HE
                     auto& cameraProps = deserializedCameraComponent["Camera"];
                     auto& camera = cameraComponent->GetCamera();
 
+                    //camera.SetProjectionType((ProjectionType)cameraProps["ProjectionType"].as<int>());
                     camera.SetPerspectiveFov(cameraProps["PerspectiveFOV"].as<float>());
                     camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
                     camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
@@ -302,10 +323,33 @@ namespace HE
                 {
                     auto& shaderName = deserializedMaterialComponent["ShaderName"].as<std::string>();
                     auto& shaderPath = deserializedMaterialComponent["FilePath"].as<std::string>();
-                    MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(deserializedEntity->GetComponent(ComponentType::MaterialComponent));
-                    m_ShaderLibrary->Load(shaderPath);
-                    materialComponent->SetShader(m_ShaderLibrary, shaderName);
+                    MaterialComponent* materialComponent = nullptr;
+                    if (deserializedEntity->HasComponent(ComponentType::MaterialComponent))
+                        materialComponent = dynamic_cast<MaterialComponent*>(deserializedEntity->GetComponent(ComponentType::MaterialComponent));
+                    else 
+                        materialComponent = dynamic_cast<MaterialComponent*>(deserializedEntity->AddComponent(ComponentType::MaterialComponent));
+                    if (materialComponent)
+                    {
+                        m_ShaderLibrary->Load(shaderPath);
+                        materialComponent->SetShader(m_ShaderLibrary, shaderName);
+                    }
+                    
 
+                }
+                
+                auto deserializedLightComponent = entity["LightComponent"];
+                if (deserializedLightComponent)
+                {
+                    LightComponent* lightComponent = dynamic_cast<LightComponent*>(deserializedEntity->AddComponent(ComponentType::LightComponent));
+
+                    LightType lightType = (LightType)deserializedLightComponent["LightType"].as<int>();
+                    lightComponent->SetLightType(lightType);
+                    lightComponent->SetDirection(deserializedLightComponent["Direction"].as<glm::vec3>());
+                    lightComponent->SetColor(deserializedLightComponent["Color"].as<glm::vec3>());
+                    lightComponent->SetIntensity(deserializedLightComponent["Intensity"].as<float>());
+                    lightComponent->SetRange(deserializedLightComponent["Range"].as<float>());
+                    lightComponent->SetInnerConeAngle(deserializedLightComponent["InnerConeAngle"].as<float>());
+                    lightComponent->SetOuterConeAngle(deserializedLightComponent["OuterConeAngle"].as<float>());
                 }
 
             }

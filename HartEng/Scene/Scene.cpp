@@ -6,6 +6,7 @@
 #include "HartEng/Scene/Components/SubMeshComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Renderer/Renderer.h"
 
 #include "HartEng/Core/Log.h"
@@ -125,7 +126,15 @@ namespace HE
 
             if (mainCamera)
             {
-                Renderer::BeginScene(mainCamera->GetProjection(), transform);
+                // Get all light components
+                std::vector<Entity*> lights;
+                for (auto& [name, entity] : m_Entities)
+                {
+                    if (entity->HasComponent(ComponentType::LightComponent))
+                        lights.push_back(entity);
+                }
+
+                Renderer::BeginScene(mainCamera->GetProjection(), transform, lights);
 
                 // For all entities
                 for (auto& [name, entity]: m_Entities)
@@ -162,8 +171,15 @@ namespace HE
     void Scene::OnUpdate(Timestep& ts, PerspectiveCamera& camera)
     {
         HE_PROFILE_FUNCTION();
-
-        Renderer::BeginScene(camera);
+        // Get all light components
+        std::vector<Entity*> lights;
+        for (auto& [name, entity] : m_Entities)
+        {
+            if (entity->HasComponent(ComponentType::LightComponent))
+                lights.push_back(entity);
+        }
+        Renderer::BeginScene(camera, lights);
+        
 
         // For all entities
         for (auto& [name, entity]: m_Entities)
@@ -189,8 +205,6 @@ namespace HE
                             Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
                         }
                     }
-
-
                 }
             }
         }
