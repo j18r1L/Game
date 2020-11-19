@@ -275,7 +275,7 @@ namespace HE
         auto entities = data["Entities"];
         if (entities)
         {
-            for (auto& entity : entities)
+            for (auto entity : entities)
             {
                 std::string name = entity["Entity"].as<std::string>();
                 HE_CORE_TRACE("Deserialized entity with name: '{0}'", name);
@@ -295,7 +295,7 @@ namespace HE
                 if (deserializedCameraComponent)
                 {
                     CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(deserializedEntity->AddComponent(ComponentType::CameraComponent));
-                    auto& cameraProps = deserializedCameraComponent["Camera"];
+                    auto cameraProps = deserializedCameraComponent["Camera"];
                     auto& camera = cameraComponent->GetCamera();
 
                     //camera.SetProjectionType((ProjectionType)cameraProps["ProjectionType"].as<int>());
@@ -314,15 +314,15 @@ namespace HE
                 auto deserializedMeshComponent = entity["MeshComponent"];
                 if (deserializedMeshComponent)
                 {
-                    auto& filePath = deserializedMeshComponent["FilePath"].as<std::string>();
+                    auto filePath = deserializedMeshComponent["FilePath"].as<std::string>();
                     LoadMesh::CreateMesh(deserializedEntity, filePath);
                 }
 
                 auto deserializedMaterialComponent = entity["MaterialComponent"];
                 if (deserializedMaterialComponent)
                 {
-                    auto& shaderName = deserializedMaterialComponent["ShaderName"].as<std::string>();
-                    auto& shaderPath = deserializedMaterialComponent["FilePath"].as<std::string>();
+                    auto shaderName = deserializedMaterialComponent["ShaderName"].as<std::string>();
+                    auto shaderPath = deserializedMaterialComponent["FilePath"].as<std::string>();
                     MaterialComponent* materialComponent = nullptr;
                     if (deserializedEntity->HasComponent(ComponentType::MaterialComponent))
                         materialComponent = dynamic_cast<MaterialComponent*>(deserializedEntity->GetComponent(ComponentType::MaterialComponent));
