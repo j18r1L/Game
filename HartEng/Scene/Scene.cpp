@@ -1,5 +1,6 @@
 #include "HartEng/Scene/Scene.h"
 
+#include "HartEng/Scene/ScriptComponent.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Scene/Components/MeshComponent.h"
@@ -99,6 +100,21 @@ namespace HE
 
         Camera* mainCamera = nullptr;
         glm::mat4 transform(1.0f);
+        {
+            HE_PROFILE_SCOPE("OnUpdate: update script");
+            for (auto& [name, entity]: m_Entities)
+            {
+                auto entityComponents = entity->GetComponents();
+                for (auto& [type, component]: entityComponents)
+                {
+                    auto scriptComponent = dynamic_cast<ScriptComponent*>(component);
+                    if (scriptComponent)
+                    {
+                        scriptComponent->OnUpdate(ts);
+                    }
+                }
+            }
+        }
         {
             HE_PROFILE_SCOPE("OnUpdate: find mainCamera");
 
