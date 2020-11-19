@@ -78,6 +78,11 @@ namespace HE
                     m_SelectionContext->AddComponent(ComponentType::MeshComponent);
                     ImGui::CloseCurrentPopup();
                 }
+                if (ImGui::MenuItem("Light"))
+                {
+                    m_SelectionContext->AddComponent(ComponentType::LightComponent);
+                    ImGui::CloseCurrentPopup();
+                }
                 ImGui::EndPopup();
             }
 
@@ -149,6 +154,12 @@ namespace HE
                 DrawCamera(entity);
                 ImGui::TreePop();
             }
+        if (entity->HasComponent(ComponentType::LightComponent))
+            if (ImGui::TreeNodeEx((void*)(ComponentType::LightComponent), treeNodeFlags, "Light Component"))
+            {
+                DrawLight(entity);
+                ImGui::TreePop();
+            }
     }
 
     void SceneHierarchyPanel::DrawTransform(Entity* entity)
@@ -163,22 +174,13 @@ namespace HE
 
 
 
-        glm::quat rotation = transform->GetRotation();
-        glm::vec3 angles = glm::eulerAngles(rotation);
-        /*
+        glm::vec3 angles = glm::degrees(transform->GetRotation());
+        
         if (ImGui::DragFloat3("Rotation", glm::value_ptr(angles), 0.1f))
         {
             transform->SetRotation(angles);
         }
-        */
-        if (ImGui::InputFloat("", &angles.x))
-            transform->SetScale(angles);
-        ImGui::SameLine();
-        if (ImGui::InputFloat("", &angles.y))
-                transform->SetScale(angles);
-        ImGui::SameLine();
-        if (ImGui::InputFloat("", &angles.z))
-                transform->SetScale(angles);
+        
 
 
 
@@ -273,11 +275,16 @@ namespace HE
             ImGui::OpenPopup("Component Settings");
 
         bool removeComponent = false;
+        static bool addShader = false;
         if (ImGui::BeginPopup("Component Settings"))
         {
             if (ImGui::MenuItem("Remove Component"))
             {
                 removeComponent = true;
+            }
+            if (ImGui::MenuItem("Add Shader"))
+            {
+                addShader = true;
             }
             ImGui::EndPopup();
         }
@@ -299,6 +306,24 @@ namespace HE
             }
             ImGui::EndCombo();
         }
+        // Add new shader
+        if (addShader)
+        {
+            ImGui::Begin("New Shader");
+            static std::string ShaderName(256, '\0');
+            ImGui::InputText("Path", &ShaderName[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                addShader = false;
+                auto& shader = m_ShaderLibrary->Load(ShaderName);
+                material->SetShader(m_ShaderLibrary, shader->GetName());
+            }
+            ImGui::End();
+        }
+
+
         auto& textures = material->GetTextures();
         // Shader name
         ImGui::Text("Shader name: %s", material->GetShaderName().c_str());
@@ -316,9 +341,12 @@ namespace HE
                 ImGui::TreePop();
             }
         }
+
+        
         // Remove Component
         if (removeComponent)
             entity->RemoveComponent(ComponentType::MaterialComponent);
+        
     }
     void SceneHierarchyPanel::DrawMesh(Entity* entity)
     {
@@ -449,6 +477,102 @@ namespace HE
                 entity->RemoveComponent(ComponentType::MeshComponent);
         }
         
+    }
+    void SceneHierarchyPanel::DrawLight(Entity* entity)
+    {
+        // Remove Component
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+            ImGui::OpenPopup("Component Settings");
+
+        bool removeComponent = false;
+        if (ImGui::BeginPopup("Component Settings"))
+        {
+            if (ImGui::MenuItem("Remove Component"))
+            {
+                removeComponent = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        LightComponent* lightComponent = dynamic_cast<LightComponent*>(entity->GetComponent(ComponentType::LightComponent));
+
+        const char* lightTypeChar[] = { "Directional", "Point", "Spot" };
+        const char* currentLightTypeString = lightTypeChar[(int)lightComponent->GetLightType()];
+        if (ImGui::BeginCombo("Light Type", currentLightTypeString))
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                bool isSelected = currentLightTypeString == lightTypeChar[i];
+                if (ImGui::Selectable(lightTypeChar[i], isSelected))
+                {
+                    currentLightTypeString = lightTypeChar[i];
+                    lightComponent->SetLightType((LightType)i);
+                }
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+
+            }
+            ImGui::EndCombo();
+        }
+
+        if (lightComponent->GetLightType() == LightType::Directional)
+        {
+            glm::vec3 direction = lightComponent->GetDirection();
+            glm::vec3 color = lightComponent->GetColor();
+            float intensity = lightComponent->GetIntensity();
+            float range = lightComponent->GetRange();
+
+            if (ImGui::DragFloat3("Direction", glm::value_ptr(direction), 0.1f))
+                lightComponent->SetDirection(direction);
+            if (ImGui::DragFloat3("Color", glm::value_ptr(color), 0.01f))
+                lightComponent->SetColor(color);
+            if (ImGui::DragFloat("Intensity", &intensity, 0.01f))
+                lightComponent->SetIntensity(intensity);
+            if (ImGui::DragFloat("Range", &range))
+                lightComponent->SetRange(range);
+        }
+
+        if (lightComponent->GetLightType() == LightType::Point)
+        {
+            glm::vec3 color = lightComponent->GetColor();
+            float intensity = lightComponent->GetIntensity();
+            float range = lightComponent->GetRange();
+
+            if (ImGui::DragFloat3("Color", glm::value_ptr(color), 0.01f))
+                lightComponent->SetColor(color);
+            if (ImGui::DragFloat("Intensity", &intensity, 0.01f))
+                lightComponent->SetIntensity(intensity);
+            if (ImGui::DragFloat("Range", &range))
+                lightComponent->SetRange(range);
+        }
+
+        if (lightComponent->GetLightType() == LightType::Spot)
+        {
+            glm::vec3 direction = lightComponent->GetDirection();
+            glm::vec3 color = lightComponent->GetColor();
+            float intensity = lightComponent->GetIntensity();
+            float range = lightComponent->GetRange();
+            float innerConeAngle = glm::degrees(glm::acos(lightComponent->GetInnerConeAngle()));
+            float outerConeAngle = glm::degrees(glm::acos(lightComponent->GetOuterConeAngle()));
+
+            if (ImGui::DragFloat3("Direction", glm::value_ptr(direction), 0.1f))
+                lightComponent->SetDirection(direction);
+            if (ImGui::DragFloat3("Color", glm::value_ptr(color), 0.01f))
+                lightComponent->SetColor(color);
+            if (ImGui::DragFloat("Intensity", &intensity, 0.01f))
+                lightComponent->SetIntensity(intensity);
+            if (ImGui::DragFloat("Range", &range))
+                lightComponent->SetRange(range);
+            if (ImGui::DragFloat("Inner Cone Angle", &innerConeAngle, 0.1f))
+                lightComponent->SetInnerConeAngle(innerConeAngle);
+            if (ImGui::DragFloat("outer Cone Angle", &outerConeAngle, 0.1f))
+                lightComponent->SetOuterConeAngle(outerConeAngle);
+        }
+
+        // Remove Component
+        if (removeComponent)
+            entity->RemoveComponent(ComponentType::CameraComponent);
     }
 }
 

@@ -17,6 +17,7 @@
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/LoadMesh.h"
 #include "HartEng/Scene/SceneSerializer.h"
 

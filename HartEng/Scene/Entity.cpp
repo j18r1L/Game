@@ -7,6 +7,7 @@
 #include "HartEng/Scene/Components/MeshComponent.h"
 #include "HartEng/Scene/Components/SubMeshComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
 
 namespace HE
 {
@@ -18,6 +19,7 @@ namespace HE
         "MeshComponent",
         "SubMeshComponent",
         "CameraComponent",
+        "LightComponent",
     };
 
     Entity::Entity(Scene* sceneHandle, const std::string& name):
@@ -68,6 +70,8 @@ namespace HE
                 component = new Texture2DComponent(this); break;
             case (ComponentType::CameraComponent):
                 component = new CameraComponent(this); break;
+            case (ComponentType::LightComponent):
+                component = new LightComponent(this); break;
             case (ComponentType::UndefinedComponent):
                 HE_CORE_WARN("Cant create component with UndefinedType in entity with name: '{0}'", m_Name); break;
             }

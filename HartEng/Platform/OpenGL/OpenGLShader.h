@@ -15,8 +15,9 @@ namespace HE
         uint32_t m_RendererID;
         std::string m_Name;
         std::string m_FilePath;
-
+        std::unordered_map<GLenum, std::string> m_ShaderSources;
         mutable std::unordered_map<std::string, uint32_t> m_UniformLocationCache;
+
 
 
 

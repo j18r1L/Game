@@ -15,6 +15,7 @@ namespace HE
         MeshComponent,
         SubMeshComponent,
         CameraComponent,
+        LightComponent,
     };
 
     class Component
