@@ -10,7 +10,7 @@ out vec3 v_FragPosition;
 
 void main()
 {
-	v_FragPosition = a_Position;
+    v_FragPosition = a_Position;
     gl_Position = u_ProjectionView * u_Model * vec4(a_Position, 1.0);
 }
 
@@ -27,12 +27,22 @@ in vec3 v_FragPosition;
 
 float grid(vec2 coords, float res)
 {
-	vec2 grid = fract(coords * res);
-	return (step(res, grid.x) * step(res, grid.y));
+    vec2 grid = fract(coords * res);
+    return (step(res, grid.x) * step(res, grid.y));
 }
 
 void main()
 {
-	float alpha = 1.0 - grid((v_FragPosition.yz + 0.501) * 800., 0.025);
-    o_Color = vec4(vec3(0.), alpha);
+    float alpha = 1.0 - grid((v_FragPosition.yz + 0.501) * 800., 0.025);
+    if (alpha < 0.5)
+        discard;
+    o_Color = vec4(vec3(0.), 1.);
 }
+
+
+
+
+
+
+
+

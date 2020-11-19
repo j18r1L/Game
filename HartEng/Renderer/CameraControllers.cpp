@@ -3,7 +3,9 @@
 #include "HartEng/Core/Keycodes.h"
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Log.h"
+#include "HartEng/Core/Application.h"
 
+#include <glm/glm.hpp>
 #include <iostream>
 #include <string>
 namespace HE
@@ -80,7 +82,8 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         m_ZoomLevel -= e.GetYOffset() * 0.25f;
-        m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+       
+        m_ZoomLevel = ((m_ZoomLevel > 0.25f) ? m_ZoomLevel : 0.25f);
         m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
         return false;
     }
@@ -140,22 +143,21 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
+        auto [x, y] = Input::GetMousePosition();
+
+        glm::vec2 offset(x - m_LastMousePosition.x, m_LastMousePosition.y - y);
+        m_LastMousePosition.x = x;
+        m_LastMousePosition.y = y;
+
         // TODO поставить кастомные коды
+        if (Input::IsMouseButtonPressed(1))
         {
             HE_PROFILE_SCOPE("Rotation - PerspectiveCameraController::OnUpdate");
             // Rotation
-            auto [x, y] = Input::GetMousePosition();
-
-            glm::vec2 offset(x - m_LastMousePosition.x, m_LastMousePosition.y - y);
-
-            m_LastMousePosition.x = x;
-            m_LastMousePosition.y = y;
-
             offset *= m_CameraSensivity;
 
             // TODO quaternion realization
             // euler angles realization
-
             m_Yaw += glm::radians(offset.x);
             m_Pitch += glm::radians(offset.y);
             m_Front = glm::normalize(glm::vec3(glm::cos(m_Yaw) * glm::cos(m_Pitch), glm::sin(m_Pitch), glm::sin(m_Yaw) * glm::cos(m_Pitch)));
@@ -165,13 +167,16 @@ namespace HE
             glm::quat cameraRotation = m_Camera.GetRotation();
             cameraRotation = glm::quat(glm::vec3(m_Pitch, m_Yaw, 0.0f));
 
-            //m_Camera.SetRotation(cameraRotation);
+
 
         }
 
+        if (Input::IsMouseButtonPressed(1))
         {
-            glm::vec3 cameraPosition = m_Camera.GetPosition();
             HE_PROFILE_SCOPE("Position - PerspectiveCameraController::OnUpdate");
+
+            glm::vec3 cameraPosition = m_Camera.GetPosition();
+
             // Position
             float velocity = m_CameraTranslationSpeed * ts;
             if (Input::IsKeyPressed(HE_KEY_W)) // forawrd

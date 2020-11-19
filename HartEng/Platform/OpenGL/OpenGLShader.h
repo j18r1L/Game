@@ -14,8 +14,10 @@ namespace HE
     private:
         uint32_t m_RendererID;
         std::string m_Name;
-
+        std::string m_FilePath;
+        std::unordered_map<GLenum, std::string> m_ShaderSources;
         mutable std::unordered_map<std::string, uint32_t> m_UniformLocationCache;
+
 
 
 
@@ -31,7 +33,8 @@ namespace HE
         void Bind() const override;
         void UnBind() const override;
 
-        const std::string & GetName() const override;
+        const std::string& GetName() const override;
+        const std::string& GetFilePath() const override;
 
         void SetMat4(const std::string& name, const glm::mat4& value) const override;
         void SetMat3(const std::string& name, const glm::mat3& value) const override;

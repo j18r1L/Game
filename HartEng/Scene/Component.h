@@ -15,6 +15,7 @@ namespace HE
         MeshComponent,
         SubMeshComponent,
         CameraComponent,
+        LightComponent,
     };
 
     class Component
@@ -28,6 +29,8 @@ namespace HE
     public:
 
         virtual ~Component();
+
+        void SetEntity(Entity* entity);
 
         ComponentType getType() const;
     };

@@ -9,8 +9,8 @@ namespace HE
     class EditorLayer: public Layer
     {
     private:
-        ShaderLibrary m_ShaderLibrary;
-        std::shared_ptr<VertexArray> m_CubeVA;
+        std::shared_ptr<ShaderLibrary> m_ShaderLibrary;
+        Entity* environmentEntity;
 
         FrameBufferSpecification m_FrameBufferSpec;
         std::shared_ptr<FrameBuffer> m_FrameBuffer;
@@ -21,6 +21,8 @@ namespace HE
         // Viewport Size
         glm::vec2 m_ViewportSize;
         bool m_ViewportFocused = true;
+        bool m_Play = false;
+        bool m_Pause = false;
 
 
         // Panels

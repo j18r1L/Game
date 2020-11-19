@@ -15,6 +15,9 @@ namespace HE
         virtual float GetMouseXImpl() override;
         virtual float GetMouseYImpl() override;
         virtual std::pair<float, float> GetMousePositionImpl() override;
+        virtual void SetMouseXImpl(float mousePosX) override;
+        virtual void SetMouseYImpl(float mousePosY) override;
+        virtual void SetMousePositionImpl(float mousePosX, float mousePosY) override;
     };
 }
 

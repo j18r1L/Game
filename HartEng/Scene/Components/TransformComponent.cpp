@@ -1,4 +1,5 @@
 #include "TransformComponent.h"
+#include <glm/gtx/euler_angles.hpp>
 
 namespace HE
 {
@@ -8,37 +9,26 @@ namespace HE
         m_EntityHandle = entityHandle;
         m_Type = ComponentType::TransformComponent;
     }
-    TransformComponent::TransformComponent(Entity* entityHandle, const glm::mat4& transform):
-        m_Transform(transform)
-    {
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::TransformComponent;
-    }
 
     void TransformComponent::Recalculate()
     {
-        m_Transform = glm::translate(glm::mat4(1.0f), m_Translation) *
-                glm::mat4_cast(m_Rotation) *
+        m_Transform = glm::translate(glm::mat4(1.0f), m_Position) *
+                glm::orientate4(m_Rotation) *
                 glm::scale(glm::mat4(1.0f), m_Scale);
     }
 
-    void TransformComponent::SetTranslation(const glm::vec3& translate)
+    void TransformComponent::SetPosition(const glm::vec3& position)
     {
-        m_Translation = translate;
+        m_Position = position;
         Recalculate();
     }
 
     void TransformComponent::SetRotation(const glm::vec3& angles)
     {
-        m_Rotation = glm::quat(glm::radians(angles));
+        m_Rotation = glm::radians(angles);
         Recalculate();
     }
 
-    void TransformComponent::SetRotation(const glm::quat& rotation)
-    {
-        m_Rotation = rotation;
-        Recalculate();
-    }
     void TransformComponent::SetScale(const glm::vec3& scale)
     {
         m_Scale = scale;
@@ -48,18 +38,18 @@ namespace HE
     {
         m_Transform = transform;
     }
-    void TransformComponent::SetTRC(const glm::vec3& translate, const glm::vec3& angles, const glm::vec3& scale)
+    void TransformComponent::SetPRS(const glm::vec3& position, const glm::vec3& angles, const glm::vec3& scale)
     {
-        m_Translation = translate;
-        m_Rotation = glm::quat(glm::radians(angles));
+        m_Position = position;
+        m_Rotation = glm::radians(angles);
         m_Scale = scale;
         Recalculate();
     }
-    const glm::vec3& TransformComponent::GetTranslation() const
+    const glm::vec3& TransformComponent::GetPosition() const
     {
-        return m_Translation;
+        return m_Position;
     }
-    const glm::quat& TransformComponent::GetRotation() const
+    const glm::vec3& TransformComponent::GetRotation() const
     {
         return m_Rotation;
     }

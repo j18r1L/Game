@@ -2,8 +2,7 @@
 
 namespace HE
 {
-    Texture2DComponent::Texture2DComponent():
-        m_Texture(nullptr)
+    Texture2DComponent::Texture2DComponent()
     {
         m_EntityHandle = nullptr;
         m_Type = ComponentType::Texture2DComponent;
@@ -15,23 +14,14 @@ namespace HE
         m_Type = ComponentType::Texture2DComponent;
     }
 
-    Texture2DComponent::Texture2DComponent(Entity* entityHandle, const std::string& filepath):
-        m_Texture(Texture2D::Create(filepath))
-    {
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::Texture2DComponent;
-    }
-
-    Texture2DComponent::Texture2DComponent(Entity* entityHandle, std::shared_ptr<Texture2D> texture):
-        m_Texture(texture)
-    {
-        m_EntityHandle = entityHandle;
-        m_Type = ComponentType::Texture2DComponent;
-    }
-
     void Texture2DComponent::SetImage(std::shared_ptr<Texture2D> texture)
     {
         m_Texture = texture;
+    }
+
+    void Texture2DComponent::SetImage(const std::string& filepath)
+    {
+        m_Texture = Texture2D::Create(filepath);
     }
 
     const Texture2D& Texture2DComponent::GetTexture() const

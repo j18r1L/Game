@@ -20,6 +20,7 @@ namespace HE
         virtual void UnBind() const = 0;
 
         virtual const std::string& GetName() const = 0;
+        virtual const std::string& GetFilePath() const = 0;
 
         //virtual void UploadVSUniformBuffer();
         //virtual void UploadVSRendererBuffer();
@@ -49,6 +50,7 @@ namespace HE
         std::shared_ptr<Shader> Load(const std::string& name, const std::string& path);
 
         std::shared_ptr<Shader> Get(const std::string& name);
+        const std::unordered_map<std::string, std::shared_ptr<Shader>> GetShaders() const;
 
         bool Exists(const std::string& name) const;
 

@@ -6,6 +6,7 @@
 #include "glm/glm.hpp"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Component.h"
+#include "HartEng/Renderer/Shader.h"
 
 namespace HE
 {
@@ -18,10 +19,12 @@ namespace HE
 
         // Emissive color of the material
         glm::vec3 m_Emissive = glm::vec3(0.0f);
+
+        std::shared_ptr<ShaderLibrary> m_ShaderLibrary = nullptr;
+        std::string m_ShaderName = "undefined";
     public:
         MaterialComponent();
         MaterialComponent(Entity* entityHandle);
-        MaterialComponent(Entity* entityHandle, const glm::vec3& emissive);
 
         virtual ~MaterialComponent() = default;
 
@@ -29,8 +32,14 @@ namespace HE
         void AddTexture(const std::string& name, Texture2DComponent* texture2DComponent);
         void AddTexture(const std::string& name, const std::string filepath);
 
+        void SetShader(std::shared_ptr<ShaderLibrary> shaderLibrary, const std::string& shaderName);
+
         const std::unordered_map<std::string, std::shared_ptr<Texture2DComponent>>& GetTextures() const;
         const glm::vec3& GetEmissive() const;
+        const std::shared_ptr<ShaderLibrary>& GetShaderLibrary() const;
+        const std::string& GetShaderName() const;
+        std::string GetShaderNameCopy();
+        std::shared_ptr<Shader> GetShader() const;
     };
 }
 

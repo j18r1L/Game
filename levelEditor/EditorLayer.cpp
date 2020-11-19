@@ -10,6 +10,8 @@ namespace HE
     {
         m_Scene = std::make_shared<Scene>(Scene("first_scene"));
         m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
+        m_ShaderLibrary = std::make_shared<ShaderLibrary>(ShaderLibrary());
+
         RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
     }
 
@@ -18,168 +20,20 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         std::string path_to_project = CMAKE_PATH;
-        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Grid.glsl");
-        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Environment.glsl");
-        m_ShaderLibrary.Load(path_to_project + "/assets/shaders/Texture.glsl");
-
-
-        // cube
-        float vertices_cube[] = {
-            // positions
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-
-            -0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f, -0.5f,
-             0.5f, -0.5f,  0.5f,
-             0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f,  0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f, -0.5f,
-             0.5f,  0.5f,  0.5f,
-             0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f,  0.5f,
-            -0.5f,  0.5f, -0.5f,
-        };
-        //Vertex array
-        m_CubeVA = VertexArray::Create();
-        m_CubeVA->Bind();
-        // Vertex buffer
-        std::shared_ptr<VertexBuffer> cubeVB;
-        cubeVB = VertexBuffer::Create(vertices_cube, sizeof(vertices_cube));
-        cubeVB->Bind();
-        cubeVB->SetLayout({
-            {ShaderDataType::Float3, "a_Position"}
-        });
-        m_CubeVA->AddVertexBuffer(cubeVB);
-        unsigned int indices_cube[] = {
-            0, 1, 2, 3, 4, 5, 6,
-            7, 8, 9, 10, 11, 12,
-            13, 14, 15, 16, 17, 18,
-            19, 20, 21, 22, 23, 24,
-            25, 26, 27, 28, 29, 30,
-            31, 32, 33, 34, 35,
-        };
-        std::shared_ptr<IndexBuffer> cubeIB;
-        cubeIB = IndexBuffer::Create(indices_cube, sizeof(indices_cube) / sizeof(uint32_t));
-        m_CubeVA->SetIndexBuffer(cubeIB);
-
-
-
-
-        // square
-        float vertices_square[5 * 4] = {
-            0.0f, -0.5f, -0.5f, 0.0f, 0.0f,
-            0.0f, -0.5f, 0.5f, 1.0f, 0.0f,
-            0.0f, 0.5f, 0.5f, 1.0f, 1.0f,
-            0.0f, 0.5f, -0.5f, 0.0f, 1.0f,
-        };
-
-        //Vertex array
-        std::shared_ptr<VertexArray> SquareVA;
-        SquareVA = VertexArray::Create();
-        SquareVA->Bind();
-        // Vertex buffer
-        std::shared_ptr<VertexBuffer> squareVB;
-        squareVB = VertexBuffer::Create(vertices_square, sizeof(vertices_square));
-        squareVB->Bind();
-
-        squareVB->SetLayout({
-            {ShaderDataType::Float3, "a_Position"},
-            {ShaderDataType::Float2, "a_TexCoord"}
-        });
-        SquareVA->AddVertexBuffer(squareVB);
-        unsigned int indices_square[6] = {0, 1, 2, 2, 3, 0};
-        std::shared_ptr<IndexBuffer> squareIB;
-        squareIB = IndexBuffer::Create(indices_square, sizeof(indices_square) / sizeof(uint32_t));
-        SquareVA->SetIndexBuffer(squareIB);
-
-        // ---------------Create grid entity------------
-        Entity* gridEntity = m_Scene->CreateEntity("grid");
-
-        // Set transform component
-        TransformComponent* gridTransformComponent = dynamic_cast<TransformComponent*>(gridEntity->GetComponent(ComponentType::TransformComponent));
-        gridTransformComponent->SetTranslation({0.0f, -0.5f, 0.0f});
-        gridTransformComponent->SetRotation({0.0f, 90.0f, 0.0f});
-        gridTransformComponent->SetRotation({0.0f, 0.0f, 90.0f});
-        gridTransformComponent->SetScale({1.0f, 10.0f, 10.0f});
-
-        // Create SubMesh
-        SubMeshComponent* gridSubMeshComponent = new SubMeshComponent(gridEntity);
-        gridSubMeshComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Grid");
-        gridSubMeshComponent->SetAttribute("quad", SquareVA);
-        gridEntity->AddComponent(ComponentType::SubMeshComponent, *gridSubMeshComponent);
-
-        // Create mesh
-        MeshComponent* gridMeshComponent = new MeshComponent(gridEntity);
-        gridMeshComponent->AddSubMesh(*gridSubMeshComponent);
-        gridEntity->AddComponent(ComponentType::MeshComponent, *gridMeshComponent);
-
-
-
-        // --------Create square entity--------------
-        Entity* squareEntity = m_Scene->CreateEntity("square");
-
-        // load and create texture
-        Texture2DComponent* squareTexture2DComponent = new Texture2DComponent(squareEntity, path_to_project + "/assets/textures/tex_coord.png");
-        squareEntity->AddComponent(ComponentType::Texture2DComponent, *squareTexture2DComponent);
-
-        // Create material with texture
-        MaterialComponent* squareMaterialComponent = new MaterialComponent(squareEntity);
-        squareMaterialComponent->AddTexture("u_Texture", squareTexture2DComponent);
-        squareEntity->AddComponent(ComponentType::MaterialComponent, *squareMaterialComponent);
-
-        // Create SubMesh
-        SubMeshComponent* squareSubMeshComponent = new SubMeshComponent(squareEntity);
-        squareSubMeshComponent->SetMaterial(*squareMaterialComponent);
-        squareSubMeshComponent->SetShader(std::make_shared<ShaderLibrary>(m_ShaderLibrary), "Texture");
-        squareSubMeshComponent->SetAttribute("quad", SquareVA);
-        squareEntity->AddComponent(ComponentType::SubMeshComponent, *squareSubMeshComponent);
-
-        // Create Mesh
-        MeshComponent* squareMeshComponent = new MeshComponent(squareEntity);
-        squareMeshComponent->AddSubMesh(*squareSubMeshComponent);
-        squareEntity->AddComponent(ComponentType::MeshComponent, *squareMeshComponent);
-
-
-        // --------- Create Camera entity ------------------
-        Entity* cameraEntity = m_Scene->CreateEntity("Camera");
-
-        // Set transform component
-        TransformComponent* cameraTransformComponent = dynamic_cast<TransformComponent*>(cameraEntity->GetComponent(ComponentType::TransformComponent));
-        cameraTransformComponent->SetRotation({0.0f, 0.0f, 0.0f});
-
-        // Create camera component
-        float aspectRatio = static_cast<float>(Application::Get().GetWindow().GetWidth()) / static_cast<float>(Application::Get().GetWindow().GetHeight());
-        CameraComponent* cameraComponent = new CameraComponent(cameraEntity, 45.0f, aspectRatio, 0.1f, 1000.0f, true, false);
-        cameraEntity->AddComponent(ComponentType::CameraComponent, *cameraComponent);
+        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Environment.glsl");
+        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Fong.glsl");
+        
+        // Create environment entity
+        environmentEntity = new Entity();
+        environmentEntity->AddComponent(ComponentType::TransformComponent);
+        if (LoadMesh::CreateMesh(environmentEntity, path_to_project + "/assets/obj/cube/cube.obj"))
+        {
+            // Add shader to material
+            auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
+            environmentMaterialComponent->SetShader(m_ShaderLibrary, "Environment");
+        }
+        
+        
 
         // load framebuffer
         m_FrameBufferSpec.Width = Application::Get().GetWindow().GetWidth();
@@ -188,6 +42,12 @@ namespace HE
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
+        m_SceneHierarchyPanel->SetShaderLibrary(m_ShaderLibrary);
+        
+        SceneSerializer serializer(m_Scene, m_ShaderLibrary);
+        serializer.Deserialize(path_to_project + "/assets/scenes/scene_2.he");
+
+
 
 
     }
@@ -201,21 +61,6 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        {
-            /*
-            HE_PROFILE_SCOPE("Resize");
-            // Resize
-            if (FrameBufferSpecification spec = m_FrameBuffer->GetSpecification();
-                m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
-                (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
-            {
-                m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-                m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-
-                m_Scene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            }
-            */
-        }
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
@@ -232,17 +77,34 @@ namespace HE
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
-
+            
             // environment
             RenderCommand::SetDepthTest(false);
-            auto environmentShader = m_ShaderLibrary.Get("Environment");
-            environmentShader->Bind();
-            environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
-            Renderer::Submit(environmentShader, m_CubeVA);
+            if (environmentEntity->HasComponent(ComponentType::MeshComponent))
+            {
+                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
+                auto environmentShader = m_ShaderLibrary->Get("Environment");
+                auto& subMeshes = meshComponent->GetSubMeshes();
+                for (auto& subMesh : subMeshes)
+                {
+                    environmentShader->Bind();
+                    environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
+                    auto& attribute = subMesh->GetAttribute();
+                    Renderer::Submit(environmentShader, attribute);
+                }
+            }
+            
 
             RenderCommand::SetDepthTest(true);
-            //m_Scene->OnUpdate(ts); // Use runtime camera
-            m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
+            if (m_Play && !m_Pause)
+            {
+                m_Scene->OnUpdate(ts); // Use runtime camera
+            }
+            else
+            {
+                m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
+            }
+            
             m_FrameBuffer->UnBind();
 
         }
@@ -288,19 +150,80 @@ namespace HE
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
 
-
+        static bool loadScene = false, saveScene = false; // SaveScene flag, LoadScene flag
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
+                
+                if (ImGui::MenuItem("New Scene"))
+                    if (m_Scene)
+                        m_Scene->Clear();
+
+                if (ImGui::MenuItem("Open Scene"))
+                    loadScene = true;
+
+                if (ImGui::MenuItem("Save Scene"))
+                    saveScene = true;
+
                 if (ImGui::MenuItem("Exit"))
                     Application::Get().Close();
+
+
+                ImGui::EndMenu();
+
+            }
+            if (ImGui::BeginMenu("Scene"))
+            {
+                if (ImGui::MenuItem("Play"))
+                {
+                    m_Play = true;
+                    m_Pause = false;
+                }
+                if (ImGui::MenuItem("Pause"))
+                    m_Pause = !m_Pause;
+                if (ImGui::MenuItem("Stop"))
+                {
+                    m_Play = false;
+                    m_Pause = false;
+                }
+                    
                 ImGui::EndMenu();
             }
-
-
             ImGui::EndMenuBar();
         }
+
+        if (saveScene || loadScene)
+        {
+            SceneSerializer serializer(m_Scene, m_ShaderLibrary);
+            std::string loadSceneWindowName = "";
+            if (saveScene)
+                loadSceneWindowName = "Save Scene";
+            if (loadScene)
+                loadSceneWindowName = "Open Scene";
+            ImGui::Begin(loadSceneWindowName.c_str());
+            static std::string FilePath(256, '\0');
+            ImGui::InputText("Path", &FilePath[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                if (saveScene)
+                {
+                    serializer.Serialize(FilePath);
+                    saveScene = false;
+                }
+                    
+                else if (loadScene)
+                {
+                    serializer.Deserialize(FilePath);
+                    loadScene = false;
+                }
+                    
+            }
+            ImGui::End();
+        }
+        
 
         m_SceneHierarchyPanel->OnImGuiRender();
 
@@ -311,7 +234,7 @@ namespace HE
         Application::Get().GetImGuiLayer()->SetBlockEvents(m_ViewportFocused);
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
-
+        // Resize
         if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
         {
             if (m_ViewportSize.x <= 1.0f || m_ViewportSize.y <= 1.0f)

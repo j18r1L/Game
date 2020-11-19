@@ -4,12 +4,16 @@ namespace HE
 {
     Component::~Component()
     {
-        m_EntityHandle->RemoveComponent(m_Type);
     }
 
     ComponentType Component::getType() const
     {
         return m_Type;
+    }
+
+    void Component::SetEntity(Entity *entity)
+    {
+        m_EntityHandle = entity;
     }
 
     Component* Component::GetComponent(ComponentType componentType)

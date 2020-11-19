@@ -44,8 +44,9 @@ namespace HE
 
     void ShaderLibrary::Add(const std::string& name, const std::shared_ptr<Shader> shader)
     {
-        HE_CORE_ASSERT(!Exists(name), "Shader already exists!");
-        m_Shaders[name] = shader;
+        //HE_CORE_TRACE(!Exists(name), "Shader already exists!");
+        if (!Exists(name))
+            m_Shaders[name] = shader;
     }
 
     void ShaderLibrary::Add(const std::shared_ptr<Shader> shader)
@@ -74,6 +75,11 @@ namespace HE
     {
         HE_CORE_ASSERT(Exists(name), "Shader not found!");
         return m_Shaders[name];
+    }
+
+    const std::unordered_map<std::string, std::shared_ptr<Shader>> ShaderLibrary::GetShaders() const
+    {
+        return m_Shaders;
     }
 
     bool ShaderLibrary::Exists(const std::string& name) const
