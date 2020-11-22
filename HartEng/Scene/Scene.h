@@ -17,6 +17,8 @@ namespace HE
         std::unordered_map<std::string, Entity*> m_Entities;
         std::string m_Name;
         uint32_t m_ObjectsCount;
+
+        bool m_Play = false;
         friend class SceneHierarchyPanel;
 
     public:
@@ -35,6 +37,8 @@ namespace HE
         void DestroyEntity(const std::string& name);
         void Clear();
 
+        void OnScenePlay();
+        void OnSceneStop();
         void OnUpdate(Timestep& ts);
         void OnUpdate(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
 

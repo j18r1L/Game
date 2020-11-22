@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 
+#include "assets/scripts/RotateScript.h"
 
 namespace HE
 {
@@ -46,6 +47,11 @@ namespace HE
         
         SceneSerializer serializer(m_Scene, m_ShaderLibrary);
         serializer.Deserialize(path_to_project + "/assets/scenes/scene_2.he");
+
+        
+        Entity* backpack = m_Scene->GetEntity("backpack");
+        RotateScript* rotateScript = new RotateScript(backpack);
+        backpack->AddComponent(ComponentType::ScriptComponent, rotateScript);
 
 
 
@@ -179,6 +185,7 @@ namespace HE
                 {
                     m_Play = true;
                     m_Pause = false;
+                    m_Scene->OnScenePlay();
                 }
                 if (ImGui::MenuItem("Pause"))
                     m_Pause = !m_Pause;
@@ -186,6 +193,7 @@ namespace HE
                 {
                     m_Play = false;
                     m_Pause = false;
+                    m_Scene->OnSceneStop();
                 }
                     
                 ImGui::EndMenu();

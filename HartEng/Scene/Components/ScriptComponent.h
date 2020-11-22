@@ -9,7 +9,7 @@ namespace HE
 	{
 	public:
 		virtual void OnCreate() {};
-		virtual void OnUpdate(Timestep timestep) {};
+		virtual void OnUpdate(Timestep& timestep) {};
 		virtual void OnDestroy() {};
 	};
 }
