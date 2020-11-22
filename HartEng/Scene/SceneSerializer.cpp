@@ -168,7 +168,8 @@ namespace HE
         out << YAML::Key << "MeshComponent";
         {
             out << YAML::BeginMap; // Mesh component
-            out << YAML::Key << "FilePath" << YAML::Value << meshComponent->GetPath();
+            std::string filePath = meshComponent->GetPath();
+            out << YAML::Key << "FilePath" << YAML::Value << filePath;
             out << YAML::EndMap; // Mesh component
         }
     }
@@ -178,12 +179,13 @@ namespace HE
         out << YAML::Key << "MaterialComponent";
         {
             out << YAML::BeginMap; // Material component
-            out << YAML::Key << "ShaderName" << YAML::Value << materialComponent->GetShaderName();
-            out << YAML::Key << "FilePath" << YAML::Value << materialComponent->GetShader()->GetFilePath();
+            std::string shaderName = materialComponent->GetShaderName();
+            std::string filePath = materialComponent->GetShader()->GetFilePath();
+            out << YAML::Key << "ShaderName" << YAML::Value << shaderName;
+            out << YAML::Key << "FilePath" << YAML::Value << filePath;
             out << YAML::EndMap; // Material component
         }
     }
-
     void SceneSerializer::SerializeLight(YAML::Emitter& out, Entity* entity)
     {
         LightComponent* lightComponent = dynamic_cast<LightComponent*>(entity->GetComponent(ComponentType::LightComponent));
@@ -202,11 +204,11 @@ namespace HE
             out << YAML::EndMap; // Light component
         }
     }
-    
     void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity* entity)
     {
         out << YAML::BeginMap; // Entity
-        out << YAML::Key << "Entity" << YAML::Value << entity->GetName(); // TODO: Entity ID goes here
+        std::string name = entity->GetName();
+        out << YAML::Key << "Entity" << YAML::Value << name;
 
 
 

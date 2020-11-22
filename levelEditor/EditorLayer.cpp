@@ -49,7 +49,7 @@ namespace HE
         serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");
 
         
-        Entity* backpack = m_Scene->GetEntity("backpack");
+        Entity* backpack = m_Scene->GetEntity("Backpack");
         RotateScript* rotateScript = new RotateScript(backpack);
         backpack->AddComponent(ComponentType::ScriptComponent, rotateScript);
 
@@ -70,7 +70,7 @@ namespace HE
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
-            if (m_ViewportFocused)
+            if (m_ViewportFocused && (!m_Play || m_Pause))
                 m_CameraController.OnUpdate(ts);
         }
 

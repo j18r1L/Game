@@ -31,6 +31,8 @@ public:
 	void OnDestroy() override
 	{
 		HE_INFO("RotateScript OnDestroy");
+		HE::TransformComponent* transformComponent = dynamic_cast<HE::TransformComponent*>(m_EntityHandle->GetComponent(HE::ComponentType::TransformComponent));
+		transformComponent->SetRotation({ 0.0f, 0.0f, 0.0f });
 	}
 };
 

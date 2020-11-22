@@ -96,6 +96,8 @@ namespace HE
 
     void Scene::OnScenePlay()
     {
+        HE_PROFILE_FUNCTION();
+
         if (m_Play == false)
         {
             m_Play = true;
@@ -113,6 +115,8 @@ namespace HE
 
     void Scene::OnSceneStop()
     {
+        HE_PROFILE_FUNCTION();
+
         if (m_Play == true)
         {
             m_Play = false;
