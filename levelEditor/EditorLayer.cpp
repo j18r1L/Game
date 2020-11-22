@@ -20,13 +20,13 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         std::string path_to_project = CMAKE_PATH;
-        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Environment.glsl");
-        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Fong.glsl");
+        m_ShaderLibrary->Load("/assets/shaders/Environment.glsl");
+        m_ShaderLibrary->Load("/assets/shaders/Fong.glsl");
         
         // Create environment entity
         environmentEntity = new Entity();
         environmentEntity->AddComponent(ComponentType::TransformComponent);
-        if (LoadMesh::CreateMesh(environmentEntity, path_to_project + "/assets/obj/cube/cube.obj"))
+        if (LoadMesh::CreateMesh(environmentEntity, "/assets/obj/cube/cube.obj"))
         {
             // Add shader to material
             auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
@@ -45,7 +45,7 @@ namespace HE
         m_SceneHierarchyPanel->SetShaderLibrary(m_ShaderLibrary);
         
         SceneSerializer serializer(m_Scene, m_ShaderLibrary);
-        serializer.Deserialize(path_to_project + "/assets/scenes/scene_2.he");
+        serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");
 
 
 

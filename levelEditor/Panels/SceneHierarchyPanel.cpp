@@ -311,7 +311,10 @@ namespace HE
         {
             ImGui::Begin("New Shader");
             static std::string ShaderName(256, '\0');
-            ImGui::InputText("Path", &ShaderName[0], 256);
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &ShaderName[0], 256);
 
 
             if (ImGui::Button("Accept"))
@@ -377,7 +380,10 @@ namespace HE
         {
             ImGui::Begin("New mesh");
             static std::string MeshName(256, '\0');
-            ImGui::InputText("Path", &MeshName[0], 256);
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &MeshName[0], 256);
 
 
             if (ImGui::Button("Accept"))

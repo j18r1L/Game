@@ -31,7 +31,8 @@ namespace HE
         // read file via ASSIMP
         Assimp::Importer importer;
 
-        const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        std::string path_to_project = CMAKE_PATH;
+        const aiScene* scene = importer.ReadFile(path_to_project + filePath, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
         // check for errors
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
         {
@@ -148,13 +149,14 @@ namespace HE
 
         // 1. diffuse maps
         MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(entity->AddComponent(ComponentType::MaterialComponent));
-        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_DIFFUSE, "texture_diffuse", directory);
+        std::string path_to_project = CMAKE_PATH;
+        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_DIFFUSE, "texture_diffuse", path_to_project + directory);
         // 2. specular maps
-        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_SPECULAR, "texture_specular", directory);
+        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_SPECULAR, "texture_specular", path_to_project + directory);
         // 3. normal maps
-        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_HEIGHT, "texture_normal", directory);
+        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_HEIGHT, "texture_normal", path_to_project + directory);
         // 4. height maps
-        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_AMBIENT, "texture_height", directory);
+        LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_AMBIENT, "texture_height", path_to_project + directory);
 
 
         // return a SubMesh object created from the extracted mesh data
