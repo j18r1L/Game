@@ -175,12 +175,12 @@ namespace HE
 
 
         glm::vec3 angles = glm::degrees(transform->GetRotation());
-        
+
         if (ImGui::DragFloat3("Rotation", glm::value_ptr(angles), 0.1f))
         {
             transform->SetRotation(angles);
         }
-        
+
 
 
 
@@ -320,7 +320,7 @@ namespace HE
             if (ImGui::Button("Accept"))
             {
                 addShader = false;
-                auto& shader = m_ShaderLibrary->Load(ShaderName);
+                auto shader = m_ShaderLibrary->Load(ShaderName);
                 material->SetShader(m_ShaderLibrary, shader->GetName());
             }
             ImGui::End();
@@ -345,11 +345,11 @@ namespace HE
             }
         }
 
-        
+
         // Remove Component
         if (removeComponent)
             entity->RemoveComponent(ComponentType::MaterialComponent);
-        
+
     }
     void SceneHierarchyPanel::DrawMesh(Entity* entity)
     {
@@ -415,7 +415,7 @@ namespace HE
                         materialComponent->SetShader(shaderLibrary, shaderName);
                     }
                 }
-                
+
             }
             ImGui::End();
         }
@@ -482,7 +482,7 @@ namespace HE
             if (removeComponent)
                 entity->RemoveComponent(ComponentType::MeshComponent);
         }
-        
+
     }
     void SceneHierarchyPanel::DrawLight(Entity* entity)
     {

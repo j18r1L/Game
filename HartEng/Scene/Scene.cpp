@@ -1,5 +1,6 @@
 #include "HartEng/Scene/Scene.h"
 
+
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Scene/Components/MeshComponent.h"
@@ -7,6 +8,7 @@
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
+#include "HartEng/Scene/Components/ScriptComponent.h"
 #include "HartEng/Renderer/Renderer.h"
 
 #include "HartEng/Core/Log.h"
@@ -92,6 +94,39 @@ namespace HE
         m_Entities.clear();
     }
 
+    void Scene::OnScenePlay()
+    {
+        if (m_Play == false)
+        {
+            m_Play = true;
+            for (auto& [name, entity] : m_Entities)
+            {
+                if (entity->HasComponent(ComponentType::ScriptComponent))
+                {
+                    ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(entity->GetComponent(ComponentType::ScriptComponent));
+                    scriptComponent->OnCreate();
+                }
+            }
+        }
+        
+    }
+
+    void Scene::OnSceneStop()
+    {
+        if (m_Play == true)
+        {
+            m_Play = false;
+            for (auto& [name, entity] : m_Entities)
+            {
+                if (entity->HasComponent(ComponentType::ScriptComponent))
+                {
+                    ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(entity->GetComponent(ComponentType::ScriptComponent));
+                    scriptComponent->OnDestroy();
+                }
+            }
+        }
+    }
+
     // Runtime
     void Scene::OnUpdate(Timestep& ts)
     {
@@ -99,6 +134,17 @@ namespace HE
 
         Camera* mainCamera = nullptr;
         glm::mat4 transform(1.0f);
+        {
+            HE_PROFILE_SCOPE("OnUpdate: update script");
+            for (auto& [name, entity]: m_Entities)
+            {
+                if (entity->HasComponent(ComponentType::ScriptComponent))
+                {
+                    ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(entity->GetComponent(ComponentType::ScriptComponent));
+                    scriptComponent->OnUpdate(ts);
+                }
+            }
+        }
         {
             HE_PROFILE_SCOPE("OnUpdate: find mainCamera");
 

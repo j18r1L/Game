@@ -142,11 +142,17 @@ file(GLOB level_editor_files
 
     "levelEditor/Panels/*.h"
     "levelEditor/Panels/*.cpp"
+
+    "assets/scripts/*.h"
+    "assets/scripts/*.cpp"
 )
 
 file(GLOB sandbox_files
     "sandBox/*.cpp"
     "sandBox/*.h"
+
+    "assets/scripts/*.h"
+    "assets/scripts/*.cpp"
 )
 
 # CMake instruction to make static library
