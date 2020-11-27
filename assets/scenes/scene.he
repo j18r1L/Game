@@ -11,13 +11,13 @@ Entities:
       Color: [1, 1, 1]
       Intensity: 1
       Range: 0
-      InnerConeAngle: 1
-      OuterConeAngle: 1
+      InnerConeAngle: 0.99984777
+      OuterConeAngle: 0.99984777
   - Entity: Backpack
     TransformComponent:
       Position: [0, 0, 0]
-      Rotation: [0, 0, 6.67289925]
-      Scale: [1, 1, 1]
+      Rotation: [0, 0, 0]
+      Scale: [0.999995172, 0.999997675, 0.999998212]
     MeshComponent:
       FilePath: /assets/obj/backpack/backpack.obj
     MaterialComponent:

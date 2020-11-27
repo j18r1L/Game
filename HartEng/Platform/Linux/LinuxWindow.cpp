@@ -41,11 +41,12 @@ namespace HE
         m_Data.Title = props.Title;
         m_Data.Width = props.Width;
         m_Data.Height = props.Height;
+        m_Data.XPosition = props.XPosition;
+        m_Data.YPosition = props.YPosition;
 
 
-
-        HE_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
-
+        HE_CORE_INFO("Creating window: {0} ({1}, {2})", props.Title, props.Width, props.Height);
+        HE_CORE_INFO("Window position: {0}, {1}", props.XPosition, props.YPosition);
 
 
         if (s_GLFWWindowCount == 0)
@@ -67,11 +68,13 @@ namespace HE
             HE_PROFILE_SCOPE("glfwCreateWindow");
             m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
             ++s_GLFWWindowCount;
+
         }
         // TODO сделать GraphicsContext::Create(m_Window);
         m_Context = new OpenGLContext(m_Window);
         m_Context->Init();
         glfwSetWindowUserPointer(m_Window, &m_Data);
+        glfwSetWindowPos(m_Window, props.XPosition, props.YPosition);
 
 
 
@@ -79,7 +82,6 @@ namespace HE
         SetVSync(true);
 
         // Set GLFW callbacks
-        // TODO remove lambda declarations
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -88,7 +90,14 @@ namespace HE
             data.Width = width;
             data.Height = height;
             data.EventCallback(event);
-          });
+        });
+
+        glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xpos, int ypos)
+        {
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            data.XPosition = xpos;
+            data.YPosition = ypos;
+        });
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
         {
@@ -96,6 +105,7 @@ namespace HE
             WindowCloseEvent event;
             data.EventCallback(event);
         });
+
 
         glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {

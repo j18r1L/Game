@@ -3,6 +3,7 @@
 
 #include "HartEng/HartEng.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Gizmo/Gizmo.h"
 
 namespace HE
 {
@@ -24,7 +25,8 @@ namespace HE
         bool m_Play = false;
         bool m_Pause = false;
 
-
+        // Gizmos
+        Gizmo m_Gizmo;
         // Panels
         std::shared_ptr<SceneHierarchyPanel> m_SceneHierarchyPanel;
     public:

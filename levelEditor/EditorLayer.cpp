@@ -4,11 +4,12 @@
 
 namespace HE
 {
-    EditorLayer::EditorLayer():
+    EditorLayer::EditorLayer() :
         Layer("EditorLayer"),
-        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
+        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
         m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
     {
+        m_Gizmo.SetCamera(&m_CameraController);
         m_Scene = std::make_shared<Scene>(Scene("first_scene"));
         m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
         m_ShaderLibrary = std::make_shared<ShaderLibrary>(ShaderLibrary());
@@ -52,9 +53,6 @@ namespace HE
         Entity* backpack = m_Scene->GetEntity("Backpack");
         RotateScript* rotateScript = new RotateScript(backpack);
         backpack->AddComponent(ComponentType::ScriptComponent, rotateScript);
-
-
-
 
     }
 
@@ -101,6 +99,7 @@ namespace HE
             }
             
 
+            // Draw scene
             RenderCommand::SetDepthTest(true);
             if (m_Play && !m_Pause)
             {
@@ -259,10 +258,22 @@ namespace HE
 
         }
 
-
+        
+        
 
         uint32_t FrameBufferID = m_FrameBuffer->GetColorAttachmentRendererID();
         ImGui::Image((void*) FrameBufferID, ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0.0f, 1.0f}, ImVec2{1.0f, 0.0f});
+
+        // Draw Gizmo
+        Entity* selectedEntity = m_SceneHierarchyPanel->GetSelectedEntity();
+        if (selectedEntity)
+        {
+            m_Gizmo.Draw(selectedEntity);
+        }
+            
+        
+        
+        
 
         ImGui::PopStyleVar();
 

@@ -68,6 +68,9 @@ namespace HE
         float m_Near = 0.1f;
         float m_Far = 1000.0f;
 
+        float m_Width = 0.0f;
+        float m_Height = 0.0f;
+
         PerspectiveCamera m_Camera;
 
         bool OnMouseScroll(MouseScrolledEvent& e);
@@ -75,7 +78,7 @@ namespace HE
 
     public:
         PerspectiveCameraController(float fov, float width, float height, float zNear, float zFar);
-        PerspectiveCameraController(float fov, float aspect_ratio, float zNear, float zFar);
+        //PerspectiveCameraController(float fov, float aspect_ratio, float zNear, float zFar);
 
         void OnUpdate(Timestep ts);
         void OnEvent(Event& e);
@@ -83,6 +86,8 @@ namespace HE
 
         PerspectiveCamera& GetCamera() { return m_Camera; }
         const PerspectiveCamera& GetCamera() const { return m_Camera; }
+        float GetWidth() const { return m_Width; }
+        float GetHeight() const { return m_Height; }
 
     };
 

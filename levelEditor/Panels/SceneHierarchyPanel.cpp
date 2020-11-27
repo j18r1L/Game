@@ -3,6 +3,7 @@
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Log.h"
 #include "glm/gtc/type_ptr.hpp"
+#include <glm/gtx/matrix_decompose.hpp>
 
 namespace HE
 {
@@ -26,18 +27,28 @@ namespace HE
     {
         ImGui::Begin("Scene Hierarchy");
 
+        m_CreateChild = false;
         for (auto& [name, entity]: m_Scene->m_Entities)
         {
             DrawEntityNode(name, entity);
         }
+        // Delete entity
         if (m_DeletedEntity != "")
         {
             m_Scene->DestroyEntity(m_DeletedEntity);
             m_SelectionContext = nullptr;
             m_DeletedEntity = "";
         }
+        /*
+        // Create child entity
+        if (m_CreateChild)
+        {
+            m_CreateChild = false;
+            Entity* entity = m_SelectionContext->AddChild();
+        }
+        */
 
-        //Deselect entity if pressed in window, but not on a entity
+        // Deselect entity if pressed in window, but not on a entity
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
             m_SelectionContext = nullptr;
 
@@ -101,11 +112,14 @@ namespace HE
             m_SelectionContext = entity;
         }
 
-        // Delete entity
+        // Entity right click
         if (ImGui::BeginPopupContextItem())
         {
+            m_SelectionContext = entity;
             if (ImGui::MenuItem("Delete Entity"))
                 m_DeletedEntity = entity->GetName();
+            if (ImGui::MenuItem("Add Entity"))
+                m_CreateChild = true;
             ImGui::EndPopup();
         }
 
@@ -164,31 +178,28 @@ namespace HE
 
     void SceneHierarchyPanel::DrawTransform(Entity* entity)
     {
-        TransformComponent* transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+        TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
 
-        glm::vec3 position = transform->GetPosition();
+        glm::vec3 position = transformComponent->GetPosition();
         if (ImGui::DragFloat3("Position", glm::value_ptr(position), 0.1f))
         {
-            transform->SetPosition(position);
+            transformComponent->SetPosition(position);
         }
 
-
-
-        glm::vec3 angles = glm::degrees(transform->GetRotation());
-
+        // TODO fix gizmo & UI
+        glm::vec3 angles = glm::degrees(transformComponent->GetRotation());
+        std::swap(angles.y, angles.z);
+        
         if (ImGui::DragFloat3("Rotation", glm::value_ptr(angles), 0.1f))
         {
-            transform->SetRotation(angles);
+            std::swap(angles.y, angles.z);
+            transformComponent->SetRotation( angles);
         }
 
-
-
-
-
-        glm::vec3 scale = transform->GetScale();
+        glm::vec3 scale = transformComponent->GetScale();
         if (ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.1f))
         {
-            transform->SetScale(scale);
+            transformComponent->SetScale(scale);
         }
     }
     void SceneHierarchyPanel::DrawCamera(Entity* entity)
@@ -579,6 +590,11 @@ namespace HE
         // Remove Component
         if (removeComponent)
             entity->RemoveComponent(ComponentType::CameraComponent);
+    }
+
+    Entity* SceneHierarchyPanel::GetSelectedEntity() const
+    {
+        return m_SelectionContext;
     }
 }
 

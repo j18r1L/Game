@@ -13,11 +13,20 @@ namespace HE
         std::string Title;
         uint32_t Width;
         uint32_t Height;
+        uint32_t XPosition;
+        uint32_t YPosition;
 
         WindowProps(const std::string& title = "HartEngine",
                     uint32_t width = 1280,
-                    uint32_t height = 1020):
-            Title(title), Width(width), Height(height) {}
+                    uint32_t height = 1020,
+                    uint32_t xPosition = 0,
+                    uint32_t yPosition = 0):
+            Title(title), 
+            Width(width), 
+            Height(height),
+            XPosition(xPosition ? width / 3 : xPosition),
+            YPosition(yPosition ? height / 3 : yPosition)
+        {}
     };
 
     // Интерфейс для ПК окна
@@ -32,6 +41,8 @@ namespace HE
 
         virtual uint32_t GetWidth() const = 0;
         virtual uint32_t GetHeight() const = 0;
+        virtual uint32_t GetXPosition() const = 0;
+        virtual uint32_t GetYPosition() const = 0;
         virtual double GetTime() const = 0;
 
         // Атрибуты окна
