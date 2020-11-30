@@ -5,8 +5,6 @@ namespace HE
 	LightComponent::LightComponent(Entity* entityHandle)
 	{
 		m_EntityHandle = entityHandle;
-		m_Type = ComponentType::LightComponent;
-
 	}
 	void LightComponent::SetLightType(const LightType& type)
 	{

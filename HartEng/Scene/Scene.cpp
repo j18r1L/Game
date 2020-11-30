@@ -51,7 +51,7 @@ namespace HE
             m_Entities[name] = entity;
 
             // Добавляем компененты, которые всегда должны быть в entity, например TransformComponent
-            entity->AddComponent(ComponentType::TransformComponent);
+            entity->AddComponent<TransformComponent>();
             m_ObjectsCount++;
 
             return entity;
@@ -103,9 +103,9 @@ namespace HE
             m_Play = true;
             for (auto& [name, entity] : m_Entities)
             {
-                if (entity->HasComponent(ComponentType::ScriptComponent))
+                if (entity->HasComponent<ScriptComponent>())
                 {
-                    ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(entity->GetComponent(ComponentType::ScriptComponent));
+                    ScriptComponent* scriptComponent = entity->GetComponent<ScriptComponent>();
                     scriptComponent->OnCreate();
                 }
             }
@@ -122,9 +122,9 @@ namespace HE
             m_Play = false;
             for (auto& [name, entity] : m_Entities)
             {
-                if (entity->HasComponent(ComponentType::ScriptComponent))
+                if (entity->HasComponent<ScriptComponent>())
                 {
-                    ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(entity->GetComponent(ComponentType::ScriptComponent));
+                    ScriptComponent* scriptComponent = entity->GetComponent<ScriptComponent>();
                     scriptComponent->OnDestroy();
                 }
             }
@@ -142,9 +142,9 @@ namespace HE
             HE_PROFILE_SCOPE("OnUpdate: update script");
             for (auto& [name, entity]: m_Entities)
             {
-                if (entity->HasComponent(ComponentType::ScriptComponent))
+                if (entity->HasComponent<ScriptComponent>())
                 {
-                    ScriptComponent* scriptComponent = dynamic_cast<ScriptComponent*>(entity->GetComponent(ComponentType::ScriptComponent));
+                    ScriptComponent* scriptComponent = entity->GetComponent<ScriptComponent>();
                     scriptComponent->OnUpdate(ts);
                 }
             }
@@ -155,12 +155,12 @@ namespace HE
             // Find mainCamera
             for (auto& [name, entity]: m_Entities)
             {
-                if (entity->HasComponent(ComponentType::CameraComponent))
+                if (entity->HasComponent<CameraComponent>())
                 {
-                    CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
+                    CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>();
                     if (cameraComponent->GetPrimary())
                     {
-                        transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent))->GetTransform();
+                        transform = entity->GetComponent<TransformComponent>()->GetTransform();
                         mainCamera = &cameraComponent->GetCamera();
                         break;
                     }
@@ -180,7 +180,7 @@ namespace HE
                 std::vector<Entity*> lights;
                 for (auto& [name, entity] : m_Entities)
                 {
-                    if (entity->HasComponent(ComponentType::LightComponent))
+                    if (entity->HasComponent<LightComponent>())
                         lights.push_back(entity);
                 }
 
@@ -192,10 +192,10 @@ namespace HE
                     HE_PROFILE_SCOPE(name.c_str());
 
                     // Render only entities with mesh
-                    if (entity->HasComponent(ComponentType::MeshComponent))
+                    if (entity->HasComponent<MeshComponent>())
                     {
-                        MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
-                        TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+                        MeshComponent* meshComponent = entity->GetComponent<MeshComponent>();
+                        TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
                         if (meshComponent)
                         {
                             auto& subMeshes = meshComponent->GetSubMeshes();
@@ -225,7 +225,7 @@ namespace HE
         std::vector<Entity*> lights;
         for (auto& [name, entity] : m_Entities)
         {
-            if (entity->HasComponent(ComponentType::LightComponent))
+            if (entity->HasComponent<LightComponent>())
                 lights.push_back(entity);
         }
         Renderer::BeginScene(camera, lights);
@@ -236,10 +236,10 @@ namespace HE
         {
             HE_PROFILE_SCOPE(name.c_str());
             // Render only entities with mesh
-            if (entity->HasComponent(ComponentType::MeshComponent))
+            if (entity->HasComponent<MeshComponent>())
             {
-                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
-                TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+                MeshComponent* meshComponent = entity->GetComponent<MeshComponent>();
+                TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
                 auto& subMeshes = meshComponent->GetSubMeshes();
                 for (auto& subMesh : subMeshes)
                 {
@@ -269,9 +269,9 @@ namespace HE
         // Resize all our non-FixedAspectRatio cameras
         for (auto& [name, entity]: m_Entities)
         {
-            if (entity->HasComponent(ComponentType::CameraComponent))
+            if (entity->HasComponent<CameraComponent>())
             {
-                CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
+                CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>();
                 if (cameraComponent)
                 {
                     if (!cameraComponent->GetFixedAspectRatio())

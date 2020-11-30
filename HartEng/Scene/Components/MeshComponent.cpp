@@ -5,7 +5,6 @@ namespace HE
     MeshComponent::MeshComponent(Entity* entityHandle)
     {
         m_EntityHandle = entityHandle;
-        m_Type = ComponentType::MeshComponent;
     }
 
     void MeshComponent::AddSubMesh(SubMeshComponent& subMesh)

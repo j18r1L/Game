@@ -19,14 +19,15 @@ namespace HE
         WindowProps(const std::string& title = "HartEngine",
                     uint32_t width = 1280,
                     uint32_t height = 1020,
-                    uint32_t xPosition = 0,
-                    uint32_t yPosition = 0):
+                    uint32_t xPosition = 100,
+                    uint32_t yPosition = 100):
             Title(title), 
             Width(width), 
             Height(height),
-            XPosition(xPosition ? width / 3 : xPosition),
-            YPosition(yPosition ? height / 3 : yPosition)
-        {}
+            XPosition(xPosition),
+            YPosition(yPosition)
+        {
+        }
     };
 
     // Интерфейс для ПК окна

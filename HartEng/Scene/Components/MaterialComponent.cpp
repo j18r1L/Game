@@ -10,7 +10,6 @@ namespace HE
         m_ShaderName("undefind")
     {
         m_EntityHandle = nullptr;
-        m_Type = ComponentType::MaterialComponent;
     }
 
     MaterialComponent::MaterialComponent(Entity* entityHandle):
@@ -20,7 +19,6 @@ namespace HE
         m_ShaderName("undefind")
     {
         m_EntityHandle = entityHandle;
-        m_Type = ComponentType::MaterialComponent;
     }
 
     void MaterialComponent::AddTexture(const std::string& name, Texture2DComponent* texture2DComponent)

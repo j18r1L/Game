@@ -7,7 +7,6 @@ namespace HE
         m_Transform(1.0f)
     {
         m_EntityHandle = entityHandle;
-        m_Type = ComponentType::TransformComponent;
     }
 
     void TransformComponent::Recalculate()

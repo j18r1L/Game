@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include "assets/scripts/RotateScript.h"
+#include "HartEng/Core/Utils.h"
 
 namespace HE
 {
@@ -27,11 +28,11 @@ namespace HE
         
         // Create environment entity
         environmentEntity = new Entity();
-        environmentEntity->AddComponent(ComponentType::TransformComponent);
+        environmentEntity->AddComponent<TransformComponent>();
         if (LoadMesh::CreateMesh(environmentEntity, "/assets/obj/cube/cube.obj"))
         {
             // Add shader to material
-            auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
+            auto environmentMaterialComponent = environmentEntity->GetComponent<MaterialComponent>();
             environmentMaterialComponent->SetShader(m_ShaderLibrary, "Environment");
         }
         
@@ -52,7 +53,7 @@ namespace HE
         
         Entity* backpack = m_Scene->GetEntity("Backpack");
         RotateScript* rotateScript = new RotateScript(backpack);
-        backpack->AddComponent(ComponentType::ScriptComponent, rotateScript);
+        backpack->AddComponent<ScriptComponent>(rotateScript);
 
     }
 
@@ -84,9 +85,9 @@ namespace HE
             
             // environment
             RenderCommand::SetDepthTest(false);
-            if (environmentEntity->HasComponent(ComponentType::MeshComponent))
+            if (environmentEntity->HasComponent<MeshComponent>())
             {
-                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
+                MeshComponent* meshComponent = environmentEntity->GetComponent<MeshComponent>();
                 auto environmentShader = m_ShaderLibrary->Get("Environment");
                 auto& subMeshes = meshComponent->GetSubMeshes();
                 for (auto& subMesh : subMeshes)
@@ -203,32 +204,58 @@ namespace HE
         if (saveScene || loadScene)
         {
             SceneSerializer serializer(m_Scene, m_ShaderLibrary);
+#ifdef HE_PLATFORM_WINDOWS
+            if (loadScene)
+            {
+                std::string filepath = FileDialog::OpenFile("HartEng Scene (*.he)\0*.he\0 ");
+                if (!filepath.empty())
+                {
+                    serializer.Deserialize(filepath);
+                    m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+                    m_SceneHierarchyPanel->SetScene(m_Scene);
+                    loadScene = false;
+                }
+            }
+            if (saveScene)
+            {
+                std::string filepath = FileDialog::SaveFile("HartEng Scene (*.he)\0*.he\0 ");
+                if (!filepath.empty())
+                {
+                    serializer.Serialize(filepath);
+                    saveScene = false;
+                }
+            }
+
+
+#elif HE_PLATFORM_LINUX
             std::string loadSceneWindowName = "";
             if (saveScene)
                 loadSceneWindowName = "Save Scene";
             if (loadScene)
                 loadSceneWindowName = "Open Scene";
             ImGui::Begin(loadSceneWindowName.c_str());
-            static std::string FilePath(256, '\0');
-            ImGui::InputText("Path", &FilePath[0], 256);
+            static std::string filepath(256, '\0');
+            ImGui::InputText("Path", &filepath[0], 256);
 
 
             if (ImGui::Button("Accept"))
             {
                 if (saveScene)
                 {
-                    serializer.Serialize(FilePath);
+                    serializer.Serialize(filepath);
                     saveScene = false;
                 }
-                    
+
                 else if (loadScene)
                 {
-                    serializer.Deserialize(FilePath);
+                    serializer.Deserialize(filepath);
                     loadScene = false;
                 }
-                    
+
             }
             ImGui::End();
+#endif
+
         }
         
 

@@ -9,7 +9,7 @@ namespace HE
 {
     void Gizmo::Draw(Entity* entity)
     {
-        TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+        TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
         glm::mat4 viewMatrix = m_CameraController->GetCamera().GetView();
         glm::mat4 projectionMatrix = m_CameraController->GetCamera().GetProjection();
         glm::mat4 transformMatrix = transformComponent->GetTransform();

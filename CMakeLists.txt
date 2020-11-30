@@ -111,6 +111,9 @@ file(GLOB game_engine_files
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/Linux/*.cpp"
 
+    "HartEng/Platform/Windows/*.h"
+    "HartEng/Platform/Windows/*.cpp"
+
     "HartEng/Platform/OpenGL/*.h"
     "HartEng/Platform/OpenGL/*.cpp"
 

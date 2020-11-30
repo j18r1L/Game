@@ -65,10 +65,10 @@ namespace HE
             // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             MeshComponent* meshComponent = nullptr;
-            if (entity->HasComponent(ComponentType::MeshComponent))
-                meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
+            if (entity->HasComponent<MeshComponent>())
+                meshComponent = entity->GetComponent<MeshComponent>();
             else
-                meshComponent = dynamic_cast<MeshComponent*>(entity->AddComponent(ComponentType::MeshComponent));
+                meshComponent = entity->AddComponent<MeshComponent>();
             if (meshComponent != nullptr)
             {
                 meshComponent->SetPath(filePath);
@@ -148,7 +148,7 @@ namespace HE
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
         // 1. diffuse maps
-        MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(entity->AddComponent(ComponentType::MaterialComponent));
+        MaterialComponent* materialComponent = entity->AddComponent<MaterialComponent>();
         std::string path_to_project = CMAKE_PATH;
         LoadMaterialTextures(entity, *materialComponent, material, aiTextureType_DIFFUSE, "texture_diffuse", path_to_project + directory);
         // 2. specular maps
@@ -160,7 +160,7 @@ namespace HE
 
 
         // return a SubMesh object created from the extracted mesh data
-        SubMeshComponent* subMeshComponent = dynamic_cast<SubMeshComponent*>(entity->AddComponent(ComponentType::SubMeshComponent));
+        SubMeshComponent* subMeshComponent = entity->AddComponent<SubMeshComponent>();
 
         // Create vertexArray
         std::shared_ptr<VertexArray> vertexArray = VertexArray::Create();

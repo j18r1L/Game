@@ -123,7 +123,7 @@ namespace HE
 
     void SceneSerializer::SerializeTransform(YAML::Emitter& out, Entity* entity)
     {
-        TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+        TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
         out << YAML::Key << "TransformComponent";
         {
             out << YAML::BeginMap; // Transform component
@@ -137,7 +137,7 @@ namespace HE
     }
     void SceneSerializer::SerializeCamera(YAML::Emitter& out, Entity* entity)
     {
-        CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
+        CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>();
         out << YAML::Key << "CameraComponent";
         {
             out << YAML::BeginMap; // Camera component
@@ -164,7 +164,7 @@ namespace HE
     }
     void SceneSerializer::SerializeMesh(YAML::Emitter& out, Entity* entity)
     {
-        MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent));
+        MeshComponent* meshComponent = entity->GetComponent<MeshComponent>();
         out << YAML::Key << "MeshComponent";
         {
             out << YAML::BeginMap; // Mesh component
@@ -175,7 +175,7 @@ namespace HE
     }
     void SceneSerializer::SerializeMaterial(YAML::Emitter& out, Entity* entity)
     {
-        MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(entity->GetComponent(ComponentType::MaterialComponent));
+        MaterialComponent* materialComponent = entity->GetComponent<MaterialComponent>();
         out << YAML::Key << "MaterialComponent";
         {
             out << YAML::BeginMap; // Material component
@@ -188,7 +188,7 @@ namespace HE
     }
     void SceneSerializer::SerializeLight(YAML::Emitter& out, Entity* entity)
     {
-        LightComponent* lightComponent = dynamic_cast<LightComponent*>(entity->GetComponent(ComponentType::LightComponent));
+        LightComponent* lightComponent = entity->GetComponent<LightComponent>();
         out << YAML::Key << "LightComponent";
         {
             out << YAML::BeginMap; // Light component
@@ -212,15 +212,15 @@ namespace HE
 
 
 
-        if (entity->HasComponent(ComponentType::TransformComponent))
+        if (entity->HasComponent<TransformComponent>())
             SerializeTransform(out, entity);
-        if (entity->HasComponent(ComponentType::CameraComponent))
+        if (entity->HasComponent<CameraComponent>())
             SerializeCamera(out, entity);
-        if (entity->HasComponent(ComponentType::MeshComponent))
+        if (entity->HasComponent<MeshComponent>())
             SerializeMesh(out, entity);
-        if (entity->HasComponent(ComponentType::MaterialComponent))
+        if (entity->HasComponent<MaterialComponent>())
             SerializeMaterial(out, entity);
-        if (entity->HasComponent(ComponentType::LightComponent))
+        if (entity->HasComponent<LightComponent>())
             SerializeLight(out, entity);
 
         out << YAML::EndMap; // Entity
@@ -287,7 +287,7 @@ namespace HE
                 if (deserializedTransformComponent)
                 {
                     // Entities always have transform
-                    TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(deserializedEntity->GetComponent(ComponentType::TransformComponent));
+                    TransformComponent* transformComponent = deserializedEntity->GetComponent<TransformComponent>();
                     transformComponent->SetPosition(deserializedTransformComponent["Position"].as<glm::vec3>());
                     transformComponent->SetRotation(deserializedTransformComponent["Rotation"].as<glm::vec3>());
                     transformComponent->SetScale(deserializedTransformComponent["Scale"].as<glm::vec3>());
@@ -296,7 +296,7 @@ namespace HE
                 auto deserializedCameraComponent = entity["CameraComponent"];
                 if (deserializedCameraComponent)
                 {
-                    CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(deserializedEntity->AddComponent(ComponentType::CameraComponent));
+                    CameraComponent* cameraComponent =deserializedEntity->AddComponent<CameraComponent>();
                     auto cameraProps = deserializedCameraComponent["Camera"];
                     auto& camera = cameraComponent->GetCamera();
 
@@ -326,10 +326,10 @@ namespace HE
                     auto shaderName = deserializedMaterialComponent["ShaderName"].as<std::string>();
                     auto shaderPath = deserializedMaterialComponent["FilePath"].as<std::string>();
                     MaterialComponent* materialComponent = nullptr;
-                    if (deserializedEntity->HasComponent(ComponentType::MaterialComponent))
-                        materialComponent = dynamic_cast<MaterialComponent*>(deserializedEntity->GetComponent(ComponentType::MaterialComponent));
+                    if (deserializedEntity->HasComponent<MaterialComponent>())
+                        materialComponent = deserializedEntity->GetComponent<MaterialComponent>();
                     else 
-                        materialComponent = dynamic_cast<MaterialComponent*>(deserializedEntity->AddComponent(ComponentType::MaterialComponent));
+                        materialComponent = deserializedEntity->AddComponent<MaterialComponent>();
                     if (materialComponent)
                     {
                         m_ShaderLibrary->Load(shaderPath);
@@ -342,7 +342,7 @@ namespace HE
                 auto deserializedLightComponent = entity["LightComponent"];
                 if (deserializedLightComponent)
                 {
-                    LightComponent* lightComponent = dynamic_cast<LightComponent*>(deserializedEntity->AddComponent(ComponentType::LightComponent));
+                    LightComponent* lightComponent = deserializedEntity->AddComponent<LightComponent>();
 
                     LightType lightType = (LightType)deserializedLightComponent["LightType"].as<int>();
                     lightComponent->SetLightType(lightType);

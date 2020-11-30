@@ -82,8 +82,8 @@ namespace HE
         int NumSpotLights = 0;
         for (auto& entity: m_SceneData->Lights)
         {
-            LightComponent* lightComponent = dynamic_cast<LightComponent*>(entity->GetComponent(ComponentType::LightComponent));
-            TransformComponent* transformComponent = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+            LightComponent* lightComponent = entity->GetComponent<LightComponent>();
+            TransformComponent* transformComponent =entity->GetComponent<TransformComponent>();
             if (lightComponent->GetLightType() == LightType::Directional)
             {
                 shader->SetVec3("directionalLights[" + std::to_string(NumDirectionalLights) + "].l_Direction", lightComponent->GetDirection());
