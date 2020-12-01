@@ -33,7 +33,7 @@ float grid(vec2 coords, float res)
 
 void main()
 {
-    float alpha = 1.0 - grid((v_FragPosition.yz + 0.501) * 800., 0.025);
+    float alpha = 1.0 - grid((v_FragPosition.xy + 0.501) * 800., 0.025);
     if (alpha < 0.5)
         discard;
     o_Color = vec4(vec3(0.), 1.);

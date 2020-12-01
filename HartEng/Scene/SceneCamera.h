@@ -54,6 +54,7 @@ namespace HE
         float GetPerspectiveFov() const { return m_PerspectiveFOV; }
         float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
         float GetPerspectiveFarClip() const { return m_PerspectiveFar; }
+        float GetAspectRatio() const { return m_AspectRatio; }
 
 
         ProjectionType GetProjectionType() const

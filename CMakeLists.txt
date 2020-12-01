@@ -154,11 +154,17 @@ file(GLOB level_editor_files
 )
 
 file(GLOB sandbox_files
-    "sandBox/*.cpp"
     "sandBox/*.h"
+    "sandBox/*.cpp"
+    
+
+    "sandBox/Menu/*.h"
+    "sandBox/Menu/*.cpp"
 
     "assets/scripts/*.h"
     "assets/scripts/*.cpp"
+
+    
 )
 
 # CMake instruction to make static library

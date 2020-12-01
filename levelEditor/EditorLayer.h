@@ -29,6 +29,8 @@ namespace HE
         Gizmo m_Gizmo;
         // Panels
         std::shared_ptr<SceneHierarchyPanel> m_SceneHierarchyPanel;
+
+
     public:
         EditorLayer();
 

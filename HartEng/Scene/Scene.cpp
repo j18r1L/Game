@@ -17,6 +17,13 @@
 
 namespace HE
 {
+    Scene::Scene():
+        m_Entities(),
+        m_Name("Undefined"),
+        m_ObjectsCount(0)
+    {
+
+    }
     Scene::Scene(const std::string& scene_name):
         m_Entities(),
         m_Name(scene_name),
@@ -136,7 +143,7 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        Camera* mainCamera = nullptr;
+        SceneCamera* mainCamera = nullptr;
         glm::mat4 transform(1.0f);
         {
             HE_PROFILE_SCOPE("OnUpdate: update script");
@@ -165,9 +172,6 @@ namespace HE
                         break;
                     }
                 }
-                
-                
-
             }
         }
 
@@ -202,11 +206,17 @@ namespace HE
                             for (auto& subMesh : subMeshes)
                             {
                                 auto material = subMesh->GetMaterial();
-                                auto shader = material->GetShader();
-                                shader->Bind();
-                                auto& attribute = subMesh->GetAttribute();
-                                Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
-
+                                auto shaderLibrary = material->GetShaderLibrary();
+                                if (shaderLibrary != nullptr)
+                                {
+                                    if (shaderLibrary->Exists(material->GetShaderName()))
+                                    {
+                                        auto shader = material->GetShader();
+                                        shader->Bind();
+                                        auto& attribute = subMesh->GetAttribute();
+                                        Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+                                    }
+                                }
                             }
                         }
                     }
@@ -276,9 +286,8 @@ namespace HE
                 {
                     if (!cameraComponent->GetFixedAspectRatio())
                     {
-                        auto camera = cameraComponent->GetCamera();
+                        auto& camera = cameraComponent->GetCamera();
                         camera.SetViewportSize(width, height);
-
                     }
                 }
             }

@@ -22,6 +22,7 @@ namespace HE
         friend class SceneHierarchyPanel;
 
     public:
+        Scene();
         Scene(const std::string& scene_name);
 
         ~Scene() = default;

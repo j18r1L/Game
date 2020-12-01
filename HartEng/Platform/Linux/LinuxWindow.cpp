@@ -9,6 +9,7 @@
 #include "HartEng/Events/MousesEvent.h"
 #include "HartEng/Events/KeyEvent.h"
 #include "HartEng/Events/ApplicationEvent.h"
+#include "HartEng/Renderer/RenderCommand.h"
 #ifdef HE_API_OPENGL
     #include <glad/glad.h>
 #endif
@@ -202,6 +203,7 @@ namespace HE
         HE_PROFILE_FUNCTION();
         glfwPollEvents();
         m_Context->SwapBuffers();
+        HE::RenderCommand::Clear();
 
     }
 

@@ -1,5 +1,15 @@
 Scene: first_scene
 Entities:
+  - Entity: Backpack
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.999995172, 0.999997675, 0.999998212]
+    MeshComponent:
+      FilePath: /assets/obj/backpack/backpack.obj
+    MaterialComponent:
+      ShaderName: Fong
+      FilePath: /assets/shaders/Fong.glsl
   - Entity: PointLight
     TransformComponent:
       Position: [0, 0, 1]
@@ -13,21 +23,6 @@ Entities:
       Range: 0
       InnerConeAngle: 0.99984777
       OuterConeAngle: 0.99984777
-  - Entity: Backpack
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.999995172, 0.999997675, 0.999998212]
-    MeshComponent:
-      FilePath: /assets/obj/backpack/backpack.obj
-    MaterialComponent:
-      ShaderName: Fong
-      FilePath: /assets/shaders/Fong.glsl
-  - Entity: Empty
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
   - Entity: Camera
     TransformComponent:
       Position: [0, 1, 5.0999999]
@@ -44,11 +39,16 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: Empty
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
   - Entity: Grid
     TransformComponent:
-      Position: [10, 0, 10]
-      Rotation: [0, 90, 0]
-      Scale: [1, 10, 10]
+      Position: [-5, -1, 5]
+      Rotation: [-90, 0, -0]
+      Scale: [10, 10.0000057, 1]
     MeshComponent:
       FilePath: /assets/obj/quad/quad.obj
     MaterialComponent:

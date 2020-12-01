@@ -79,35 +79,38 @@ namespace HE
             // Renderer
             m_FrameBuffer->Bind();
             RenderCommand::Clear();
+            RenderCommand::SetDepthTest(true);
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
             
-            // environment
-            RenderCommand::SetDepthTest(false);
-            if (environmentEntity->HasComponent<MeshComponent>())
-            {
-                MeshComponent* meshComponent = environmentEntity->GetComponent<MeshComponent>();
-                auto environmentShader = m_ShaderLibrary->Get("Environment");
-                auto& subMeshes = meshComponent->GetSubMeshes();
-                for (auto& subMesh : subMeshes)
-                {
-                    environmentShader->Bind();
-                    environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
-                    auto& attribute = subMesh->GetAttribute();
-                    Renderer::Submit(environmentShader, attribute);
-                }
-            }
+
+            
             
 
             // Draw scene
-            RenderCommand::SetDepthTest(true);
             if (m_Play && !m_Pause)
             {
                 m_Scene->OnUpdate(ts); // Use runtime camera
             }
             else
             {
+                // environment
+                RenderCommand::SetDepthTest(false);
+                if (environmentEntity->HasComponent<MeshComponent>())
+                {
+                    MeshComponent* meshComponent = environmentEntity->GetComponent<MeshComponent>();
+                    auto environmentShader = m_ShaderLibrary->Get("Environment");
+                    auto& subMeshes = meshComponent->GetSubMeshes();
+                    for (auto& subMesh : subMeshes)
+                    {
+                        environmentShader->Bind();
+                        environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
+                        auto& attribute = subMesh->GetAttribute();
+                        Renderer::Submit(environmentShader, attribute);
+                    }
+                }
+                RenderCommand::SetDepthTest(true);
                 m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
             }
             
@@ -267,7 +270,6 @@ namespace HE
         m_ViewportFocused = ImGui::IsWindowFocused();
         Application::Get().GetImGuiLayer()->SetBlockEvents(m_ViewportFocused);
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-
         // Resize
         if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
         {
@@ -277,14 +279,12 @@ namespace HE
             }
             else
             {
-                m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
                 m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+                m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
                 m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
                 m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
             }
-
         }
-
         
         
 
@@ -318,13 +318,10 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
         //EventDispatcher dispatcher(e);
-        //m_CameraController.OnEvent(e);
+        
     }
 
-    void OnWindowResized()
-    {
 
-    }
 }
 
 

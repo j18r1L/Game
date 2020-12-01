@@ -225,8 +225,12 @@ namespace HE
         auto& camera = cameraComponent->GetCamera();
 
         bool mainCamera = cameraComponent->GetPrimary();
-        ImGui::Checkbox("Main Camera (button in development)", &mainCamera); // TODO there can be only one main Camera
-        cameraComponent->SetPrimary(mainCamera);
+        if (ImGui::Checkbox("Main Camera (button in development)", &mainCamera)) // TODO there can be only one main Camera
+            cameraComponent->SetPrimary(mainCamera);
+
+        bool fixedAspectRatio = cameraComponent->GetFixedAspectRatio();
+        if (ImGui::Checkbox("Fixed aspect ratio", &fixedAspectRatio))
+            cameraComponent->SetFixedAspectRatio(fixedAspectRatio);
 
         const char* projectionType[] = {"Perspective", "Orthographic"};
         const char* currentProjectionTypeString = projectionType[(int)camera.GetProjectionType()];
