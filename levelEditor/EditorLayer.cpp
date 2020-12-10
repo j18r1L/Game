@@ -47,6 +47,7 @@ namespace HE
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(m_ShaderLibrary);
         
+        /*
         SceneSerializer serializer(m_Scene, m_ShaderLibrary);
         serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");
 
@@ -54,7 +55,7 @@ namespace HE
         Entity* backpack = m_Scene->GetEntity("Backpack");
         RotateScript* rotateScript = new RotateScript(backpack);
         backpack->AddComponent<ScriptComponent>(rotateScript);
-
+        */
     }
 
     void EditorLayer::OnDetach()

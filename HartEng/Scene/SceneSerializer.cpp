@@ -121,6 +121,49 @@ namespace HE
     {
     }
 
+    void SceneSerializer::Serialize(const std::string& filepath)
+    {
+        YAML::Emitter out;
+
+        out << YAML::BeginMap;
+        out << YAML::Key << "Scene";
+        out << YAML::Value << m_Scene->GetName();
+        out << YAML::Key << "Entities";
+        out << YAML::Value << YAML::BeginSeq;
+        auto& entities = m_Scene->GetEntities();
+        for (auto& [name, entity] : entities)
+        {
+            SerializeEntity(out, entity);
+        }
+        out << YAML::EndSeq;
+        out << YAML::EndMap;
+
+        std::ofstream fout(filepath);
+        fout << out.c_str();
+    }
+
+    void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity* entity)
+    {
+        out << YAML::BeginMap; // Entity
+        std::string name = entity->GetName();
+        out << YAML::Key << "Entity" << YAML::Value << name;
+
+
+
+        if (entity->HasComponent<TransformComponent>())
+            SerializeTransform(out, entity);
+        if (entity->HasComponent<CameraComponent>())
+            SerializeCamera(out, entity);
+        if (entity->HasComponent<MeshComponent>())
+            SerializeMesh(out, entity);
+        if (entity->HasComponent<MaterialComponent>())
+            SerializeMaterial(out, entity);
+        if (entity->HasComponent<LightComponent>())
+            SerializeLight(out, entity);
+
+        out << YAML::EndMap; // Entity
+    }
+
     void SceneSerializer::SerializeTransform(YAML::Emitter& out, Entity* entity)
     {
         TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
@@ -194,6 +237,7 @@ namespace HE
             out << YAML::BeginMap; // Light component
 
             out << YAML::Key << "LightType" << YAML::Value << lightComponent->GetLightType();
+            out << YAML::Key << "CastShadow" << YAML::Value << lightComponent->GetCastShadow();
             out << YAML::Key << "Direction" << YAML::Value << lightComponent->GetDirection();
             out << YAML::Key << "Color" << YAML::Value << lightComponent->GetColor();
             out << YAML::Key << "Intensity" << YAML::Value << lightComponent->GetIntensity();
@@ -204,50 +248,7 @@ namespace HE
             out << YAML::EndMap; // Light component
         }
     }
-    void SceneSerializer::SerializeEntity(YAML::Emitter& out, Entity* entity)
-    {
-        out << YAML::BeginMap; // Entity
-        std::string name = entity->GetName();
-        out << YAML::Key << "Entity" << YAML::Value << name;
-
-
-
-        if (entity->HasComponent<TransformComponent>())
-            SerializeTransform(out, entity);
-        if (entity->HasComponent<CameraComponent>())
-            SerializeCamera(out, entity);
-        if (entity->HasComponent<MeshComponent>())
-            SerializeMesh(out, entity);
-        if (entity->HasComponent<MaterialComponent>())
-            SerializeMaterial(out, entity);
-        if (entity->HasComponent<LightComponent>())
-            SerializeLight(out, entity);
-
-        out << YAML::EndMap; // Entity
-    }
-
     
-    
-    void SceneSerializer::Serialize(const std::string& filepath)
-    {
-        YAML::Emitter out;
-        
-        out << YAML::BeginMap;
-        out << YAML::Key << "Scene";
-        out << YAML::Value << m_Scene->GetName();
-        out << YAML::Key << "Entities";
-        out << YAML::Value << YAML::BeginSeq;
-        auto& entities = m_Scene->GetEntities();
-        for (auto& [name, entity]: entities)
-        {
-            SerializeEntity(out, entity);
-        }
-        out << YAML::EndSeq;
-        out << YAML::EndMap;
-        
-        std::ofstream fout(filepath);
-        fout << out.c_str();
-    }
 
     bool SceneSerializer::Deserialize(const std::string& filepath)
     {
@@ -285,78 +286,88 @@ namespace HE
 
                 auto deserializedTransformComponent = entity["TransformComponent"];
                 if (deserializedTransformComponent)
-                {
-                    // Entities always have transform
-                    TransformComponent* transformComponent = deserializedEntity->GetComponent<TransformComponent>();
-                    transformComponent->SetPosition(deserializedTransformComponent["Position"].as<glm::vec3>());
-                    transformComponent->SetRotation(deserializedTransformComponent["Rotation"].as<glm::vec3>());
-                    transformComponent->SetScale(deserializedTransformComponent["Scale"].as<glm::vec3>());
-                }
+                    DeserializeTransform(deserializedTransformComponent, deserializedEntity);
 
                 auto deserializedCameraComponent = entity["CameraComponent"];
                 if (deserializedCameraComponent)
-                {
-                    CameraComponent* cameraComponent =deserializedEntity->AddComponent<CameraComponent>();
-                    auto cameraProps = deserializedCameraComponent["Camera"];
-                    auto& camera = cameraComponent->GetCamera();
-
-                    //camera.SetProjectionType((ProjectionType)cameraProps["ProjectionType"].as<int>());
-                    camera.SetPerspectiveFov(cameraProps["PerspectiveFOV"].as<float>());
-                    camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-                    camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
-
-                    camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-                    camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-                    camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
-
-                    cameraComponent->SetPrimary(deserializedCameraComponent["Primary"].as<bool>());
-                    cameraComponent->SetFixedAspectRatio(deserializedCameraComponent["FixedAspectRatio"].as<bool>());
-                }
+                    DeserializeCamera(deserializedCameraComponent, deserializedEntity);
 
                 auto deserializedMeshComponent = entity["MeshComponent"];
                 if (deserializedMeshComponent)
-                {
-                    auto filePath = deserializedMeshComponent["FilePath"].as<std::string>();
-                    LoadMesh::CreateMesh(deserializedEntity, filePath);
-                }
+                    DeserializeMesh(deserializedMeshComponent, deserializedEntity);
 
                 auto deserializedMaterialComponent = entity["MaterialComponent"];
                 if (deserializedMaterialComponent)
-                {
-                    auto shaderName = deserializedMaterialComponent["ShaderName"].as<std::string>();
-                    auto shaderPath = deserializedMaterialComponent["FilePath"].as<std::string>();
-                    MaterialComponent* materialComponent = nullptr;
-                    if (deserializedEntity->HasComponent<MaterialComponent>())
-                        materialComponent = deserializedEntity->GetComponent<MaterialComponent>();
-                    else 
-                        materialComponent = deserializedEntity->AddComponent<MaterialComponent>();
-                    if (materialComponent)
-                    {
-                        m_ShaderLibrary->Load(shaderPath);
-                        materialComponent->SetShader(m_ShaderLibrary, shaderName);
-                    }
-                    
-
-                }
+                    DeserializeMaterial(deserializedMaterialComponent, deserializedEntity);
                 
                 auto deserializedLightComponent = entity["LightComponent"];
                 if (deserializedLightComponent)
-                {
-                    LightComponent* lightComponent = deserializedEntity->AddComponent<LightComponent>();
-
-                    LightType lightType = (LightType)deserializedLightComponent["LightType"].as<int>();
-                    lightComponent->SetLightType(lightType);
-                    lightComponent->SetDirection(deserializedLightComponent["Direction"].as<glm::vec3>());
-                    lightComponent->SetColor(deserializedLightComponent["Color"].as<glm::vec3>());
-                    lightComponent->SetIntensity(deserializedLightComponent["Intensity"].as<float>());
-                    lightComponent->SetRange(deserializedLightComponent["Range"].as<float>());
-                    lightComponent->SetInnerConeAngle(deserializedLightComponent["InnerConeAngle"].as<float>());
-                    lightComponent->SetOuterConeAngle(deserializedLightComponent["OuterConeAngle"].as<float>());
-                }
+                    DeserializeLight(deserializedLightComponent, deserializedEntity);
 
             }
         }
         return true;
+    }
+
+    void SceneSerializer::DeserializeTransform(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
+    {
+        // Entities always have transform
+        TransformComponent* transformComponent = deserializedEntity->GetComponent<TransformComponent>();
+        transformComponent->SetPosition(deserializedComponent["Position"].as<glm::vec3>());
+        transformComponent->SetRotation(deserializedComponent["Rotation"].as<glm::vec3>());
+        transformComponent->SetScale(deserializedComponent["Scale"].as<glm::vec3>());
+    }
+    void SceneSerializer::DeserializeCamera(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
+    {
+        CameraComponent* cameraComponent = deserializedEntity->AddComponent<CameraComponent>();
+        auto cameraProps = deserializedComponent["Camera"];
+        auto& camera = cameraComponent->GetCamera();
+
+        //camera.SetProjectionType((ProjectionType)cameraProps["ProjectionType"].as<int>());
+        camera.SetPerspectiveFov(cameraProps["PerspectiveFOV"].as<float>());
+        camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+        camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+
+        camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
+        camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
+        camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+
+        cameraComponent->SetPrimary(deserializedComponent["Primary"].as<bool>());
+        cameraComponent->SetFixedAspectRatio(deserializedComponent["FixedAspectRatio"].as<bool>());
+    }
+    void SceneSerializer::DeserializeMesh(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
+    {
+        auto filePath = deserializedComponent["FilePath"].as<std::string>();
+        LoadMesh::CreateMesh(deserializedEntity, filePath);
+    }
+    void SceneSerializer::DeserializeMaterial(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
+    {
+        auto shaderName = deserializedComponent["ShaderName"].as<std::string>();
+        auto shaderPath = deserializedComponent["FilePath"].as<std::string>();
+        MaterialComponent* materialComponent = nullptr;
+        if (deserializedEntity->HasComponent<MaterialComponent>())
+            materialComponent = deserializedEntity->GetComponent<MaterialComponent>();
+        else
+            materialComponent = deserializedEntity->AddComponent<MaterialComponent>();
+        if (materialComponent)
+        {
+            m_ShaderLibrary->Load(shaderPath);
+            materialComponent->SetShader(m_ShaderLibrary, shaderName);
+        }
+    }
+    void SceneSerializer::DeserializeLight(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
+    {
+        LightComponent* lightComponent = deserializedEntity->AddComponent<LightComponent>();
+
+        LightType lightType = (LightType)deserializedComponent["LightType"].as<int>();
+        lightComponent->SetLightType(lightType);
+        lightComponent->SetCastShadow(deserializedComponent["CastShadow"].as<bool>());
+        lightComponent->SetDirection(deserializedComponent["Direction"].as<glm::vec3>());
+        lightComponent->SetColor(deserializedComponent["Color"].as<glm::vec3>());
+        lightComponent->SetIntensity(deserializedComponent["Intensity"].as<float>());
+        lightComponent->SetRange(deserializedComponent["Range"].as<float>());
+        lightComponent->SetInnerConeAngle(deserializedComponent["InnerConeAngle"].as<float>());
+        lightComponent->SetOuterConeAngle(deserializedComponent["OuterConeAngle"].as<float>());
     }
 
 }

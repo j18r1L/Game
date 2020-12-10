@@ -140,11 +140,14 @@ namespace HE
 
         // Entity name
         std::string name = entity->GetName();
-        static std::string EntityName(256, '\0');
-        EntityName.assign("\0");
-        EntityName = name;
-        if (ImGui::InputText("Name", &EntityName[0], 256))
-            m_Scene->RenameEntity(name, EntityName);
+        static char newName[256] = "";
+        for (size_t i = 0; i < name.size(); i++)
+        {
+            newName[i] = name[i];
+        }
+            
+        if (ImGui::InputText("Name", &newName[0], 256))
+            m_Scene->RenameEntity(name, newName);
 
         if (entity->HasComponent<TransformComponent>())
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<TransformComponent>()), treeNodeFlags, "Transform Component"))
@@ -409,7 +412,7 @@ namespace HE
         {
 #ifdef HE_PLATFORM_WINDOWS
             createMesh = false;
-            std::string filepath = FileDialog::OpenFile("Mesh (*.obj)\0*.obj\0 ");
+            std::string filepath = FileDialog::OpenFile("Mesh (*.obj)\0*.obj\0(*.fbx)\0*.fbx\0 ");
             if (!filepath.empty())
             {
                 std::string project_path = CMAKE_PATH;
@@ -586,6 +589,10 @@ namespace HE
             }
             ImGui::EndCombo();
         }
+
+        bool castShadow = lightComponent->GetCastShadow();
+        if (ImGui::Checkbox("Cast shadow", &castShadow))
+            lightComponent->SetCastShadow(castShadow);
 
         if (lightComponent->GetLightType() == LightType::Directional)
         {

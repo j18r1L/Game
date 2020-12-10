@@ -10,6 +10,10 @@ namespace HE
 	{
 		m_LightType = type;
 	}
+	void LightComponent::SetCastShadow(bool castShadow)
+	{
+		m_CastShadow = castShadow;
+	}
 	void LightComponent::SetDirection(const glm::vec3& direction)
 	{
 		m_Direction = direction;
@@ -38,6 +42,10 @@ namespace HE
 	const LightType& LightComponent::GetLightType() const
 	{
 		return m_LightType;
+	}
+	bool LightComponent::GetCastShadow() const
+	{
+		return m_CastShadow;
 	}
 	const glm::vec3& LightComponent::GetDirection() const
 	{

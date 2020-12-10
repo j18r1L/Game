@@ -81,6 +81,7 @@ namespace HE
         for(unsigned int i = 0; i < node->mNumChildren; i++)
         {
             ProcessNode(entity, node->mChildren[i], scene, directory, filePath);
+            break; // TODO very temperarly
         }
     }
 

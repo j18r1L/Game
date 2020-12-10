@@ -31,8 +31,13 @@ namespace HE
             glm::vec3 rotation(0.0f);
             glm::vec3 scale(1.0f);
             ImGuizmo::DecomposeMatrixToComponents(transformMatrix, position, rotation, scale);
-            std::swap(rotation.y, rotation.z); // TODO fix gizmo & UI 
-            transformComponent->SetPRS(position, rotation, scale);
+
+            glm::vec3 newRotation = transformComponent->GetRotation();
+            glm::vec3 deltaRotation = rotation - newRotation;
+            newRotation += deltaRotation;
+
+            std::swap(newRotation.y, newRotation.z); // TODO fix gizmo & UI 
+            transformComponent->SetPRS(position, newRotation, scale);
             transformComponent->SetTransform(transformMatrix);
         }
 
