@@ -228,7 +228,7 @@ namespace HE
                                         auto shader = material->GetShader();
                                         shader->Bind();
                                         auto& attribute = subMesh->GetAttribute();
-                                        Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material, entity->GetID());
+                                        Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
                                     }
                                 }
                             }
@@ -276,7 +276,7 @@ namespace HE
                             auto shader = material->GetShader();
                             shader->Bind();
                             auto& attribute = subMesh->GetAttribute();
-                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material, entity->GetID());
+                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
                         }
                     }
                 }

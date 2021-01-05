@@ -68,13 +68,12 @@ namespace HE
 
     }
 
-    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<MaterialComponent> material, uint32_t entityID)
+    void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<MaterialComponent> material)
     {
         HE_PROFILE_FUNCTION();
         shader->Bind();
         shader->SetMat4("u_ProjectionView", m_SceneData->ProjectionView);
         shader->SetMat4("u_Model", transform);
-        shader->SetInt("u_EntityID", entityID);
         if (material != nullptr)
         {
             auto textures = material->GetTextures();
