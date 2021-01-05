@@ -15,6 +15,10 @@ namespace HE
 		void Draw(Entity* entity);
 
 		void SetCamera(PerspectiveCameraController* cameraController);
+
+		bool IsUsing() const;
+
+		bool IsOver() const;
 	};
 }
 

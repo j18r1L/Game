@@ -18,7 +18,7 @@ namespace HE
         static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::ROTATE);
         static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
         static float snap = 1.0f;
-        static bool useSnap = true;
+        static bool useSnap = false;
 
         
 
@@ -93,6 +93,16 @@ namespace HE
     void Gizmo::SetCamera(PerspectiveCameraController* cameraController)
     {
         m_CameraController = cameraController;
+    }
+
+    bool Gizmo::IsUsing() const
+    {
+        return ImGuizmo::IsUsing();
+    }
+
+    bool Gizmo::IsOver() const
+    {
+        return ImGuizmo::IsOver();
     }
 
 }

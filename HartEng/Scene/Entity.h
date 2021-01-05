@@ -17,6 +17,8 @@ namespace HE
     class Entity
     {
     private:
+        uint32_t m_ID = 0; // Entity ID
+
         Scene* m_SceneHandle = nullptr;
         std::unordered_map<std::type_index, Component*> m_Components;
         std::string m_Name = "undefind";
@@ -26,15 +28,15 @@ namespace HE
 
     public:
         Entity() = default;
-        Entity(Scene* sceneHandle, const std::string& object_name);
+        Entity(Scene* sceneHandle, const std::string& object_name, uint32_t ID);
 
         virtual ~Entity();
 
-        
-
         const std::unordered_map<std::type_index, Component*>& GetComponents();
         const std::string& GetName() const;
+        uint32_t GetID() const;
 
+        // Templated functions
         template <class T>
         void AddComponent(Component* component)
         {
@@ -69,8 +71,7 @@ namespace HE
         }
         void RemoveComponent(const std::type_index type);
 
-
-
+        // Overloads
         bool operator==(const Entity& other) const
         {
             return this == &other && m_SceneHandle == other.m_SceneHandle;

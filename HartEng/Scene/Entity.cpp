@@ -24,15 +24,15 @@ namespace HE
         {std::type_index(typeid(ScriptComponent)), "ScriptComponent"},
     };
 
-    Entity::Entity(Scene* sceneHandle, const std::string& name):
+    Entity::Entity(Scene* sceneHandle, const std::string& name, uint32_t ID):
         m_SceneHandle(sceneHandle),
-        m_Name(name)
+        m_Name(name),
+        m_ID(ID)
     {
     }
 
     Entity::~Entity()
     {
-        //m_SceneHandle->DestroyEntity(m_Name);
     }
 
     void Entity::AddComponent(const std::type_index type, Component* component)
@@ -107,6 +107,11 @@ namespace HE
     const std::string& Entity::GetName() const
     {
         return m_Name;
+    }
+
+    uint32_t Entity::GetID() const
+    {
+        return m_ID;
     }
 
     // Проверить наличие компонента type в геймобжекте

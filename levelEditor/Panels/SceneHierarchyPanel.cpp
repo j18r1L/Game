@@ -25,6 +25,11 @@ namespace HE
         m_ShaderLibrary = shaderLibrary;
     }
 
+    void SceneHierarchyPanel::SetSelectedEntity(Entity* entity)
+    {
+        m_SelectionContext = entity;
+    }
+
     void SceneHierarchyPanel::OnImGuiRender()
     {
         ImGui::Begin("Scene Hierarchy");
@@ -138,14 +143,15 @@ namespace HE
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
 
+        // Entity ID
+        ImGui::Text(std::to_string(entity->GetID()).c_str());
         // Entity name
         std::string name = entity->GetName();
         static char newName[256] = "";
         for (size_t i = 0; i < name.size(); i++)
         {
             newName[i] = name[i];
-        }
-            
+        }    
         if (ImGui::InputText("Name", &newName[0], 256))
             m_Scene->RenameEntity(name, newName);
 

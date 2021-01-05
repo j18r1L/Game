@@ -9,9 +9,13 @@ namespace HE
     // TODO Сейчас Слои живут на протяжении всего приложения, однако стоит задуматься об их обновлении при, допустим, смене уровня
     LayerStack::~LayerStack()
     {
-        for (Layer* layer: m_Layers)
-            delete layer;
+        for (int i = 0; i < m_Layers.size(); i++)
+        {
+            m_Layers[i]->OnDetach();
+            delete m_Layers[i];
+        }
     }
+            
 
     void LayerStack::PushLayer(Layer *layer)
     {
@@ -32,6 +36,7 @@ namespace HE
         auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
         if (it != m_Layers.end())
         {
+            layer->OnDetach();
             m_Layers.erase(it);
             m_LayerInsertIndex--;
         }
@@ -42,6 +47,7 @@ namespace HE
         auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
         if (it != m_Layers.end())
         {
+            overlay->OnDetach();
             m_Layers.erase(it);
         }
     }

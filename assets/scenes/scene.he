@@ -53,11 +53,11 @@ Entities:
       Color: [0, 1, 0]
       Intensity: 1
       Range: 0
-      InnerConeAngle: 1
-      OuterConeAngle: 1
+      InnerConeAngle: 0.99984771
+      OuterConeAngle: 0.99984771
   - Entity: "SpotLight\x00t_scene_5"
     TransformComponent:
-      Position: [0.505223751, -0.0178990215, 0.200000003]
+      Position: [0.505223751, -0.0178990215, 0.713772416]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     LightComponent:
@@ -67,8 +67,8 @@ Entities:
       Color: [0, 0, 1]
       Intensity: 1
       Range: 0
-      InnerConeAngle: 0.999898553
-      OuterConeAngle: 0.999916673
+      InnerConeAngle: 0.965468109
+      OuterConeAngle: 0.963162541
   - Entity: "DirectionalLight\x00_6"
     TransformComponent:
       Position: [0, 0, 0]
@@ -81,5 +81,5 @@ Entities:
       Color: [1, 0, 0]
       Intensity: 1
       Range: 0
-      InnerConeAngle: 1
-      OuterConeAngle: 1
+      InnerConeAngle: 0.99984771
+      OuterConeAngle: 0.99984771

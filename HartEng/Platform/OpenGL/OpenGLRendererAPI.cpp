@@ -38,6 +38,22 @@ namespace HE
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    void OpenGLRendererAPI::Blit(uint32_t srcx0, uint32_t srcy0, uint32_t srcx1, uint32_t srcy1, uint32_t dstx0, uint32_t dsty0, uint32_t dstx1, uint32_t dsty1)
+    {
+        HE_PROFILE_FUNCTION();
+
+        glBlitFramebuffer(srcx0, srcy0, srcx1, srcy1, dstx0, dsty0, dstx1, dsty1, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    }
+
+    int OpenGLRendererAPI::ReadPixel(uint32_t x, uint32_t y)
+    {
+        // Read from ID buffer
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+        int pixelData;
+        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+        return pixelData;
+    }
+
     void OpenGLRendererAPI::SetDepthTest(bool depthTest)
     {
         if (depthTest)

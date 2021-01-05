@@ -54,7 +54,7 @@ namespace HE
         if (m_Entities.find(name) == m_Entities.end())
         {
             HE_CORE_TRACE("Creating entity with name: {0}", name);
-            Entity* entity = new Entity(this, name);
+            Entity* entity = new Entity(this, name, m_ObjectsCount);
             m_Entities[name] = entity;
 
             // Добавляем компененты, которые всегда должны быть в entity, например TransformComponent
@@ -78,6 +78,20 @@ namespace HE
             return nullptr;
         }
         return entityIterator->second;
+    }
+
+    Entity* Scene::GetEntity(uint32_t entityID)
+    {
+        HE_PROFILE_FUNCTION();
+
+        for (auto& [name, entity] : m_Entities)
+        {
+            if (entity->GetID() == entityID)
+            {
+                return entity;
+            } 
+        }
+        return nullptr;
     }
 
     const std::unordered_map<std::string, Entity*>& Scene::GetEntities()
@@ -214,7 +228,7 @@ namespace HE
                                         auto shader = material->GetShader();
                                         shader->Bind();
                                         auto& attribute = subMesh->GetAttribute();
-                                        Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+                                        Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material, entity->GetID());
                                     }
                                 }
                             }
@@ -228,7 +242,7 @@ namespace HE
     }
 
     // Not runtime
-    void Scene::OnUpdate(Timestep& ts, PerspectiveCamera& camera)
+    void Scene::OnUpdateEditor(Timestep& ts, PerspectiveCamera& camera)
     {
         HE_PROFILE_FUNCTION();
         // Get all light components
@@ -262,7 +276,7 @@ namespace HE
                             auto shader = material->GetShader();
                             shader->Bind();
                             auto& attribute = subMesh->GetAttribute();
-                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material);
+                            Renderer::Submit(shader, attribute, transformComponent->GetTransform(), material, entity->GetID());
                         }
                     }
                 }
@@ -270,6 +284,30 @@ namespace HE
         }
 
         Renderer::EndScene();
+    }
+
+    void Scene::OnUpdateShader(std::shared_ptr<Shader> shader, PerspectiveCamera& camera)
+    {
+        // For all entities
+        for (auto& [name, entity] : m_Entities)
+        {
+            HE_PROFILE_SCOPE(name.c_str());
+            // Render only entities with mesh
+            if (entity->HasComponent<MeshComponent>())
+            {
+                MeshComponent* meshComponent = entity->GetComponent<MeshComponent>();
+                TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
+                auto& subMeshes = meshComponent->GetSubMeshes();
+                for (auto& subMesh : subMeshes)
+                {
+
+                    shader->Bind();
+                    auto& attribute = subMesh->GetAttribute();
+                    Renderer::Submit(shader, attribute, entity->GetID(), transformComponent->GetTransform());
+
+                }
+            }
+        }
     }
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)

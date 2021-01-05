@@ -32,6 +32,7 @@ namespace HE
 
         void SetScene(const std::shared_ptr<Scene>& scene);
         void SetShaderLibrary(std::shared_ptr<ShaderLibrary> shaderLibrary);
+        void SetSelectedEntity(Entity* entity);
 
         Entity* GetSelectedEntity() const;
 
