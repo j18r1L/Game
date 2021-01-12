@@ -1,36 +1,34 @@
 #include <HartEng/HartEng.h>
 
-#include <iostream>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <memory>
 
 // Entry point
 #include "HartEng/Core/EntryPoint.h"
 
 #include "SandBoxLayer.h"
+#include "Menu/MenuLayer.h"
 
-namespace HE
+class SandBox: public HE::Application
 {
-    class SandBox: public Application
+private:
+    std::shared_ptr<HE::ShaderLibrary> m_ShaderLibrary;
+public:
+    SandBox():
+        HE::Application("Game")
     {
-    public:
-        SandBox():
-            Application("SandBox")
-        {
-
-            PushLayer(new SandBoxLayer());
-        }
-
-        ~SandBox() {}
-    };
-
-
-    Application* CreateApplication()
-    {
-        return new SandBox();
-
+        m_ShaderLibrary = std::make_shared<HE::ShaderLibrary>(HE::ShaderLibrary());
+        PushOverlay(new MenuLayer(m_ShaderLibrary));
+        PushLayer(new SandBoxLayer(m_ShaderLibrary));
     }
+
+    ~SandBox() {}
+};
+
+
+HE::Application* HE::CreateApplication()
+{
+    return new SandBox();
+
 }
+
 
 

@@ -51,7 +51,9 @@ namespace HE
         m_FilePath(path)
     {
         HE_PROFILE_FUNCTION();
-        std::string source = ReadFile(path);
+
+        std::string path_to_project = CMAKE_PATH;
+        std::string source = ReadFile(path_to_project + path);
         auto shaderSources = PreProcess(source);
         Compile(shaderSources);
 

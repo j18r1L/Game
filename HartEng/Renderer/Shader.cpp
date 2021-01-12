@@ -11,7 +11,7 @@ namespace HE
 {
     std::shared_ptr<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
     {
-
+        HE_CORE_INFO("Creating new shader with name {0}...", name);
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
@@ -44,9 +44,11 @@ namespace HE
 
     void ShaderLibrary::Add(const std::string& name, const std::shared_ptr<Shader> shader)
     {
-        //HE_CORE_TRACE(!Exists(name), "Shader already exists!");
+        
         if (!Exists(name))
             m_Shaders[name] = shader;
+        else
+            HE_CORE_TRACE("Shader already exists!");
     }
 
     void ShaderLibrary::Add(const std::shared_ptr<Shader> shader)

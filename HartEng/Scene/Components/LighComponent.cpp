@@ -5,12 +5,14 @@ namespace HE
 	LightComponent::LightComponent(Entity* entityHandle)
 	{
 		m_EntityHandle = entityHandle;
-		m_Type = ComponentType::LightComponent;
-
 	}
 	void LightComponent::SetLightType(const LightType& type)
 	{
 		m_LightType = type;
+	}
+	void LightComponent::SetCastShadow(bool castShadow)
+	{
+		m_CastShadow = castShadow;
 	}
 	void LightComponent::SetDirection(const glm::vec3& direction)
 	{
@@ -40,6 +42,10 @@ namespace HE
 	const LightType& LightComponent::GetLightType() const
 	{
 		return m_LightType;
+	}
+	bool LightComponent::GetCastShadow() const
+	{
+		return m_CastShadow;
 	}
 	const glm::vec3& LightComponent::GetDirection() const
 	{

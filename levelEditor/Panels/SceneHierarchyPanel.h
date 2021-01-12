@@ -13,6 +13,7 @@ namespace HE
         std::shared_ptr<ShaderLibrary> m_ShaderLibrary = nullptr;
         std::string m_DeletedEntity = "";
         std::string m_PathToNewMesh = "";
+        bool m_CreateChild = false; // Create child for selected entity
 
 
         void DrawEntityNode(std::string name, Entity* entity);
@@ -31,6 +32,9 @@ namespace HE
 
         void SetScene(const std::shared_ptr<Scene>& scene);
         void SetShaderLibrary(std::shared_ptr<ShaderLibrary> shaderLibrary);
+        void SetSelectedEntity(Entity* entity);
+
+        Entity* GetSelectedEntity() const;
 
         void OnImGuiRender();
     };

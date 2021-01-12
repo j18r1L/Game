@@ -26,6 +26,7 @@ namespace HE
         {
             std::string Title;
             unsigned int Width, Height;
+            unsigned int XPosition, YPosition;
             bool VSync;
 
             EventCallBackFn EventCallback;
@@ -48,9 +49,14 @@ namespace HE
 
         inline unsigned int GetWidth() const override { return m_Data.Width; }
         inline unsigned int GetHeight() const override { return m_Data.Height; }
+        inline unsigned int GetXPosition() const override { return m_Data.XPosition; }
+        inline unsigned int GetYPosition() const override { return m_Data.YPosition; }
         double GetTime() const override;
 
         // Атрибуты окна
+        void DisableCursor() override;
+        void HideCursor() override;
+        void ShowCursor() override;
         inline void SetEventCallback(const EventCallBackFn& callback) override
         {
             m_Data.EventCallback = callback;

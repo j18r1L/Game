@@ -16,6 +16,11 @@ namespace HE
         CameraComponent();
         CameraComponent(Entity* entityHandle);
 
+        virtual ~CameraComponent()
+        {
+
+        }
+
         void SetPrimary(bool primary);
         void SetFixedAspectRatio(bool fixedAspectRatio);
         void SetOrthographic(float size, float nearClip, float farClip);

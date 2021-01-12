@@ -1,13 +1,16 @@
 #include "EditorLayer.h"
 
+#include "assets/scripts/RotateScript.h"
+#include "HartEng/Core/Utils.h"
 
 namespace HE
 {
-    EditorLayer::EditorLayer():
+    EditorLayer::EditorLayer() :
         Layer("EditorLayer"),
-        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth() / Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
+        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
         m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
     {
+        m_Gizmo.SetCamera(&m_CameraController);
         m_Scene = std::make_shared<Scene>(Scene("first_scene"));
         m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
         m_ShaderLibrary = std::make_shared<ShaderLibrary>(ShaderLibrary());
@@ -20,16 +23,18 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         std::string path_to_project = CMAKE_PATH;
-        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Environment.glsl");
-        m_ShaderLibrary->Load(path_to_project + "/assets/shaders/Fong.glsl");
+        m_ShaderLibrary->Load("/assets/shaders/EntityID.glsl");
+        m_ShaderLibrary->Load("/assets/shaders/Environment.glsl");
+        m_ShaderLibrary->Load("/assets/shaders/Fong.glsl");
+        m_ShaderLibrary->Load("/assets/shaders/Texture.glsl");
         
         // Create environment entity
         environmentEntity = new Entity();
-        environmentEntity->AddComponent(ComponentType::TransformComponent);
-        if (LoadMesh::CreateMesh(environmentEntity, path_to_project + "/assets/obj/cube/cube.obj"))
+        environmentEntity->AddComponent<TransformComponent>();
+        if (LoadMesh::CreateMesh(environmentEntity, "/assets/obj/cube/cube.obj"))
         {
             // Add shader to material
-            auto environmentMaterialComponent = dynamic_cast<MaterialComponent*>(environmentEntity->GetComponent(ComponentType::MaterialComponent));
+            auto environmentMaterialComponent = environmentEntity->GetComponent<MaterialComponent>();
             environmentMaterialComponent->SetShader(m_ShaderLibrary, "Environment");
         }
         
@@ -38,17 +43,23 @@ namespace HE
         // load framebuffer
         m_FrameBufferSpec.Width = Application::Get().GetWindow().GetWidth();
         m_FrameBufferSpec.Height = Application::Get().GetWindow().GetHeight();
+        m_FrameBufferSpec.Samples = 8;
+        m_FrameBufferSpec.Attachemtns = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::DEPTH24STENCIL8 };
+        m_FrameBuffer_msaa = FrameBuffer::Create(m_FrameBufferSpec);
+
+        m_FrameBufferSpec.Samples = 1;
         m_FrameBuffer = FrameBuffer::Create(m_FrameBufferSpec);
+
+        m_FrameBufferSpec.Attachemtns = { FramebufferTextureFormat::R32I, FramebufferTextureFormat::DEPTH24STENCIL8 };
+        m_IDFrameBuffer = FrameBuffer::Create(m_FrameBufferSpec);
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(m_ShaderLibrary);
         
+        
         SceneSerializer serializer(m_Scene, m_ShaderLibrary);
-        serializer.Deserialize(path_to_project + "/assets/scenes/scene_2.he");
-
-
-
+        serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");
 
     }
 
@@ -64,7 +75,7 @@ namespace HE
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
-            if (m_ViewportFocused)
+            if (m_ViewportFocused && (!m_Play || m_Pause))
                 m_CameraController.OnUpdate(ts);
         }
 
@@ -72,17 +83,44 @@ namespace HE
             HE_PROFILE_SCOPE("Render prep");
 
             // Renderer
-            m_FrameBuffer->Bind();
+            m_FrameBuffer_msaa->Bind();
             RenderCommand::Clear();
+            RenderCommand::SetDepthTest(true);
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
+            Draw(ts);
             
+            // Blit msaa frambuffer to normal framebuffer
+            m_FrameBuffer_msaa->Bind(FramebufferBindType::READ_FRAMEBUFFER);
+            m_FrameBuffer->Bind(FramebufferBindType::DRAW_FRAMEBUFFER);
+            auto& spec_msaa = m_FrameBuffer_msaa->GetSpecification();
+            auto& spec = m_FrameBuffer->GetSpecification();
+            RenderCommand::Blit(0, 0, spec_msaa.Width, spec_msaa.Height, 0, 0, spec.Width, spec.Height);
+
+            // Render to ID buffer
+            m_IDFrameBuffer->Bind();
+            RenderCommand::Clear();
+            m_Scene->OnUpdateShader(m_ShaderLibrary->Get("EntityID"), m_CameraController.GetCamera());
+            m_IDFrameBuffer->UnBind();
+        }
+
+    }
+
+    void EditorLayer::Draw(Timestep& ts)
+    {
+        // Draw scene
+        if (m_Play && !m_Pause)
+        {
+            m_Scene->OnUpdate(ts); // Use runtime camera
+        }
+        else
+        {
             // environment
             RenderCommand::SetDepthTest(false);
-            if (environmentEntity->HasComponent(ComponentType::MeshComponent))
+            if (environmentEntity->HasComponent<MeshComponent>())
             {
-                MeshComponent* meshComponent = dynamic_cast<MeshComponent*>(environmentEntity->GetComponent(ComponentType::MeshComponent));
+                MeshComponent* meshComponent = environmentEntity->GetComponent<MeshComponent>();
                 auto environmentShader = m_ShaderLibrary->Get("Environment");
                 auto& subMeshes = meshComponent->GetSubMeshes();
                 for (auto& subMesh : subMeshes)
@@ -93,20 +131,8 @@ namespace HE
                     Renderer::Submit(environmentShader, attribute);
                 }
             }
-            
-
             RenderCommand::SetDepthTest(true);
-            if (m_Play && !m_Pause)
-            {
-                m_Scene->OnUpdate(ts); // Use runtime camera
-            }
-            else
-            {
-                m_Scene->OnUpdate(ts, m_CameraController.GetCamera());
-            }
-            
-            m_FrameBuffer->UnBind();
-
+            m_Scene->OnUpdateEditor(ts, m_CameraController.GetCamera());
         }
     }
 
@@ -155,7 +181,7 @@ namespace HE
         {
             if (ImGui::BeginMenu("File"))
             {
-                
+
                 if (ImGui::MenuItem("New Scene"))
                     if (m_Scene)
                         m_Scene->Clear();
@@ -179,6 +205,7 @@ namespace HE
                 {
                     m_Play = true;
                     m_Pause = false;
+                    m_Scene->OnScenePlay();
                 }
                 if (ImGui::MenuItem("Pause"))
                     m_Pause = !m_Pause;
@@ -186,8 +213,9 @@ namespace HE
                 {
                     m_Play = false;
                     m_Pause = false;
+                    m_Scene->OnSceneStop();
                 }
-                    
+
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -196,44 +224,73 @@ namespace HE
         if (saveScene || loadScene)
         {
             SceneSerializer serializer(m_Scene, m_ShaderLibrary);
+#ifdef HE_PLATFORM_WINDOWS
+            if (loadScene)
+            {
+                std::string filepath = FileDialog::OpenFile("HartEng Scene (*.he)\0*.he\0 ");
+                if (!filepath.empty())
+                {
+                    serializer.Deserialize(filepath);
+                    m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+                    m_SceneHierarchyPanel->SetScene(m_Scene);
+                    loadScene = false;
+                }
+            }
+            if (saveScene)
+            {
+                std::string filepath = FileDialog::SaveFile("HartEng Scene (*.he)\0*.he\0 ");
+                if (!filepath.empty())
+                {
+                    serializer.Serialize(filepath);
+                    saveScene = false;
+                }
+            }
+
+
+#elif HE_PLATFORM_LINUX
             std::string loadSceneWindowName = "";
             if (saveScene)
                 loadSceneWindowName = "Save Scene";
             if (loadScene)
                 loadSceneWindowName = "Open Scene";
             ImGui::Begin(loadSceneWindowName.c_str());
-            static std::string FilePath(256, '\0');
-            ImGui::InputText("Path", &FilePath[0], 256);
+            static std::string filepath(256, '\0');
+            ImGui::InputText("Path", &filepath[0], 256);
 
 
             if (ImGui::Button("Accept"))
             {
                 if (saveScene)
                 {
-                    serializer.Serialize(FilePath);
+                    serializer.Serialize(filepath);
                     saveScene = false;
                 }
-                    
+
                 else if (loadScene)
                 {
-                    serializer.Deserialize(FilePath);
+                    serializer.Deserialize(filepath);
                     loadScene = false;
                 }
-                    
+
             }
             ImGui::End();
+#endif
+
         }
-        
+
 
         m_SceneHierarchyPanel->OnImGuiRender();
 
 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
-        ImGui::Begin("ViewPort");
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+        bool viewportOpen = true;
+        ImGuiWindowFlags ViewportWindow_flags = ImGuiWindowFlags_NoTitleBar;
+        ImGui::Begin("ViewPort", &viewportOpen, ViewportWindow_flags);
+        auto viewportOffset = ImGui::GetCursorPos();
+
         m_ViewportFocused = ImGui::IsWindowFocused();
         Application::Get().GetImGuiLayer()->SetBlockEvents(m_ViewportFocused);
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-
         // Resize
         if (m_ViewportSize != glm::vec2(viewportPanelSize.x, viewportPanelSize.y))
         {
@@ -243,18 +300,36 @@ namespace HE
             }
             else
             {
+                m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
                 m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-                m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+                m_FrameBuffer_msaa->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+                m_IDFrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
                 m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
                 m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
             }
-
         }
 
 
-
+        m_FrameBuffer->Bind();
         uint32_t FrameBufferID = m_FrameBuffer->GetColorAttachmentRendererID();
-        ImGui::Image((void*) FrameBufferID, ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0.0f, 1.0f}, ImVec2{1.0f, 0.0f});
+        ImGui::Image((void*)FrameBufferID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
+        m_FrameBuffer->UnBind();
+
+        auto windowSize = ImGui::GetWindowSize();
+        ImVec2 minBound = ImGui::GetWindowPos();
+        minBound.x += viewportOffset.x;
+        minBound.y += viewportOffset.y;
+
+        ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+        m_ViewportBounds[0] = { minBound.x, minBound.y };
+        m_ViewportBounds[1] = { maxBound.x, maxBound.y };
+
+        // Draw Gizmo
+        Entity* selectedEntity = m_SceneHierarchyPanel->GetSelectedEntity();
+        if (selectedEntity)
+        {
+            m_Gizmo.Draw(selectedEntity);
+        }
 
         ImGui::PopStyleVar();
 
@@ -264,21 +339,40 @@ namespace HE
         // Docking Space end
         ImGui::End();
 
-
-
     }
 
     void EditorLayer::OnEvent(Event &e)
     {
         HE_PROFILE_FUNCTION();
-        //EventDispatcher dispatcher(e);
-        //m_CameraController.OnEvent(e);
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<MouseButtonPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnMouseButton));
+        
     }
 
-    void OnWindowResized()
+    bool EditorLayer::OnMouseButton(MouseButtonPressedEvent& event)
     {
+        if (event.GetMouseButton() == HE_MOUSE_BUTTON_1 && !m_Gizmo.IsUsing() && !m_Gizmo.IsOver())
+        {
+            m_IDFrameBuffer->Bind();
 
+            auto [mx, my] = ImGui::GetMousePos();
+            mx -= m_ViewportBounds[0].x;
+            my -= m_ViewportBounds[0].y;
+            auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
+            auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
+            my = viewportHeight - my;
+            if (mx >= 0.0f && my >= 0.0f && mx < viewportWidth && my < viewportHeight)
+            {
+                int entityID = RenderCommand::ReadPixel(mx, my);
+                Entity* selectedEntity = m_Scene->GetEntity(entityID);
+                m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
+            }
+            m_IDFrameBuffer->UnBind();
+        }
+        return false;
     }
+
+
 }
 
 

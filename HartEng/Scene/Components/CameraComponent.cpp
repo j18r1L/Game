@@ -5,13 +5,11 @@ namespace HE
     CameraComponent::CameraComponent()
     {
         m_EntityHandle = nullptr;
-        m_Type = ComponentType::CameraComponent;
     }
 
     CameraComponent::CameraComponent(Entity* entityHandle)
     {
         m_EntityHandle = entityHandle;
-        m_Type = ComponentType::CameraComponent;
     }
 
     void CameraComponent::SetPrimary(bool primary)

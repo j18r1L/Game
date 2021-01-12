@@ -75,7 +75,9 @@ namespace HE
         void SetRotation(const glm::quat& rotation);
 
         const glm::mat4& GetProjection() const { return m_Projection; }
+        glm::mat4 GetProjection() { return m_Projection; }
         const glm::mat4& GetView() const { return m_View; }
+        glm::mat4 GetView() { return m_View; }
         const glm::mat4& GetProjectionView() const { return m_ProjectionView; }
         const glm::vec3& GetPosition() const { return m_Position; }
         const glm::quat& GetRotation() const { return m_Rotation; }

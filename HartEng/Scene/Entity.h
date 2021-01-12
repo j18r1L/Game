@@ -5,6 +5,8 @@
 #include "HartEng/Scene/Scene.h"
 #include "HartEng/Scene/Component.h"
 
+#include <typeindex>
+
 namespace HE
 {
     class Scene;
@@ -15,8 +17,10 @@ namespace HE
     class Entity
     {
     private:
+        uint32_t m_ID = 0; // Entity ID
+
         Scene* m_SceneHandle = nullptr;
-        std::unordered_map<ComponentType, Component*> m_Components;
+        std::unordered_map<std::type_index, Component*> m_Components;
         std::string m_Name = "undefind";
         friend class Scene;
         // This function can be called only in Scene class!
@@ -24,23 +28,50 @@ namespace HE
 
     public:
         Entity() = default;
-        Entity(Scene* sceneHandle, const std::string& object_name);
+        Entity(Scene* sceneHandle, const std::string& object_name, uint32_t ID);
 
         virtual ~Entity();
 
-        Component* AddComponent(ComponentType type, Component* component);
-        Component* AddComponent(ComponentType type);
-
-        Component* GetComponent(ComponentType type);
-        const std::unordered_map<ComponentType, Component*>& GetComponents();
+        const std::unordered_map<std::type_index, Component*>& GetComponents();
         const std::string& GetName() const;
+        uint32_t GetID() const;
 
-        bool HasComponent(ComponentType type);
+        // Templated functions
+        template <class T>
+        void AddComponent(Component* component)
+        {
+            AddComponent(typeid(T), component);
+        }
+        void AddComponent(const std::type_index type, Component* component);
+        template <class T>
+        T* AddComponent()
+        {
+            return dynamic_cast<T*>(AddComponent(typeid(T)));
+        }
+        Component* AddComponent(const std::type_index type);
 
-        void RemoveComponent(ComponentType type);
+        template<class T>
+        inline T* GetComponent()
+        {
+            return dynamic_cast<T*>(GetComponent(typeid(T)));
+        }
+        Component* GetComponent(const std::type_index type);
 
+        template <class T>
+        bool HasComponent()
+        {
+            return HasComponent(typeid(T));
+        }
+        bool HasComponent(const std::type_index type);
 
+        template <class T>
+        void RemoveComponent()
+        {
+            RemoveComponent(typeid(T));
+        }
+        void RemoveComponent(const std::type_index type);
 
+        // Overloads
         bool operator==(const Entity& other) const
         {
             return this == &other && m_SceneHandle == other.m_SceneHandle;

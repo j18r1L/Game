@@ -3,25 +3,24 @@
 
 #include "HartEng/HartEng.h"
 
-namespace HE
+class SandBoxLayer: public HE::Layer
 {
-    class SandBoxLayer: public Layer
-    {
-    private:
-        ShaderLibrary m_ShaderLibrary;
-        Entity* environmentEntity;
+private:
+    std::shared_ptr<HE::ShaderLibrary> m_ShaderLibrary;
+    HE::Entity* environmentEntity;
 
-        std::shared_ptr<Scene> m_Scene;
-    public:
-        SandBoxLayer();
+    std::shared_ptr<HE::Scene> m_Scene;
 
-        void OnAttach() override;
-        void OnDetach() override;
-        void OnUpdate(Timestep& ts) override;
-        void OnImGuiRender() override;
-        void OnEvent(Event &e) override;
-    };
-}
+    bool OnWindowResized(HE::WindowResizeEvent& e);
+public:
+    SandBoxLayer(std::shared_ptr<HE::ShaderLibrary> shaderLibrary);
+
+    void OnAttach() override;
+    void OnDetach() override;
+    void OnUpdate(HE::Timestep& ts) override;
+    void OnImGuiRender() override;
+    void OnEvent(HE::Event &e) override;
+};
 
 
 #endif // SandBoxLayer_H

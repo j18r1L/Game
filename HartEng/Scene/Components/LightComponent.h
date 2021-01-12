@@ -17,6 +17,7 @@ namespace HE
 	{
 	private:
 		LightType m_LightType = Point;
+		bool m_CastShadow = false;
 
 		glm::vec3 m_Direction{ 0.0f, 0.0f, 1.0f };
 		glm::vec3 m_Color{ 1.0f };
@@ -29,6 +30,7 @@ namespace HE
 		virtual ~LightComponent() = default;
 
 		void SetLightType(const LightType& type);
+		void SetCastShadow(bool castShadow);
 		void SetDirection(const glm::vec3& direction);
 		void SetColor(const glm::vec3& color);
 		void SetIntensity(float intensity);
@@ -37,6 +39,7 @@ namespace HE
 		void SetOuterConeAngle(float angle);
 
 		const LightType& GetLightType() const;
+		bool GetCastShadow() const;
 		const glm::vec3& GetDirection() const;
 		const glm::vec3& GetColor() const;
 		float GetIntensity() const;

@@ -1,0 +1,85 @@
+Scene: first_scene
+Entities:
+  - Entity: "Grid"
+    TransformComponent:
+      Position: [-5, 0, -5]
+      Rotation: [90, 0, 0]
+      Scale: [10.0000095, 10.0000019, 0.999999821]
+    MeshComponent:
+      FilePath: \assets\obj\quad\quad.obj
+    MaterialComponent:
+      ShaderName: Grid
+      FilePath: \assets\shaders\Grid.glsl
+  - Entity: "Empty"
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: "Camera"
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 45
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: "Backpack"
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      FilePath: \assets\obj\backpack\backpack.obj
+    MaterialComponent:
+      ShaderName: Fong
+      FilePath: /assets/shaders/Fong.glsl
+  - Entity: "PointLight"
+    TransformComponent:
+      Position: [-0.698197424, -0.699999988, 0.197658747]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    LightComponent:
+      LightType: 1
+      CastShadow: false
+      Direction: [0, 0, 1]
+      Color: [0, 1, 0]
+      Intensity: 1
+      Range: 0
+      InnerConeAngle: 0.99984771
+      OuterConeAngle: 0.99984771
+  - Entity: "SpotLight"
+    TransformComponent:
+      Position: [0.505223751, -0.0178990215, 0.713772416]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    LightComponent:
+      LightType: 2
+      CastShadow: false
+      Direction: [0, 0, -1]
+      Color: [0, 0, 1]
+      Intensity: 1
+      Range: 0
+      InnerConeAngle: 0.965468109
+      OuterConeAngle: 0.963162541
+  - Entity: "DirectionalLight"
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    LightComponent:
+      LightType: 0
+      CastShadow: false
+      Direction: [0, 0, -1]
+      Color: [1, 0, 0]
+      Intensity: 1
+      Range: 0
+      InnerConeAngle: 0.99984771
+      OuterConeAngle: 0.99984771

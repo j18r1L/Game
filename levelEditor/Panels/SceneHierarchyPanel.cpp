@@ -2,7 +2,10 @@
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Log.h"
+#include "HartEng/Core/Utils.h"
+
 #include "glm/gtc/type_ptr.hpp"
+#include <glm/gtx/matrix_decompose.hpp>
 
 namespace HE
 {
@@ -22,22 +25,37 @@ namespace HE
         m_ShaderLibrary = shaderLibrary;
     }
 
+    void SceneHierarchyPanel::SetSelectedEntity(Entity* entity)
+    {
+        m_SelectionContext = entity;
+    }
+
     void SceneHierarchyPanel::OnImGuiRender()
     {
         ImGui::Begin("Scene Hierarchy");
 
+        m_CreateChild = false;
         for (auto& [name, entity]: m_Scene->m_Entities)
         {
             DrawEntityNode(name, entity);
         }
+        // Delete entity
         if (m_DeletedEntity != "")
         {
             m_Scene->DestroyEntity(m_DeletedEntity);
             m_SelectionContext = nullptr;
             m_DeletedEntity = "";
         }
+        /*
+        // Create child entity
+        if (m_CreateChild)
+        {
+            m_CreateChild = false;
+            Entity* entity = m_SelectionContext->AddChild();
+        }
+        */
 
-        //Deselect entity if pressed in window, but not on a entity
+        // Deselect entity if pressed in window, but not on a entity
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
             m_SelectionContext = nullptr;
 
@@ -65,22 +83,22 @@ namespace HE
             {
                 if (ImGui::MenuItem("Camera"))
                 {
-                    m_SelectionContext->AddComponent(ComponentType::CameraComponent);
+                    m_SelectionContext->AddComponent<CameraComponent>();
                     ImGui::CloseCurrentPopup();
                 }
                 if (ImGui::MenuItem("Material"))
                 {
-                    m_SelectionContext->AddComponent(ComponentType::MaterialComponent);
+                    m_SelectionContext->AddComponent<MaterialComponent>();
                     ImGui::CloseCurrentPopup();
                 }
                 if (ImGui::MenuItem("Mesh"))
                 {
-                    m_SelectionContext->AddComponent(ComponentType::MeshComponent);
+                    m_SelectionContext->AddComponent<MeshComponent>();
                     ImGui::CloseCurrentPopup();
                 }
                 if (ImGui::MenuItem("Light"))
                 {
-                    m_SelectionContext->AddComponent(ComponentType::LightComponent);
+                    m_SelectionContext->AddComponent<LightComponent>();
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::EndPopup();
@@ -101,11 +119,14 @@ namespace HE
             m_SelectionContext = entity;
         }
 
-        // Delete entity
+        // Entity right click
         if (ImGui::BeginPopupContextItem())
         {
+            m_SelectionContext = entity;
             if (ImGui::MenuItem("Delete Entity"))
                 m_DeletedEntity = entity->GetName();
+            if (ImGui::MenuItem("Add Entity"))
+                m_CreateChild = true;
             ImGui::EndPopup();
         }
 
@@ -122,40 +143,44 @@ namespace HE
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
 
+        // Entity ID
+        ImGui::Text(std::to_string(entity->GetID()).c_str());
         // Entity name
         std::string name = entity->GetName();
-        static std::string EntityName(256, '\0');
-        EntityName.assign("\0");
-        EntityName = name;
-        if (ImGui::InputText("Name", &EntityName[0], 256))
-            m_Scene->RenameEntity(name, EntityName);
+        static char newName[256] = "";
+        for (size_t i = 0; i < name.size(); i++)
+        {
+            newName[i] = name[i];
+        }    
+        if (ImGui::InputText("Name", &newName[0], 256))
+            m_Scene->RenameEntity(name, newName);
 
-        if (entity->HasComponent(ComponentType::TransformComponent))
-            if (ImGui::TreeNodeEx((void*)(ComponentType::TransformComponent), treeNodeFlags, "Transform Component"))
+        if (entity->HasComponent<TransformComponent>())
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<TransformComponent>()), treeNodeFlags, "Transform Component"))
             {
                 DrawTransform(entity);
                 ImGui::TreePop();
             }
-        if (entity->HasComponent(ComponentType::MaterialComponent))
-            if (ImGui::TreeNodeEx((void*)(ComponentType::MaterialComponent), treeNodeFlags, "Material Component"))
+        if (entity->HasComponent<MaterialComponent>())
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MaterialComponent>()), treeNodeFlags, "Material Component"))
             {
                 DrawMaterial(entity);
                 ImGui::TreePop();
             }
-        if (entity->HasComponent(ComponentType::MeshComponent))
-            if (ImGui::TreeNodeEx((void*)(ComponentType::MeshComponent), treeNodeFlags, "Mesh Component"))
+        if (entity->HasComponent<MeshComponent>())
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MeshComponent>()), treeNodeFlags, "Mesh Component"))
             {
                 DrawMesh(entity);
                 ImGui::TreePop();
             }
-        if (entity->HasComponent(ComponentType::CameraComponent))
-            if (ImGui::TreeNodeEx((void*)(ComponentType::CameraComponent), treeNodeFlags, "Camera Component"))
+        if (entity->HasComponent<CameraComponent>())
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<CameraComponent>()), treeNodeFlags, "Camera Component"))
             {
                 DrawCamera(entity);
                 ImGui::TreePop();
             }
-        if (entity->HasComponent(ComponentType::LightComponent))
-            if (ImGui::TreeNodeEx((void*)(ComponentType::LightComponent), treeNodeFlags, "Light Component"))
+        if (entity->HasComponent<LightComponent>())
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<LightComponent>()), treeNodeFlags, "Light Component"))
             {
                 DrawLight(entity);
                 ImGui::TreePop();
@@ -164,31 +189,28 @@ namespace HE
 
     void SceneHierarchyPanel::DrawTransform(Entity* entity)
     {
-        TransformComponent* transform = dynamic_cast<TransformComponent*>(entity->GetComponent(ComponentType::TransformComponent));
+        TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
 
-        glm::vec3 position = transform->GetPosition();
+        glm::vec3 position = transformComponent->GetPosition();
         if (ImGui::DragFloat3("Position", glm::value_ptr(position), 0.1f))
         {
-            transform->SetPosition(position);
+            transformComponent->SetPosition(position);
         }
 
-
-
-        glm::vec3 angles = glm::degrees(transform->GetRotation());
+        // TODO fix gizmo & UI
+        glm::vec3 angles = glm::degrees(transformComponent->GetRotation());
+        std::swap(angles.y, angles.z);
         
         if (ImGui::DragFloat3("Rotation", glm::value_ptr(angles), 0.1f))
         {
-            transform->SetRotation(angles);
+            std::swap(angles.y, angles.z);
+            transformComponent->SetRotation( angles);
         }
-        
 
-
-
-
-        glm::vec3 scale = transform->GetScale();
+        glm::vec3 scale = transformComponent->GetScale();
         if (ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.1f))
         {
-            transform->SetScale(scale);
+            transformComponent->SetScale(scale);
         }
     }
     void SceneHierarchyPanel::DrawCamera(Entity* entity)
@@ -208,12 +230,16 @@ namespace HE
             ImGui::EndPopup();
         }
 
-        CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(entity->GetComponent(ComponentType::CameraComponent));
+        CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>();
         auto& camera = cameraComponent->GetCamera();
 
         bool mainCamera = cameraComponent->GetPrimary();
-        ImGui::Checkbox("Main Camera (button in development)", &mainCamera); // TODO there can be only one main Camera
-        cameraComponent->SetPrimary(mainCamera);
+        if (ImGui::Checkbox("Main Camera (button in development)", &mainCamera)) // TODO there can be only one main Camera
+            cameraComponent->SetPrimary(mainCamera);
+
+        bool fixedAspectRatio = cameraComponent->GetFixedAspectRatio();
+        if (ImGui::Checkbox("Fixed aspect ratio", &fixedAspectRatio))
+            cameraComponent->SetFixedAspectRatio(fixedAspectRatio);
 
         const char* projectionType[] = {"Perspective", "Orthographic"};
         const char* currentProjectionTypeString = projectionType[(int)camera.GetProjectionType()];
@@ -263,7 +289,7 @@ namespace HE
 
         // Remove Component
         if (removeComponent)
-            entity->RemoveComponent(ComponentType::CameraComponent);
+            entity->RemoveComponent<CameraComponent>();
     }
     void SceneHierarchyPanel::DrawMaterial(Entity* entity)
     {
@@ -289,7 +315,7 @@ namespace HE
             ImGui::EndPopup();
         }
 
-        MaterialComponent* material = dynamic_cast<MaterialComponent*>(entity->GetComponent(ComponentType::MaterialComponent));
+        MaterialComponent* material = entity->GetComponent<MaterialComponent>();
         auto& shaderName = material->GetShaderName();
         auto& shaders = m_ShaderLibrary->GetShaders();
         if (ImGui::BeginCombo("Shader", shaderName.c_str()))
@@ -309,18 +335,33 @@ namespace HE
         // Add new shader
         if (addShader)
         {
+#ifdef HE_PLATFORM_WINDOWS
+            addShader = false;
+            std::string filepath = FileDialog::OpenFile("Shader (*.glsl)\0*.glsl\0 ");
+            if (!filepath.empty())
+            {
+                std::string project_path = CMAKE_PATH;
+                filepath = filepath.substr(project_path.length(), filepath.length());
+                auto shader = m_ShaderLibrary->Load(filepath);
+                material->SetShader(m_ShaderLibrary, shader->GetName());
+            }
+#elif HE_PLATFORM_LINUX
             ImGui::Begin("New Shader");
             static std::string ShaderName(256, '\0');
-            ImGui::InputText("Path", &ShaderName[0], 256);
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &ShaderName[0], 256);
 
 
             if (ImGui::Button("Accept"))
             {
                 addShader = false;
-                auto& shader = m_ShaderLibrary->Load(ShaderName);
+                auto shader = m_ShaderLibrary->Load(ShaderName);
                 material->SetShader(m_ShaderLibrary, shader->GetName());
             }
             ImGui::End();
+#endif
         }
 
 
@@ -342,11 +383,11 @@ namespace HE
             }
         }
 
-        
+
         // Remove Component
         if (removeComponent)
-            entity->RemoveComponent(ComponentType::MaterialComponent);
-        
+            entity->RemoveComponent<MaterialComponent>();
+
     }
     void SceneHierarchyPanel::DrawMesh(Entity* entity)
     {
@@ -375,9 +416,47 @@ namespace HE
         }
         if (createMesh)
         {
+#ifdef HE_PLATFORM_WINDOWS
+            createMesh = false;
+            std::string filepath = FileDialog::OpenFile("Mesh (*.obj)\0*.obj\0(*.fbx)\0*.fbx\0 ");
+            if (!filepath.empty())
+            {
+                std::string project_path = CMAKE_PATH;
+                filepath = filepath.substr(project_path.length(), filepath.length());
+                bool HasMaterial = false;
+                std::shared_ptr<ShaderLibrary> shaderLibrary = nullptr;
+                std::string shaderName = "undefined";
+                if (m_SelectionContext->HasComponent<MaterialComponent>())
+                {
+                    HasMaterial = true;
+                    MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
+                    shaderLibrary = materialComponent->GetShaderLibrary();
+                    shaderName = materialComponent->GetShaderNameCopy();
+                    m_SelectionContext->RemoveComponent<MaterialComponent>();
+
+                }
+                if (m_SelectionContext->HasComponent<MeshComponent>())
+                    m_SelectionContext->RemoveComponent<MeshComponent>();
+
+                if (m_SelectionContext->HasComponent<SubMeshComponent>())
+                    m_SelectionContext->RemoveComponent<SubMeshComponent>();
+                if (LoadMesh::CreateMesh(m_SelectionContext, filepath))
+                {
+                    if (HasMaterial)
+                    {
+                        // Add shader to material
+                        MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
+                        materialComponent->SetShader(shaderLibrary, shaderName);
+                    }
+                }
+            }
+#elif HE_PLATFORM_LINUX
             ImGui::Begin("New mesh");
             static std::string MeshName(256, '\0');
-            ImGui::InputText("Path", &MeshName[0], 256);
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &MeshName[0], 256);
 
 
             if (ImGui::Button("Accept"))
@@ -386,36 +465,37 @@ namespace HE
                 bool HasMaterial = false;
                 std::shared_ptr<ShaderLibrary> shaderLibrary = nullptr;
                 std::string shaderName = "undefined";
-                if (m_SelectionContext->HasComponent(ComponentType::MaterialComponent))
+                if (m_SelectionContext->HasComponent<MaterialComponent>())
                 {
                     HasMaterial = true;
-                    MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(m_SelectionContext->GetComponent(ComponentType::MaterialComponent));
+                    MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
                     shaderLibrary = materialComponent->GetShaderLibrary();
                     shaderName = materialComponent->GetShaderNameCopy();
-                    m_SelectionContext->RemoveComponent(ComponentType::MaterialComponent);
+                    m_SelectionContext->RemoveComponent<MaterialComponent>();
 
                 }
-                if (m_SelectionContext->HasComponent(ComponentType::MeshComponent))
-                    m_SelectionContext->RemoveComponent(ComponentType::MeshComponent);
+                if (m_SelectionContext->HasComponent<MeshComponent>())
+                    m_SelectionContext->RemoveComponent<MeshComponent>();
 
-                if (m_SelectionContext->HasComponent(ComponentType::SubMeshComponent))
-                    m_SelectionContext->RemoveComponent(ComponentType::SubMeshComponent);
+                if (m_SelectionContext->HasComponent<SubMeshComponent>())
+                    m_SelectionContext->RemoveComponent<SubMeshComponent>();
                 if (LoadMesh::CreateMesh(m_SelectionContext, MeshName))
                 {
                     if (HasMaterial)
                     {
                         // Add shader to material
-                        MaterialComponent* materialComponent = dynamic_cast<MaterialComponent*>(m_SelectionContext->GetComponent(ComponentType::MaterialComponent));
+                        MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
                         materialComponent->SetShader(shaderLibrary, shaderName);
                     }
                 }
-                
+
             }
             ImGui::End();
+#endif
         }
-        if (entity->HasComponent(ComponentType::MeshComponent))
+        if (entity->HasComponent<MeshComponent>())
         {
-            auto& submeshes = dynamic_cast<MeshComponent*>(entity->GetComponent(ComponentType::MeshComponent))->GetSubMeshes();
+            auto& submeshes = entity->GetComponent<MeshComponent>()->GetSubMeshes();
             for (auto& subMesh : submeshes)
             {
                 if (ImGui::TreeNodeEx((void*)(subMesh), treeNodeFlags, "SubMeshes"))
@@ -474,9 +554,9 @@ namespace HE
 
             // Remove Component
             if (removeComponent)
-                entity->RemoveComponent(ComponentType::MeshComponent);
+                entity->RemoveComponent<MeshComponent>();
         }
-        
+
     }
     void SceneHierarchyPanel::DrawLight(Entity* entity)
     {
@@ -495,7 +575,7 @@ namespace HE
             ImGui::EndPopup();
         }
 
-        LightComponent* lightComponent = dynamic_cast<LightComponent*>(entity->GetComponent(ComponentType::LightComponent));
+        LightComponent* lightComponent = entity->GetComponent<LightComponent>();
 
         const char* lightTypeChar[] = { "Directional", "Point", "Spot" };
         const char* currentLightTypeString = lightTypeChar[(int)lightComponent->GetLightType()];
@@ -515,6 +595,10 @@ namespace HE
             }
             ImGui::EndCombo();
         }
+
+        bool castShadow = lightComponent->GetCastShadow();
+        if (ImGui::Checkbox("Cast shadow", &castShadow))
+            lightComponent->SetCastShadow(castShadow);
 
         if (lightComponent->GetLightType() == LightType::Directional)
         {
@@ -572,7 +656,12 @@ namespace HE
 
         // Remove Component
         if (removeComponent)
-            entity->RemoveComponent(ComponentType::CameraComponent);
+            entity->RemoveComponent<CameraComponent>();
+    }
+
+    Entity* SceneHierarchyPanel::GetSelectedEntity() const
+    {
+        return m_SelectionContext;
     }
 }
 

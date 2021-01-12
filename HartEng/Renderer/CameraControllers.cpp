@@ -112,7 +112,9 @@ namespace HE
         m_LastMousePosition(width / 2.0f, height / 2.0f),
         m_Near(zNear),
         m_Far(zFar),
-        m_Camera(fov, m_AspectRatio, zNear, zFar)
+        m_Camera(fov, m_AspectRatio, zNear, zFar),
+        m_Width(width),
+        m_Height(height)
     {
         HE_PROFILE_FUNCTION();
 
@@ -121,7 +123,7 @@ namespace HE
         m_WorldUp = m_Up;
         m_Right = {1.0f, 0.0f, 0.0f};
     }
-
+    /*
     PerspectiveCameraController::PerspectiveCameraController(float fov, float aspectRatio, float zNear, float zFar):
         m_AspectRatio(aspectRatio),
         m_Fov(fov),
@@ -137,7 +139,7 @@ namespace HE
         m_WorldUp = m_Up;
         m_Right = {1.0f, 0.0f, 0.0f};
     }
-
+    */
 
     void PerspectiveCameraController::OnUpdate(Timestep ts)
     {
@@ -238,6 +240,8 @@ namespace HE
 
     void PerspectiveCameraController::OnResize(float width, float height)
     {
+        m_Width = width;
+        m_Height = height;
         m_AspectRatio = width / height;
         m_Camera.SetProjection(m_Fov, m_AspectRatio, m_Near, m_Far);
     }

@@ -8,99 +8,96 @@
 #include "HartEng/Scene/Components/SubMeshComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
+#include "HartEng/Scene/Components/ScriptComponent.h"
 
 namespace HE
 {
-    const char* ComponentsTypes[] = {
-        "UndefinedComponent",
-        "TransformComponent",
-        "MaterialComponent",
-        "Texture2DComponent",
-        "MeshComponent",
-        "SubMeshComponent",
-        "CameraComponent",
-        "LightComponent",
+    std::unordered_map<std::type_index, std::string> ComponentsTypes =
+    {
+        {std::type_index(typeid(TransformComponent)), "TransformComponent"},
+        {std::type_index(typeid(MaterialComponent)), "MaterialComponent"},
+        {std::type_index(typeid(Texture2DComponent)), "Texture2DComponent"},
+        {std::type_index(typeid(MeshComponent)), "MeshComponent"},
+        {std::type_index(typeid(SubMeshComponent)), "SubMeshComponent"},
+        {std::type_index(typeid(CameraComponent)), "CameraComponent"},
+        {std::type_index(typeid(LightComponent)), "LightComponent"},
+        {std::type_index(typeid(ScriptComponent)), "ScriptComponent"},
     };
 
-    Entity::Entity(Scene* sceneHandle, const std::string& name):
+    Entity::Entity(Scene* sceneHandle, const std::string& name, uint32_t ID):
         m_SceneHandle(sceneHandle),
-        m_Name(name)
+        m_Name(name),
+        m_ID(ID)
     {
     }
 
     Entity::~Entity()
     {
-        //m_SceneHandle->DestroyEntity(m_Name);
     }
 
-    Component* Entity::AddComponent(ComponentType type, Component* component)
+    void Entity::AddComponent(const std::type_index type, Component* component)
     {
         HE_PROFILE_FUNCTION();
 
         if (HasComponent(type) == false)
         {
-            m_Components[type] = component;
-            return component;
+            m_Components.insert(std::make_pair(type, component));
         }
         else
         {
-            HE_CORE_WARN("Failed to add component with type: '{0}'! This Component already exists in entity with name: '{1}'!", ComponentsTypes[(int)type], m_Name);
+            HE_CORE_WARN("Failed to add component with type: '{0}'! This Component already exists in entity with name: '{1}'!", ComponentsTypes[type], m_Name);
         }
-        return nullptr;
     }
 
-    Component* Entity::AddComponent(ComponentType type)
+    Component* Entity::AddComponent(const std::type_index type)
     {
         HE_PROFILE_FUNCTION();
 
         if (HasComponent(type) == false)
         {
             Component* component = nullptr;
-            switch (type)
-            {
-            case (ComponentType::TransformComponent):
-                component = new TransformComponent(this); break;
-            case (ComponentType::MaterialComponent):
-                component = new MaterialComponent(this); break;
-            case (ComponentType::MeshComponent):
-                component = new MeshComponent(this); break;
-            case (ComponentType::SubMeshComponent):
-                component = new SubMeshComponent(this); break;
-            case (ComponentType::Texture2DComponent):
-                component = new Texture2DComponent(this); break;
-            case (ComponentType::CameraComponent):
-                component = new CameraComponent(this); break;
-            case (ComponentType::LightComponent):
-                component = new LightComponent(this); break;
-            case (ComponentType::UndefinedComponent):
-                HE_CORE_WARN("Cant create component with UndefinedType in entity with name: '{0}'", m_Name); break;
-            }
+            if (type == std::type_index(typeid(TransformComponent)))
+                component = new TransformComponent(this);
+            else if (type == std::type_index(typeid(MaterialComponent)))
+                component = new MaterialComponent(this);
+            else if (type == std::type_index(typeid(MeshComponent)))
+                component = new MeshComponent(this);
+            else if (type == std::type_index(typeid(SubMeshComponent)))
+                component = new SubMeshComponent(this);
+            else if (type == std::type_index(typeid(Texture2DComponent)))
+                component = new Texture2DComponent(this);
+            else if (type == std::type_index(typeid(CameraComponent)))
+                component = new CameraComponent(this);
+            else if (type == std::type_index(typeid(LightComponent)))
+                component = new LightComponent(this);
+            else if (type == std::type_index(typeid(ScriptComponent)))
+                component = new ScriptComponent(this);
 
-            m_Components[type] = component;
+            m_Components.insert(std::make_pair(type, component));
             return component;
         }
         else
         {
-            HE_CORE_WARN("Failed to add component with type: '{0}'! This Component already exists in entity with name: '{1}'!", ComponentsTypes[(int)type], m_Name);
+            HE_CORE_WARN("Failed to add component with type: '{0}'! This Component already exists in entity with name: '{1}'!", ComponentsTypes[type], m_Name);
         }
         return nullptr;
     }
 
     // Вернуть компонент из текущего геймобжекта
-    Component* Entity::GetComponent(ComponentType type)
+    Component* Entity::GetComponent(const std::type_index type)
     {
         HE_PROFILE_FUNCTION();
 
-        std::unordered_map<ComponentType, Component*>::const_iterator component = m_Components.find(type);
+        std::unordered_map<std::type_index, Component*>::const_iterator component = m_Components.find(type);
         if (component == m_Components.end())
         {
-            HE_CORE_WARN("There is no component with type: '{0}' in entity with name: '{1}'!",  ComponentsTypes[(int)type], m_Name);
+            HE_CORE_WARN("There is no component with type: '{0}' in entity with name: '{1}'!",  ComponentsTypes[type], m_Name);
             return nullptr;
         }
         return component->second;
     }
 
-    const std::unordered_map<ComponentType, Component*>& Entity::GetComponents()
+    const std::unordered_map<std::type_index, Component*>& Entity::GetComponents()
     {
         HE_PROFILE_FUNCTION();
 
@@ -112,8 +109,13 @@ namespace HE
         return m_Name;
     }
 
+    uint32_t Entity::GetID() const
+    {
+        return m_ID;
+    }
+
     // Проверить наличие компонента type в геймобжекте
-    bool Entity::HasComponent(ComponentType type)
+    bool Entity::HasComponent(const std::type_index type)
     {
         HE_PROFILE_FUNCTION();
 
@@ -121,7 +123,7 @@ namespace HE
     }
 
     // Удалить компонент type из текущего геймобжекта
-    void Entity::RemoveComponent(ComponentType type)
+    void Entity::RemoveComponent(const std::type_index type)
     {
         HE_PROFILE_FUNCTION();
 

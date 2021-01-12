@@ -6,7 +6,6 @@ namespace HE
         m_Material(nullptr)
     {
         m_EntityHandle = entityHandle;
-        m_Type = ComponentType::SubMeshComponent;
     }
 
     void SubMeshComponent::SetAttribute(std::shared_ptr<VertexArray> vertexArray)

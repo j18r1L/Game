@@ -111,6 +111,9 @@ file(GLOB game_engine_files
     "HartEng/Platform/Linux/*.h"
     "HartEng/Platform/Linux/*.cpp"
 
+    "HartEng/Platform/Windows/*.h"
+    "HartEng/Platform/Windows/*.cpp"
+
     "HartEng/Platform/OpenGL/*.h"
     "HartEng/Platform/OpenGL/*.cpp"
 
@@ -137,16 +140,31 @@ file(GLOB game_engine_files
 )
 
 file(GLOB level_editor_files
-    "levelEditor/*.h"
+    "levelEditor/*.h" 
     "levelEditor/*.cpp"
 
     "levelEditor/Panels/*.h"
     "levelEditor/Panels/*.cpp"
+
+    "levelEditor/Gizmo/*.h"
+    "levelEditor/Gizmo/*.cpp"
+
+    "assets/scripts/*.h"
+    "assets/scripts/*.cpp"
 )
 
 file(GLOB sandbox_files
-    "sandBox/*.cpp"
     "sandBox/*.h"
+    "sandBox/*.cpp"
+    
+
+    "sandBox/Menu/*.h"
+    "sandBox/Menu/*.cpp"
+
+    "assets/scripts/*.h"
+    "assets/scripts/*.cpp"
+
+    
 )
 
 # CMake instruction to make static library
