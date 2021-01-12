@@ -207,6 +207,21 @@ namespace HE
 
     }
 
+    void LinuxWindow::DisableCursor()
+    {
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    void LinuxWindow::HideCursor()
+    {
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    void LinuxWindow::ShowCursor()
+    {
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+
     void LinuxWindow::SetVSync(bool enabled)
     {
         HE_PROFILE_FUNCTION();

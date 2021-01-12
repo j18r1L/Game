@@ -1,6 +1,6 @@
 Scene: first_scene
 Entities:
-  - Entity: "Grid\x00_first_scene_0"
+  - Entity: "Grid"
     TransformComponent:
       Position: [-5, 0, -5]
       Rotation: [90, 0, 0]
@@ -10,12 +10,12 @@ Entities:
     MaterialComponent:
       ShaderName: Grid
       FilePath: \assets\shaders\Grid.glsl
-  - Entity: "Empty\x00first_scene_1"
+  - Entity: "Empty"
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: "Camera\x00irst_scene_2"
+  - Entity: "Camera"
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -31,7 +31,7 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: "Backpack\x00st_scene_3"
+  - Entity: "Backpack"
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -41,7 +41,7 @@ Entities:
     MaterialComponent:
       ShaderName: Fong
       FilePath: /assets/shaders/Fong.glsl
-  - Entity: "PointLight\x00_scene_4"
+  - Entity: "PointLight"
     TransformComponent:
       Position: [-0.698197424, -0.699999988, 0.197658747]
       Rotation: [0, 0, 0]
@@ -55,7 +55,7 @@ Entities:
       Range: 0
       InnerConeAngle: 0.99984771
       OuterConeAngle: 0.99984771
-  - Entity: "SpotLight\x00t_scene_5"
+  - Entity: "SpotLight"
     TransformComponent:
       Position: [0.505223751, -0.0178990215, 0.713772416]
       Rotation: [0, 0, 0]
@@ -69,7 +69,7 @@ Entities:
       Range: 0
       InnerConeAngle: 0.965468109
       OuterConeAngle: 0.963162541
-  - Entity: "DirectionalLight\x00_6"
+  - Entity: "DirectionalLight"
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]

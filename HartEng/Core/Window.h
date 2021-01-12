@@ -47,6 +47,9 @@ namespace HE
         virtual double GetTime() const = 0;
 
         // Атрибуты окна
+        virtual void DisableCursor() = 0;
+        virtual void HideCursor() = 0;
+        virtual void ShowCursor() = 0;
         virtual void SetEventCallback(const EventCallBackFn& callback) = 0;
         virtual void SetVSync(bool enable) = 0;
         virtual bool IsSync() const = 0;

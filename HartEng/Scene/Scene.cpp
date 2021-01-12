@@ -74,7 +74,7 @@ namespace HE
         auto entityIterator = m_Entities.find(name);
         if (entityIterator == m_Entities.end())
         {
-            HE_CORE_ASSERT(false, "There is no entity with name: {0}", name);
+            HE_CORE_ASSERT(false, "There is no entity with name: " + name);
             return nullptr;
         }
         return entityIterator->second;

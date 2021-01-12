@@ -54,6 +54,9 @@ namespace HE
         double GetTime() const override;
 
         // Атрибуты окна
+        void DisableCursor() override;
+        void HideCursor() override;
+        void ShowCursor() override;
         inline void SetEventCallback(const EventCallBackFn& callback) override
         {
             m_Data.EventCallback = callback;
