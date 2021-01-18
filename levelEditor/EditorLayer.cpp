@@ -36,9 +36,7 @@ namespace HE
             // Add shader to material
             auto environmentMaterialComponent = environmentEntity->GetComponent<MaterialComponent>();
             environmentMaterialComponent->SetShader(m_ShaderLibrary, "Environment");
-        }
-        
-        
+        }        
 
         // load framebuffer
         m_FrameBufferSpec.Width = Application::Get().GetWindow().GetWidth();
@@ -63,6 +61,16 @@ namespace HE
 
     }
 
+    void EditorLayer::OnScenePlay()
+    {
+        m_SceneState = SceneState::Play;
+    }
+
+    void EditorLayer::OnSceneStop()
+    {
+        m_SceneState = SceneState::Edit;
+    }
+
     void EditorLayer::OnDetach()
     {
 
@@ -75,7 +83,7 @@ namespace HE
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
-            if (m_ViewportFocused && (!m_Play || m_Pause))
+            if (m_ViewportFocused && m_SceneState != SceneState::Play)
                 m_CameraController.OnUpdate(ts);
         }
 
@@ -101,7 +109,7 @@ namespace HE
             // Render to ID buffer
             m_IDFrameBuffer->Bind();
             RenderCommand::Clear();
-            m_Scene->OnUpdateShader(m_ShaderLibrary->Get("EntityID"), m_CameraController.GetCamera());
+            m_Scene->OnRenderShader(m_ShaderLibrary->Get("EntityID"), m_CameraController.GetCamera());
             m_IDFrameBuffer->UnBind();
         }
 
@@ -110,9 +118,10 @@ namespace HE
     void EditorLayer::Draw(Timestep& ts)
     {
         // Draw scene
-        if (m_Play && !m_Pause)
+        if (m_SceneState == SceneState::Play)
         {
             m_Scene->OnUpdate(ts); // Use runtime camera
+            m_Scene->OnRenderRuntime(ts);
         }
         else
         {
@@ -132,7 +141,7 @@ namespace HE
                 }
             }
             RenderCommand::SetDepthTest(true);
-            m_Scene->OnUpdateEditor(ts, m_CameraController.GetCamera());
+            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
         }
     }
 
@@ -203,16 +212,16 @@ namespace HE
             {
                 if (ImGui::MenuItem("Play"))
                 {
-                    m_Play = true;
-                    m_Pause = false;
+                    m_SceneState == SceneState::Play;
                     m_Scene->OnScenePlay();
                 }
                 if (ImGui::MenuItem("Pause"))
-                    m_Pause = !m_Pause;
+                {
+                    m_SceneState == SceneState::Pause;
+                }  
                 if (ImGui::MenuItem("Stop"))
                 {
-                    m_Play = false;
-                    m_Pause = false;
+                    m_SceneState == SceneState::Edit;
                     m_Scene->OnSceneStop();
                 }
 
@@ -351,7 +360,7 @@ namespace HE
 
     bool EditorLayer::OnMouseButton(MouseButtonPressedEvent& event)
     {
-        if (event.GetMouseButton() == HE_MOUSE_BUTTON_1 && !m_Gizmo.IsUsing() && !m_Gizmo.IsOver())
+        if (event.GetMouseButton() == HE_MOUSE_BUTTON_1 && !m_Gizmo.IsUsing() && !m_Gizmo.IsOver() && m_SceneState != SceneState::Play)
         {
             m_IDFrameBuffer->Bind();
 

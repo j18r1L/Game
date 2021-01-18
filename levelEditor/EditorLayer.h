@@ -10,6 +10,13 @@ namespace HE
     class EditorLayer: public Layer
     {
     private:
+        enum class SceneState
+        {
+            Edit = 0, Play = 1, Pause = 2
+        };
+        SceneState m_SceneState = SceneState::Edit;
+
+
         std::shared_ptr<ShaderLibrary> m_ShaderLibrary;
         Entity* environmentEntity;
 
@@ -25,8 +32,6 @@ namespace HE
         glm::vec2 m_ViewportSize;
         glm::vec2 m_ViewportBounds[2];
         bool m_ViewportFocused = true;
-        bool m_Play = false;
-        bool m_Pause = false;
 
         // Gizmos
         Gizmo m_Gizmo;
@@ -37,6 +42,9 @@ namespace HE
         bool OnMouseButton(MouseButtonPressedEvent& event);
 
         void Draw(Timestep& ts);
+        void OnScenePlay();
+        void OnSceneStop();
+
     public:
         EditorLayer();
 

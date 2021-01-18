@@ -43,8 +43,9 @@ namespace HE
         void OnScenePlay();
         void OnSceneStop();
         void OnUpdate(Timestep& ts);
-        void OnUpdateEditor(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
-        void OnUpdateShader(std::shared_ptr<Shader> shader, PerspectiveCamera& camera); // Render scene with given shader 
+        void OnRenderRuntime(Timestep& ts);
+        void OnRenderEditor(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
+        void OnRenderShader(std::shared_ptr<Shader> shader, PerspectiveCamera& camera); // Render scene with given shader 
 
         void OnViewportResize(uint32_t width, uint32_t height);
 

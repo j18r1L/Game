@@ -9,7 +9,9 @@
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+
 #include "HartEng/Renderer/Renderer.h"
+#include "HartEng/Renderer/SceneRenderer.h"
 
 #include "HartEng/Core/Log.h"
 #include <iostream>
@@ -152,13 +154,10 @@ namespace HE
         }
     }
 
-    // Runtime
+    // Update scripts
     void Scene::OnUpdate(Timestep& ts)
     {
         HE_PROFILE_FUNCTION();
-
-        SceneCamera* mainCamera = nullptr;
-        glm::mat4 transform(1.0f);
         {
             HE_PROFILE_SCOPE("OnUpdate: update script");
             for (auto& [name, entity]: m_Entities)
@@ -170,11 +169,18 @@ namespace HE
                 }
             }
         }
+    }
+
+    // Runtime render
+    void Scene::OnRenderRuntime(Timestep& ts)
+    {
+        SceneCamera* mainCamera = nullptr;
+        glm::mat4 transform(1.0f);
         {
             HE_PROFILE_SCOPE("OnUpdate: find mainCamera");
 
             // Find mainCamera
-            for (auto& [name, entity]: m_Entities)
+            for (auto& [name, entity] : m_Entities)
             {
                 if (entity->HasComponent<CameraComponent>())
                 {
@@ -201,11 +207,11 @@ namespace HE
                     if (entity->HasComponent<LightComponent>())
                         lights.push_back(entity);
                 }
-
+                //SceneRenderer::BeginScene(this);
                 Renderer::BeginScene(mainCamera->GetProjection(), transform, lights);
 
                 // For all entities
-                for (auto& [name, entity]: m_Entities)
+                for (auto& [name, entity] : m_Entities)
                 {
                     HE_PROFILE_SCOPE(name.c_str());
 
@@ -238,11 +244,10 @@ namespace HE
                 Renderer::EndScene();
             }
         }
-
     }
 
-    // Not runtime
-    void Scene::OnUpdateEditor(Timestep& ts, PerspectiveCamera& camera)
+    // Render editor
+    void Scene::OnRenderEditor(Timestep& ts, PerspectiveCamera& camera)
     {
         HE_PROFILE_FUNCTION();
         // Get all light components
@@ -286,7 +291,8 @@ namespace HE
         Renderer::EndScene();
     }
 
-    void Scene::OnUpdateShader(std::shared_ptr<Shader> shader, PerspectiveCamera& camera)
+    // Render in editor using specific shader
+    void Scene::OnRenderShader(std::shared_ptr<Shader> shader, PerspectiveCamera& camera)
     {
         // For all entities
         for (auto& [name, entity] : m_Entities)

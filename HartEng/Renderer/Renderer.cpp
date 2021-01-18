@@ -11,6 +11,31 @@ namespace HE
 
 
 
+    void Renderer::BeginRenderPass(std::shared_ptr<RenderPass> renderPass, bool clear)
+    {
+        HE_CORE_ASSERT(renderPass, "RenderPass cannot be nullptr!");
+
+        m_SceneData->m_ActiveRenderPass = renderPass;
+
+        renderPass->GetSpecification().TargetFramebuffer->Bind();
+        if (clear)
+        {
+            const glm::vec4& clearColor = renderPass->GetSpecification().TargetFramebuffer->GetSpecification().ClearColor;
+            //Renderer::Submit([=]()
+            //    {
+                    RenderCommand::SetClearColor(clearColor);
+                    RenderCommand::Clear();
+            //    })
+        }
+    }
+
+    void Renderer::EndRenderPass()
+    {
+        HE_CORE_ASSERT(m_SceneData->m_ActiveRenderPass, "No active renderPass! Call BeginRenderPass first, or you called EndRenderPass twice!");
+        m_SceneData->m_ActiveRenderPass->GetSpecification().TargetFramebuffer->UnBind();
+        m_SceneData->m_ActiveRenderPass = nullptr;
+    }
+
     void Renderer::BeginScene(PerspectiveCamera& camera, const std::vector<Entity*>& lights)
     {
         HE_PROFILE_FUNCTION();
@@ -43,6 +68,8 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         RenderCommand::Init();
+
+        //SceneRenderer::Init();
 
         //Renderer3D::Init();
         //Renderer2D::Init();
