@@ -1,5 +1,4 @@
-#ifndef OPENGLRENDERERAPI_H
-#define OPENGLRENDERERAPI_H
+#pragma once
 
 #include "HartEng/Renderer/RendererAPI.h"
 
@@ -19,8 +18,7 @@ namespace HE
         void SetDepthTest(bool depthTest) override;
 
         void DrawIndexed(const std::shared_ptr<VertexArray> &vertexArray) override;
+        void DrawIndexed(uint32_t indexCount) override;
 
     };
 }
-
-#endif // OPENGLRENDERERAPI_H

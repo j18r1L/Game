@@ -1,5 +1,4 @@
-#ifndef SCENEHIERARCHYPANEL_H
-#define SCENEHIERARCHYPANEL_H
+#pragma once
 
 #include "HartEng/HartEng.h"
 
@@ -21,8 +20,8 @@ namespace HE
 
         void DrawTransform(Entity* entity);
         void DrawCamera(Entity* entity);
-        void DrawMaterial(Entity* entity);
-        void DrawMesh(Entity* entity);
+        //void DrawMaterial(Entity* entity);
+        //void DrawMesh(Entity* entity);
         void DrawLight(Entity* entity);
 
 
@@ -39,6 +38,3 @@ namespace HE
         void OnImGuiRender();
     };
 }
-
-
-#endif // SCENEHIERARCHYPANEL_H

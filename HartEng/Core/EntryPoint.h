@@ -1,5 +1,4 @@
-#ifndef ENTRYPOINT_H
-#define ENTRYPOINT_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/HartEng.h"
@@ -28,4 +27,3 @@ int main(int argc, char *argv[])
 }
 
 
-#endif // ENTRYPOINT_H

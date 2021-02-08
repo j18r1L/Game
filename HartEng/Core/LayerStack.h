@@ -1,5 +1,4 @@
-#ifndef LAYERSTACK_H
-#define LAYERSTACK_H
+#pragma once
 
 #include "HartEng/Core/Core.h"
 #include "HartEng/Core/Layer.h"
@@ -33,6 +32,3 @@ namespace HE
 
     };
 }
-
-
-#endif // LAYERSTACK_H

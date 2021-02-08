@@ -1,5 +1,4 @@
-#ifndef CAMERACOMPONENT_H
-#define CAMERACOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/SceneCamera.h"
 #include "HartEng/Scene/Component.h"
@@ -32,5 +31,3 @@ namespace HE
     };
 }
 
-
-#endif // CAMERACOMPONENT_H

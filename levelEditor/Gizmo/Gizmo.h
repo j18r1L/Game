@@ -1,5 +1,4 @@
-#ifndef GIZMO_H
-#define GIZMO_H
+#pragma once
 
 #include "HartEng/HartEng.h"
 
@@ -22,6 +21,5 @@ namespace HE
 	};
 }
 
-#endif // GIZMO_H
 
 

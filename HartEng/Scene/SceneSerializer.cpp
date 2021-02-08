@@ -3,13 +3,10 @@
 
 #include <fstream>
 #include "HartEng/Core/Log.h"
-#include "HartEng/Scene/LoadMesh.h"
 #include "HartEng/Scene/SceneCamera.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
-#include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/MeshComponent.h"
-#include "HartEng/Scene/Components/SubMeshComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 
@@ -156,8 +153,8 @@ namespace HE
             SerializeCamera(out, entity);
         if (entity->HasComponent<MeshComponent>())
             SerializeMesh(out, entity);
-        if (entity->HasComponent<MaterialComponent>())
-            SerializeMaterial(out, entity);
+        //if (entity->HasComponent<MaterialComponent>())
+        //    SerializeMaterial(out, entity);
         if (entity->HasComponent<LightComponent>())
             SerializeLight(out, entity);
 
@@ -211,11 +208,12 @@ namespace HE
         out << YAML::Key << "MeshComponent";
         {
             out << YAML::BeginMap; // Mesh component
-            std::string filePath = meshComponent->GetPath();
+            std::string filePath = meshComponent->GetMesh().get()->GetFilePath();
             out << YAML::Key << "FilePath" << YAML::Value << filePath;
             out << YAML::EndMap; // Mesh component
         }
     }
+    /*
     void SceneSerializer::SerializeMaterial(YAML::Emitter& out, Entity* entity)
     {
         MaterialComponent* materialComponent = entity->GetComponent<MaterialComponent>();
@@ -229,6 +227,7 @@ namespace HE
             out << YAML::EndMap; // Material component
         }
     }
+    */
     void SceneSerializer::SerializeLight(YAML::Emitter& out, Entity* entity)
     {
         LightComponent* lightComponent = entity->GetComponent<LightComponent>();
@@ -295,10 +294,11 @@ namespace HE
                 auto deserializedMeshComponent = entity["MeshComponent"];
                 if (deserializedMeshComponent)
                     DeserializeMesh(deserializedMeshComponent, deserializedEntity);
-
+                /*
                 auto deserializedMaterialComponent = entity["MaterialComponent"];
                 if (deserializedMaterialComponent)
                     DeserializeMaterial(deserializedMaterialComponent, deserializedEntity);
+                */
                 
                 auto deserializedLightComponent = entity["LightComponent"];
                 if (deserializedLightComponent)
@@ -338,8 +338,11 @@ namespace HE
     void SceneSerializer::DeserializeMesh(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
         auto filePath = deserializedComponent["FilePath"].as<std::string>();
-        LoadMesh::CreateMesh(deserializedEntity, filePath);
+        MeshComponent* meshComponent = deserializedEntity->AddComponent<MeshComponent>();
+        std::shared_ptr<Mesh> mesh(new Mesh(filePath));
+        meshComponent->SetMesh(mesh);
     }
+    /*
     void SceneSerializer::DeserializeMaterial(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
         auto shaderName = deserializedComponent["ShaderName"].as<std::string>();
@@ -355,6 +358,7 @@ namespace HE
             materialComponent->SetShader(m_ShaderLibrary, shaderName);
         }
     }
+    */
     void SceneSerializer::DeserializeLight(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
         LightComponent* lightComponent = deserializedEntity->AddComponent<LightComponent>();

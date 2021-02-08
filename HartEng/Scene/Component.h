@@ -1,5 +1,4 @@
-#ifndef COMPONENTS_H
-#define COMPONENTS_H
+#pragma once
 
 #include "HartEng/Scene/Entity.h"
 
@@ -19,4 +18,3 @@ namespace HE
     };
 }
 
-#endif // COMPONENTS_H

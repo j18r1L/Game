@@ -1,5 +1,4 @@
-#ifndef EditorLayer_H
-#define EditorLayer_H
+#pragma once
 
 #include "HartEng/HartEng.h"
 #include "Panels/SceneHierarchyPanel.h"
@@ -16,14 +15,7 @@ namespace HE
         };
         SceneState m_SceneState = SceneState::Edit;
 
-
-        std::shared_ptr<ShaderLibrary> m_ShaderLibrary;
         Entity* environmentEntity;
-
-        FrameBufferSpecification m_FrameBufferSpec;
-        std::shared_ptr<FrameBuffer> m_FrameBuffer;
-        std::shared_ptr<FrameBuffer> m_FrameBuffer_msaa;
-        std::shared_ptr<FrameBuffer> m_IDFrameBuffer;
 
         std::shared_ptr<Scene> m_Scene;
         PerspectiveCameraController m_CameraController;
@@ -55,6 +47,3 @@ namespace HE
         void OnEvent(Event &e) override;
     };
 }
-
-
-#endif // EditorLayer_H

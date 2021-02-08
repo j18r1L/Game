@@ -1,5 +1,4 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 
@@ -54,6 +53,7 @@ namespace HE
         void Run();
         void Close();
         void OnEvent(Event& e);
+        void OnRenderImGui();
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* overlay);
 
@@ -76,4 +76,3 @@ namespace HE
 
 }
 
-#endif // APPLICATION_H

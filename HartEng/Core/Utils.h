@@ -1,5 +1,4 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <string>
 
@@ -12,5 +11,3 @@ namespace HE
 		static std::string SaveFile(const char* filter);
 	};
 }
-
-#endif UTILS_H 

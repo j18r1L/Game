@@ -1,5 +1,4 @@
-#ifndef HZPCH_H
-#define HZPCH_H
+#pragma once
 
 #include <memory>
 #include <functional>
@@ -19,5 +18,3 @@
 #endif
 
 #include "HartEng/Debug/Instrumentor.h"
-
-#endif // HZPCH_H

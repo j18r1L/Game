@@ -56,8 +56,8 @@ namespace HE
         */
 
         // Deselect entity if pressed in window, but not on a entity
-        if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-            m_SelectionContext = nullptr;
+        //if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+        //    m_SelectionContext = nullptr;
 
         // Right click on blank space
         if (ImGui::BeginPopupContextWindow(0, 1, false))
@@ -86,11 +86,13 @@ namespace HE
                     m_SelectionContext->AddComponent<CameraComponent>();
                     ImGui::CloseCurrentPopup();
                 }
+                /*
                 if (ImGui::MenuItem("Material"))
                 {
                     m_SelectionContext->AddComponent<MaterialComponent>();
                     ImGui::CloseCurrentPopup();
                 }
+                */
                 if (ImGui::MenuItem("Mesh"))
                 {
                     m_SelectionContext->AddComponent<MeshComponent>();
@@ -161,16 +163,19 @@ namespace HE
                 DrawTransform(entity);
                 ImGui::TreePop();
             }
+        /*
         if (entity->HasComponent<MaterialComponent>())
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MaterialComponent>()), treeNodeFlags, "Material Component"))
             {
                 DrawMaterial(entity);
                 ImGui::TreePop();
             }
+        */
         if (entity->HasComponent<MeshComponent>())
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MeshComponent>()), treeNodeFlags, "Mesh Component"))
             {
-                DrawMesh(entity);
+                // TODO add mesh to scenehierarchyt panel
+                //DrawMesh(entity);
                 ImGui::TreePop();
             }
         if (entity->HasComponent<CameraComponent>())
@@ -291,6 +296,7 @@ namespace HE
         if (removeComponent)
             entity->RemoveComponent<CameraComponent>();
     }
+    /*
     void SceneHierarchyPanel::DrawMaterial(Entity* entity)
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
@@ -389,6 +395,8 @@ namespace HE
             entity->RemoveComponent<MaterialComponent>();
 
     }
+    */
+    /* TODO add mesh to scenehierarchy panel
     void SceneHierarchyPanel::DrawMesh(Entity* entity)
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
@@ -558,6 +566,7 @@ namespace HE
         }
 
     }
+    */
     void SceneHierarchyPanel::DrawLight(Entity* entity)
     {
         // Remove Component

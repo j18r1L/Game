@@ -1,6 +1,4 @@
-#ifndef VERTEXARRAY_H
-#define VERTEXARRAY_H
-
+#pragma once
 
 #include "HartEng/Core/pch.h"
 
@@ -29,5 +27,4 @@ namespace HE
     };
 }
 
-#endif // VERTEXARRAY_H
 

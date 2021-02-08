@@ -1,5 +1,4 @@
-#ifndef CAMERAS_H
-#define CAMERAS_H
+#pragma once
 
 
 #include <glm/glm.hpp>
@@ -59,6 +58,11 @@ namespace HE
 
         glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};
         glm::quat m_Rotation = glm::quat(glm::vec4(0.0f));
+
+        float m_Fov = 0.0f;
+        float m_AspectRatio = 0.0f;
+        float m_Near = 0.0f;
+        float m_Far = 0.0f;
         //glm::vec3 m_Rotation = glm::vec3(0.0f); // Euler realization
 
         void RecalculateView();
@@ -81,8 +85,10 @@ namespace HE
         const glm::mat4& GetProjectionView() const { return m_ProjectionView; }
         const glm::vec3& GetPosition() const { return m_Position; }
         const glm::quat& GetRotation() const { return m_Rotation; }
+        float GetFov() const { return m_Fov; }
+        float GetAspectRatio() const { return m_AspectRatio; }
+        float GetNear() const { return m_Near; }
+        float GetFar() const { return m_Far; }
 
     };
 }
-
-#endif // CAMERAS_H

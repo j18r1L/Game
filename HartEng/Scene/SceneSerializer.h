@@ -1,5 +1,4 @@
-#ifndef SCENESERIALIZER_H
-#define SCENESERIALIZER_H
+#pragma once
 
 
 #include "HartEng/Scene/Scene.h"
@@ -24,7 +23,7 @@ namespace HE
         void DeserializeTransform(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
         void DeserializeCamera(const YAML::Node& deserializedComponentt, Entity* deserializedEntity);
         void DeserializeMesh(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
-        void DeserializeMaterial(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
+        //void DeserializeMaterial(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
         void DeserializeLight(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
     public:
         SceneSerializer(const std::shared_ptr<Scene>& scene, const std::shared_ptr<ShaderLibrary>& shaderLibrary);
@@ -35,4 +34,3 @@ namespace HE
 }
 
 
-#endif // SCENESERIALIZER_H

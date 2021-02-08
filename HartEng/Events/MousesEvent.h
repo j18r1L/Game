@@ -1,5 +1,4 @@
-#ifndef MOUSESEVENT_H
-#define MOUSESEVENT_H
+#pragma once
 
 
 #include "HartEng/Events/Event.h"
@@ -119,4 +118,3 @@ namespace HE
         EVENT_CLASS_TYPE(MouseButtonReleased)
     };
 }
-#endif // MOUSESEVENT_H

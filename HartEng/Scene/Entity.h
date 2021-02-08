@@ -1,5 +1,4 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Scene/Scene.h"
@@ -17,7 +16,7 @@ namespace HE
     class Entity
     {
     private:
-        uint32_t m_ID = 0; // Entity ID
+        uint32_t m_ID = 0; // Entity ID, 0 must not be valid ID!
 
         Scene* m_SceneHandle = nullptr;
         std::unordered_map<std::type_index, Component*> m_Components;
@@ -84,4 +83,3 @@ namespace HE
     };
 }
 
-#endif // ENTITY_H

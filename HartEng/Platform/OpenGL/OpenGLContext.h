@@ -1,6 +1,4 @@
-#ifndef OPENGLCONTEXT_H
-#define OPENGLCONTEXT_H
-
+#pragma once
 
 #include "HartEng/Renderer/GraphicsContext.h"
 
@@ -19,4 +17,3 @@ namespace HE
     };
 }
 
-#endif // OPENGLCONTEXT_H

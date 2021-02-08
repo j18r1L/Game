@@ -44,7 +44,7 @@ namespace HE
             m_DataFormat = GL_RGBA;
         }
         HE_CORE_ASSERT(internalFormat & m_DataFormat, "Format not supported!");
-
+        
         {
             HE_PROFILE_SCOPE("OpenGL CreateTexture - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
             // TODO перевод uint int
@@ -70,7 +70,7 @@ namespace HE
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         }
-
+        m_Loaded = true;
         stbi_image_free(data);
     }
 

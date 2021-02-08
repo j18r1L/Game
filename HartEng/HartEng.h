@@ -1,5 +1,4 @@
-#ifndef HARTENG_H
-#define HARTENG_H
+#pragma once
 
 // Core
 #include "HartEng/Core/Timestep.h"
@@ -11,15 +10,12 @@
 
 // Scene
 #include "HartEng/Scene/Scene.h"
-#include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Scene/Components/MeshComponent.h"
-#include "HartEng/Scene/Components/SubMeshComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
-#include "HartEng/Scene/LoadMesh.h"
 #include "HartEng/Scene/SceneSerializer.h"
 
 
@@ -33,6 +29,8 @@
 #include "HartEng/Renderer/CameraControllers.h"
 #include "HartEng/Renderer/Texture.h"
 #include "HartEng/Renderer/Framebuffer.h"
+#include "HartEng/Renderer/Mesh.h"
+#include "HartEng/Renderer/SceneRenderer.h"
 
 // Events
 #include "HartEng/Events/Event.h"
@@ -50,5 +48,3 @@
 // Key and Mouse Codes
 #include "HartEng/Core/MouseButtonCodes.h"
 #include "HartEng/Core/Keycodes.h"
-
-#endif // HARTENG_H

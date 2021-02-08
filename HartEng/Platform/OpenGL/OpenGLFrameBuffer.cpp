@@ -3,7 +3,7 @@
 
 #include "HartEng/Core/Core.h"
 #include "HartEng/Core/Log.h"
-
+#include "HartEng/Renderer/Renderer.h"
 #include <glad/glad.h>
 
 namespace HE
@@ -147,12 +147,15 @@ namespace HE
     OpenGLFrameBuffer::~OpenGLFrameBuffer()
     {
         HE_PROFILE_FUNCTION();
-
-        glDeleteFramebuffers(1, &m_RendererID);
-        for (int i = 0; i < m_Attachments.size(); i++)
-        {
-            glDeleteTextures(1, &m_Attachments[i]);
-        }
+        //std::shared_ptr<OpenGLFrameBuffer> instance(this);
+        Renderer::Submit([this]()
+            {
+                glDeleteFramebuffers(1, &this->m_RendererID);
+                for (int i = 0; i < this->m_Attachments.size(); i++)
+                {
+                    glDeleteTextures(1, &this->m_Attachments[i]);
+                }
+            });
     }
 
     void OpenGLFrameBuffer::Invalidate()
@@ -233,9 +236,13 @@ namespace HE
     {
         m_Specification.Width = width;
         m_Specification.Height = height;
-        glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
-        Invalidate();
+        //std::shared_ptr<OpenGLFrameBuffer> instance(this);
+        Renderer::Submit([this]() mutable
+            {
+                glViewport(0, 0, this->m_Specification.Width, this->m_Specification.Height);
+                this->Invalidate();
+            });
     }
 
     const FrameBufferSpecification& OpenGLFrameBuffer::GetSpecification() const
@@ -252,15 +259,21 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        glBindFramebuffer(FramebufferType(type), m_RendererID);
+        //std::shared_ptr<OpenGLFrameBuffer> instance(this);
+        Renderer::Submit([this, type]()
+            {
+                glBindFramebuffer(FramebufferType(type), this->m_RendererID);
+            });
 
     }
 
     void OpenGLFrameBuffer::UnBind()
     {
         HE_PROFILE_FUNCTION();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        Renderer::Submit([]() 
+            {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            });
 
     }
 

@@ -1,5 +1,4 @@
-#ifndef INPUT_H
-#define INPUT_H
+#pragma once
 
 #include "HartEng/Core/Core.h"
 #include "HartEng/Core/pch.h"
@@ -66,5 +65,3 @@ namespace HE
         virtual void SetMousePositionImpl(float mousePosX, float mousePosY) = 0;
     };
 }
-
-#endif // INPUT_H

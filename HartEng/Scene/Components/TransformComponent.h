@@ -1,5 +1,4 @@
-#ifndef TRANSFORMCOMPONENT_H
-#define TRANSFORMCOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/Component.h"
 #include "glm/glm.hpp"
@@ -37,4 +36,3 @@ namespace HE
     };
 }
 
-#endif // TRANSFORM_H

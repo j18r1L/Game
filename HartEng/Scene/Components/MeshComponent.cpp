@@ -7,24 +7,17 @@ namespace HE
         m_EntityHandle = entityHandle;
     }
 
-    void MeshComponent::AddSubMesh(SubMeshComponent& subMesh)
+    void MeshComponent::SetMesh(const std::shared_ptr<Mesh>& mesh)
     {
-        m_SubMeshes.push_back(&subMesh);
+        m_Mesh = mesh;
     }
 
-    void MeshComponent::SetPath(const std::string& path)
+    std::shared_ptr<Mesh> MeshComponent::GetMesh()
     {
-        m_Path = path;
+        return m_Mesh;
     }
 
-    const std::string& MeshComponent::GetPath()
-    {
-        return m_Path;
-    }
 
-    const std::vector<SubMeshComponent*>& MeshComponent::GetSubMeshes() const
-    {
-        return m_SubMeshes;
-    }
+
 }
 

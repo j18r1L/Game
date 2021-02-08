@@ -1,5 +1,4 @@
-#ifndef LAYER_H
-#define LAYER_H
+#pragma once
 
 #include "HartEng/Core/Core.h"
 #include "HartEng/Core/pch.h"
@@ -37,6 +36,3 @@ namespace HE
         }
     };
 }
-
-
-#endif // LAYER_H

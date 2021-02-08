@@ -25,6 +25,7 @@ namespace HE
 
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
         Renderer::Init();
+        Renderer::WaitAndRender();
         PushOverlay(m_ImGuiLayer);
     }
 
@@ -67,6 +68,19 @@ namespace HE
         }
     }
 
+    void Application::OnRenderImGui()
+    {
+        m_ImGuiLayer->Begin();
+        {
+            HE_PROFILE_SCOPE("LayerStack::OnImGuiRender");
+            for (Layer* layer : m_LayerStack)
+            {
+                layer->OnImGuiRender();
+            }
+        }
+        m_ImGuiLayer->End();
+    }
+
     void Application::Close()
     {
         m_Running = false;
@@ -94,15 +108,13 @@ namespace HE
                     for (Layer* layer: m_LayerStack)
                         layer->OnUpdate(m_Timestep);
                 }
-                m_ImGuiLayer->Begin();
-                {
-                    HE_PROFILE_SCOPE("LayerStack::OnImGuiRender");
-                    for (Layer* layer: m_LayerStack)
-                    {
-                        layer->OnImGuiRender();
-                    }
-                }
-                m_ImGuiLayer->End();
+                Application* app = this;
+                Renderer::Submit([app]() 
+                    { 
+                        app->OnRenderImGui();
+                    });
+                Renderer::WaitAndRender();
+                
             }
             m_Window->OnUpdate();
         }

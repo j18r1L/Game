@@ -1,5 +1,4 @@
-#ifndef EVENT_H
-#define EVENT_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Core.h"
@@ -102,10 +101,3 @@ namespace HE
         return os << e.ToString();
     }
 }
-
-
-
-
-
-
-#endif // EVENT_H

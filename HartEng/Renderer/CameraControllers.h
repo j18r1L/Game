@@ -1,5 +1,4 @@
-#ifndef CAMERACONTROLLERS_H
-#define CAMERACONTROLLERS_H
+#pragma once
 
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Core/Timestep.h"
@@ -90,10 +89,4 @@ namespace HE
         float GetHeight() const { return m_Height; }
 
     };
-
-
-
 }
-
-
-#endif // CAMERACONTROLLERS_H

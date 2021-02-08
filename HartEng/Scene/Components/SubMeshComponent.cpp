@@ -1,3 +1,4 @@
+/*
 #include "SubMeshComponent.h"
 
 namespace HE
@@ -46,3 +47,4 @@ namespace HE
 
 }
 
+*/

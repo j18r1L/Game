@@ -1,5 +1,4 @@
-#ifndef LIGHTCOMPONENT_H
-#define LIGHTCOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/Component.h"
 #include <glm/glm.hpp>
@@ -51,4 +50,3 @@ namespace HE
 	};
 
 }
-#endif // LIGHTCOMPONENT_H

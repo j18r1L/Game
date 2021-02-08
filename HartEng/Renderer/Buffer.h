@@ -1,6 +1,4 @@
-#ifndef BUFFER_H
-#define BUFFER_H
-
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Core.h"
@@ -50,9 +48,9 @@ namespace HE
 
     struct BufferElement
     {
-        std::string Name;
-        uint32_t Offset;
-        uint32_t Size;
+        std::string Name = "";
+        uint32_t Offset = 0;
+        uint32_t Size = 0;
         ShaderDataType Type;
         bool Normalized;
 
@@ -174,6 +172,3 @@ namespace HE
         static std::shared_ptr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
     };
 }
-
-#endif // BUFFER_H
-

@@ -1,5 +1,4 @@
-#ifndef SCRIPTCOMPONENT_H
-#define SCRIPTCOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/Component.h"
 
@@ -18,5 +17,3 @@ namespace HE
 		virtual void OnDestroy() {};
 	};
 }
-
-#endif // SCRIPTCOMPONENT_H

@@ -1,5 +1,4 @@
-#ifndef OPENGLTEXTURE_H
-#define OPENGLTEXTURE_H
+#pragma once
 
 #include "HartEng/Renderer/Texture.h"
 
@@ -12,8 +11,9 @@ namespace HE
     private:
         std::string m_Path; // путь можно убрать мб
         uint32_t m_Width, m_Height;
-        uint32_t m_RendererID;
+        uint32_t m_RendererID = -1;
         GLenum m_DataFormat;
+        bool m_Loaded = false;
 
     public:
 
@@ -22,6 +22,7 @@ namespace HE
 
         void Bind(uint32_t slot = 0) const override;
         void SetData(void* data, uint32_t size) const override;
+        bool Loaded() const override { return m_Loaded; }
 
 
         uint32_t GetWidth() const override
@@ -45,6 +46,7 @@ namespace HE
         uint32_t m_Width, m_Height;
         uint32_t m_RendererID;
         GLenum m_DataFormat;
+        bool m_Loaded = false;
 
     public:
 
@@ -53,7 +55,7 @@ namespace HE
 
         void Bind(uint32_t slot = 0) const override;
         void SetData(void* data, uint32_t size) const override;
-
+        bool Loaded() const override { return m_Loaded; }
 
         uint32_t GetWidth() const override
         {
@@ -69,4 +71,3 @@ namespace HE
         }
     };
 }
-#endif // OPENGLTEXTURE_H

@@ -1,5 +1,4 @@
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include <glm/glm.hpp>
@@ -96,6 +95,3 @@ namespace HE
         static std::shared_ptr<FrameBuffer> Create(const FrameBufferSpecification& spec);
     };
 }
-
-
-#endif // FRAMEBUFFER_H

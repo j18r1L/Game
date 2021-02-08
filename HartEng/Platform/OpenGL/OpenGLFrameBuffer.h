@@ -1,5 +1,4 @@
-#ifndef OPENGLFRAMEBUFFER_H
-#define OPENGLFRAMEBUFFER_H
+#pragma once
 
 #include "HartEng/Renderer/Framebuffer.h"
 
@@ -12,10 +11,6 @@ namespace HE
         uint32_t m_RendererID = 0;
 
         uint32_t m_ColorAttachmentSize = 0;
-
-        //uint32_t m_ColorAttachment = 0;
-        //uint32_t m_DepthAttachment = 0;
-        //uint32_t m_IDAttachment = 0;
 
         FrameBufferSpecification m_Specification;
 
@@ -38,5 +33,3 @@ namespace HE
     };
 
 }
-
-#endif // OPENGLFRAMEBUFFER_H
