@@ -87,6 +87,8 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
+        m_Fov = fov;
+        m_AspectRatio = aspectRatio;
         m_Projection = glm::perspective(fov, aspectRatio, zNear, zFar);
         m_ProjectionView = m_Projection * m_View;
     }

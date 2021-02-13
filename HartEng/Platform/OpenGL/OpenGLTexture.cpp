@@ -1,6 +1,6 @@
 #include "HartEng/Core/pch.h"
 #include "HartEng/Platform/OpenGL/OpenGLTexture.h"
-
+#include "HartEng/Renderer/Renderer.h"
 #include "HartEng/Core/Core.h"
 #include "HartEng/Core/Log.h"
 #include "stb_image.h"
@@ -15,12 +15,11 @@ namespace HE
 
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
-        stbi_uc* data = nullptr;
         {
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-            data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
+            m_ImageData.Data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
         }
-        if (data == nullptr)
+        if (m_ImageData.Data == nullptr)
         {
             HE_CORE_ERROR("Failed to load image from: " + filepath);
             return;
@@ -44,41 +43,50 @@ namespace HE
             m_DataFormat = GL_RGBA;
         }
         HE_CORE_ASSERT(internalFormat & m_DataFormat, "Format not supported!");
-        
-        {
-            HE_PROFILE_SCOPE("OpenGL CreateTexture - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-            // TODO перевод uint int
-            m_Width = width;
-            m_Height = height;
-            /*
-            // TODO mipmap-ы
-            glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-            glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
-
-            // TODO кастомные параметры
-            glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-            glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
-            */
-            // OpenGL 4.1
-            glGenTextures(1, &m_RendererID);
-            glBindTexture(GL_TEXTURE_2D, m_RendererID);
-            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        }
         m_Loaded = true;
-        stbi_image_free(data);
+        m_Width = width;
+        m_Height = height;
+        {
+            Renderer::Submit([this, internalFormat]() mutable
+                {
+                    HE_PROFILE_SCOPE("OpenGL CreateTexture - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
+                    // TODO перевод uint int
+                    
+                    /*
+                    // TODO mipmap-ы
+                    glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+                    glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+
+                    // TODO кастомные параметры
+                    glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+                    glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+                    */
+                    // OpenGL 4.1
+                    glGenTextures(1, &m_RendererID);
+                    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+                    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, m_ImageData.Data);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                    stbi_image_free(m_ImageData.Data);
+                });
+            
+        }
+        
+        
     }
 
     OpenGLTexture2D::~OpenGLTexture2D()
     {
         HE_PROFILE_FUNCTION();
 
-        glDeleteTextures(1, &m_RendererID);
+        GLuint rendererID = m_RendererID;
+        Renderer::Submit([rendererID]() {
+            glDeleteTextures(1, &rendererID);
+            });
     }
 
     void OpenGLTexture2D::SetData(void* data, uint32_t size) const
@@ -86,7 +94,11 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         HE_CORE_ASSERT(size == m_Width * m_Height * m_DataFormat, "Data must be entire texture!");
-        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+        Renderer::Submit([this, data, size]()
+            {
+                glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+            });
+        
     }
 
     void OpenGLTexture2D::Bind(uint32_t slot) const
@@ -95,37 +107,45 @@ namespace HE
         HE_PROFILE_FUNCTION();
         
         //4.1 version
-        GLenum format = GL_TEXTURE0;
-        switch (slot)
-        {
-            case (0):
-                format = GL_TEXTURE0;
-                break;
-            case (1):
-                format = GL_TEXTURE1;
-                break;
-            case (2):
-                format = GL_TEXTURE2;
-                break;
-            case (3):
-                format = GL_TEXTURE3;
-                break;
-            case (4):
-                format = GL_TEXTURE4;
-                break;
-            case (5):
-                format = GL_TEXTURE5;
-                break;
-            case (6):
-                format = GL_TEXTURE6;
-                break;
-                HE_CORE_ERROR("More than 6 textures is not currently supported for OpenGL 4.4 or less");
-        }
-        glActiveTexture(format);
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        Renderer::Submit([this, slot]()
+            {
+                GLenum format = GL_TEXTURE0;
+                switch (slot)
+                {
+                case (0):
+                    format = GL_TEXTURE0;
+                    break;
+                case (1):
+                    format = GL_TEXTURE1;
+                    break;
+                case (2):
+                    format = GL_TEXTURE2;
+                    break;
+                case (3):
+                    format = GL_TEXTURE3;
+                    break;
+                case (4):
+                    format = GL_TEXTURE4;
+                    break;
+                case (5):
+                    format = GL_TEXTURE5;
+                    break;
+                case (6):
+                    format = GL_TEXTURE6;
+                    break;
+                    HE_CORE_ERROR("More than 6 textures is not currently supported for OpenGL 4.4 or less");
+                }
+                glActiveTexture(format);
+                glBindTexture(GL_TEXTURE_2D, m_RendererID);
+            });
+        
         
         //4.5 version
-        //glBindTextureUnit(slot, m_RendererID);
+        /*
+        Renderer::Submit([this, slot]() {
+            glBindTextureUnit(slot, m_RendererID);
+            });
+        */
     }
 
 

@@ -22,46 +22,24 @@ namespace HE
         HE_PROFILE_FUNCTION();
 
         std::string path_to_project = CMAKE_PATH;
-        //m_ShaderLibrary->Load("/assets/shaders/EntityID.glsl");
-        //m_ShaderLibrary->Load("/assets/shaders/Environment.glsl");
-        //m_ShaderLibrary->Load("/assets/shaders/Fong.glsl");
-        //m_ShaderLibrary->Load("/assets/shaders/Texture.glsl");
-        /*
+
         // Create environment entity
-        environmentEntity = new Entity();
-        environmentEntity->AddComponent<TransformComponent>();
-        if (LoadMesh::CreateMesh(environmentEntity, "/assets/obj/cube/cube.obj"))
-        {
-            // Add shader to material
-            auto environmentMaterialComponent = environmentEntity->GetComponent<MaterialComponent>();
-            environmentMaterialComponent->SetShader(m_ShaderLibrary, "Environment");
-        }        
-        */
-        // Create environment entity
-        environmentEntity = m_Scene->CreateEntity("Cube");
+        environmentEntity = m_Scene->CreateEntity("backpack");
         MeshComponent* envMeshComponent = environmentEntity->AddComponent<MeshComponent>();
         std::shared_ptr<Mesh> encMesh(new Mesh(path_to_project + "/assets/meshes/obj/backpack/backpack.obj"));
         envMeshComponent->SetMesh(encMesh);
 
 
-        //Entity* sponza = m_Scene->CreateEntity("Sponza");
-        //MeshComponent* sponzaMeshComponent = sponza->AddComponent<MeshComponent>();
-        //std::shared_ptr<Mesh> sponzaMesh(new Mesh("/assets/meshes/fbx/sponza.obj"));
-        //sponzaMeshComponent->SetMesh(sponzaMesh);
+        Entity* sponza = m_Scene->CreateEntity("Sponza");
+        sponza->GetComponent<TransformComponent>()->SetScale({ 0.01f, 0.01f, 0.01f });
+        MeshComponent* sponzaMeshComponent = sponza->AddComponent<MeshComponent>();
+        std::shared_ptr<Mesh> sponzaMesh(new Mesh(path_to_project + "/assets/meshes/obj/sponza/sponza.obj"));
+        sponzaMeshComponent->SetMesh(sponzaMesh);
 
-        /*
-        // load framebuffer
-        m_FrameBufferSpec.Width = Application::Get().GetWindow().GetWidth();
-        m_FrameBufferSpec.Height = Application::Get().GetWindow().GetHeight();
-        m_FrameBufferSpec.Samples = 1;
-        m_FrameBufferSpec.Attachemtns = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::DEPTH24STENCIL8 };
-        m_FrameBuffer = FrameBuffer::Create(m_FrameBufferSpec);
-        */
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(Renderer::GetShaderLibrary());
-        
         
         //SceneSerializer serializer(m_Scene, m_ShaderLibrary);
         //serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");

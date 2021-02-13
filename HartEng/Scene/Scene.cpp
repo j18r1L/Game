@@ -236,7 +236,7 @@ namespace HE
             HE_PROFILE_SCOPE("OnUpdate: Scene submit");
 
             SceneCamera sceneCamera;
-            sceneCamera.SetPerspective(camera.GetFov(), camera.GetNear(), camera.GetFar());
+            sceneCamera.SetPerspective(camera.GetFov(), camera.GetAspectRatio(), camera.GetNear(), camera.GetFar());
             SceneRenderer::BeginScene(this, { sceneCamera, camera.GetView() });
 
             // For all entities

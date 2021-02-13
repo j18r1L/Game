@@ -50,13 +50,34 @@ in VertexOutput
 } vs_Input;
 
 layout(location = 0) out vec4 color;
-layout(location = 1) out vec4 o_BloomColor;
 
-uniform vec3 u_CameraPosition;
-uniform sampler2D u_AlbedoColor;
+// texture inputs
+uniform sampler2D u_AlbedoTexture;
+
+// Toggles
+uniform float u_AlbedoTexToggle;
+
+uniform vec3 u_AlbedoColor;
+
+struct PBRParameters
+{
+	vec3 Albedo;
+	float Roughness;
+	float Metalness;
+
+	vec3 Normal;
+	vec3 View;
+	float NdotV;
+};
+
+PBRParameters m_Params;
 
 void main()
 {
-	color = texture(u_AlbedoColor, vs_Input.TexCoord);
-	//color = vec4(0.0, 0.0, 0.0, 1.0);
+	color = texture(u_AlbedoTexture, vs_Input.TexCoord);
+
+	// Standard inputs
+	m_Params.Albedo = u_AlbedoTexToggle > 0.5 ? texture(u_AlbedoTexture, vs_Input.TexCoord).rgb : u_AlbedoColor; 
+
+	color = vec4(m_Params.Albedo, 1.0);
 }

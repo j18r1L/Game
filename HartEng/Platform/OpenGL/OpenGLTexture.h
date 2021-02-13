@@ -1,7 +1,7 @@
 #pragma once
 
 #include "HartEng/Renderer/Texture.h"
-
+#include "HartEng/Core/Buffer.h"
 #include <glad/glad.h>
 
 namespace HE
@@ -13,6 +13,8 @@ namespace HE
         uint32_t m_Width, m_Height;
         uint32_t m_RendererID = -1;
         GLenum m_DataFormat;
+
+        Buffer m_ImageData;
         bool m_Loaded = false;
 
     public:
