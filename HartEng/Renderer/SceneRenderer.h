@@ -32,18 +32,21 @@ namespace HE
 		static void EndScene();
 
 		static void SubmitMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), std::shared_ptr<MaterialInstance> overrideMaterial = nullptr);
+		static void SubmitEntityIDMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), std::shared_ptr<MaterialInstance> overrideMaterial = nullptr);
 
-		static std::shared_ptr<RenderPass> GetFinalRenderPass();
-		static std::shared_ptr<Texture2D> GetFinalColorBuffer();
+		static std::shared_ptr<RenderPass> GetGeometryRenderPass();
+		static std::shared_ptr<RenderPass> GetEntityIDRenderPass();
 
 		static SceneRendererOptions& GetOptions();
 
 	private:
 		static void FlushDrawList();
 		static void GeometryPass();
-		static void CompositePass();
-		static void BloomBlurPass();
-		static void ShadowMapPass();
+		static void EntityIDPass();
+
+		//static void CompositePass();
+		//static void BloomBlurPass();
+		//static void ShadowMapPass();
 	
 	};
 }

@@ -45,9 +45,12 @@ namespace HE
     {
     private:
         std::string m_Path; // путь можно убрать мб
-        uint32_t m_Width, m_Height;
+        uint32_t m_Width[6], m_Height[6];
         uint32_t m_RendererID;
-        GLenum m_DataFormat;
+        GLenum m_DataFormat[6];
+        GLenum m_InternalFormat[6];
+
+        Buffer m_ImageData[6];
         bool m_Loaded = false;
 
     public:
@@ -61,11 +64,11 @@ namespace HE
 
         uint32_t GetWidth() const override
         {
-            return m_Width;
+            return m_Width[0];
         }
         uint32_t GetHeight() const override
         {
-            return m_Height;
+            return m_Height[0];
         }
         uint32_t GetRendererID() const override
         {

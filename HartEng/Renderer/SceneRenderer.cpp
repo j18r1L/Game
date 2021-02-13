@@ -21,9 +21,7 @@ namespace HE
 		} SceneData;
 		
 		std::shared_ptr<RenderPass> GeoPass;
-
-		bool EnableBloom = false;
-		float BloomThreshold = 1.5f;
+		std::shared_ptr<RenderPass> EntityIDPass;
 		
 		struct DrawCommand
 		{
@@ -32,6 +30,7 @@ namespace HE
 			glm::mat4 Transform;
 		};
 		std::vector<DrawCommand> DrawList;
+		std::vector<DrawCommand> EntityIDDrawList;
 		
 
 		SceneRendererOptions Options;
@@ -40,8 +39,10 @@ namespace HE
 	struct SceneRendererStats
 	{
 		float GeometryPass = 0.0f;
+		float EntityIDPass = 0.0f;
 
 		Timer GeometryPassTimer;
+		Timer EntityIDPassTimer;
 	};
 
 	static SceneRendererData s_SceneRendererData;
@@ -50,18 +51,38 @@ namespace HE
 	void SceneRenderer::Init()
 	{
 		// Geometry RenderPass
-		// geometry gramebuffer
-		FrameBufferSpecification geoFramebufferSpec;
-		geoFramebufferSpec.Width = Application::Get().GetWindow().GetWidth();
-		geoFramebufferSpec.Height = Application::Get().GetWindow().GetHeight();
-		geoFramebufferSpec.Attachemtns = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::DEPTH24STENCIL8 };
-		geoFramebufferSpec.Samples = 1;
-		geoFramebufferSpec.ClearColor = { 1.0f, 0.0f, 1.0f, 1.0f };
+		{
+			// geometry gramebuffer
+			FrameBufferSpecification geoFramebufferSpec;
+			geoFramebufferSpec.Width = Application::Get().GetWindow().GetWidth();
+			geoFramebufferSpec.Height = Application::Get().GetWindow().GetHeight();
+			geoFramebufferSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::DEPTH24STENCIL8 };
+			geoFramebufferSpec.Samples = 1;
+			geoFramebufferSpec.ClearColor = { 1.0f, 0.0f, 1.0f, 1.0f };
 
-		// geometry renderpass specification
-		RenderPassSpecification geoRenderPassSpec;
-		geoRenderPassSpec.TargetFramebuffer = FrameBuffer::Create(geoFramebufferSpec);
-		s_SceneRendererData.GeoPass = RenderPass::Create(geoRenderPassSpec);
+			// geometry renderpass specification
+			RenderPassSpecification geoRenderPassSpec;
+			geoRenderPassSpec.TargetFramebuffer = FrameBuffer::Create(geoFramebufferSpec);
+			s_SceneRendererData.GeoPass = RenderPass::Create(geoRenderPassSpec);
+		}
+		
+
+		// EntityID RenderPass
+		{
+			// EntityID gramebuffer
+			FrameBufferSpecification entityIdFramebufferSpec;
+			entityIdFramebufferSpec.Width = Application::Get().GetWindow().GetWidth();
+			entityIdFramebufferSpec.Height = Application::Get().GetWindow().GetHeight();
+			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::RGBA8 };
+			entityIdFramebufferSpec.Samples = 1;
+			entityIdFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+			// EntityID renderpass specification
+			RenderPassSpecification entityIDRenderPassSpec;
+			entityIDRenderPassSpec.TargetFramebuffer = FrameBuffer::Create(entityIdFramebufferSpec);
+			s_SceneRendererData.EntityIDPass = RenderPass::Create(entityIDRenderPassSpec);
+		}
+
 		
 
 
@@ -70,6 +91,7 @@ namespace HE
 	void SceneRenderer::SetViewportSize(uint32_t width, uint32_t height)
 	{
 		s_SceneRendererData.GeoPass->GetSpecification().TargetFramebuffer->Resize(width, height);
+		s_SceneRendererData.EntityIDPass->GetSpecification().TargetFramebuffer->Resize(width, height);
 	}
 	void SceneRenderer::BeginScene(const Scene* scene, const SceneRendererCamera& camera)
 	{
@@ -95,53 +117,66 @@ namespace HE
 		//s_Data.ShadowPassDrawList.push_back({});
 	}
 
-	std::shared_ptr<RenderPass> SceneRenderer::GetFinalRenderPass()
+	void SceneRenderer::SubmitEntityIDMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform, std::shared_ptr<MaterialInstance> overrideMaterial)
+	{
+		s_SceneRendererData.EntityIDDrawList.push_back({ mesh, overrideMaterial, transform });
+	}
+
+	std::shared_ptr<RenderPass> SceneRenderer::GetGeometryRenderPass()
 	{
 		return s_SceneRendererData.GeoPass;
 	}
-	std::shared_ptr<Texture2D> SceneRenderer::GetFinalColorBuffer()
+
+	std::shared_ptr<RenderPass> SceneRenderer::GetEntityIDRenderPass()
 	{
-		HE_CORE_ASSERT(false, "Currently not supported!");
-		return nullptr;
+		return s_SceneRendererData.EntityIDPass;
 	}
+
 	SceneRendererOptions& SceneRenderer::GetOptions()
 	{
 		return s_SceneRendererData.Options;
 	}
+
 	void SceneRenderer::FlushDrawList()
 	{
 		HE_CORE_ASSERT(!s_SceneRendererData.ActiveScene, "Already have active scene in SceneRenderer::FlushDrawList,do you call EndScene after last BeginScene?");
 		memset(&s_Stats, 0, sizeof(SceneRendererStats));
 
+		// Maybe sort by distance from camera, frustum culling and so on here..
+
+		// Do the submiting to Renderer
+
+		// Geometry Pass
 		{
-			
-			Renderer::Submit([]
-				{
-					s_Stats.GeometryPass = s_Stats.GeometryPassTimer.ElapsedMillis();
-				});
-			
-		}
-		{
-			
 			Renderer::Submit([]()
 			{
 				s_Stats.GeometryPassTimer.Reset();
 			});
-			
 			GeometryPass();
-			
 			Renderer::Submit([]()
 			{
 				s_Stats.GeometryPass = s_Stats.GeometryPassTimer.ElapsedMillis();
 			});
-			
+		}
+
+		// EntityID Pass
+		{
+			Renderer::Submit([]()
+				{
+					s_Stats.EntityIDPassTimer.Reset();
+				});
+			EntityIDPass();
+			Renderer::Submit([]()
+				{
+					s_Stats.EntityIDPass = s_Stats.EntityIDPassTimer.ElapsedMillis();
+				});
 		}
 
 		s_SceneRendererData.DrawList.clear();
+		s_SceneRendererData.EntityIDDrawList.clear();
 		s_SceneRendererData.SceneData = {};
-
-
 	}
+
 	void SceneRenderer::GeometryPass()
 	{
 		
@@ -155,22 +190,40 @@ namespace HE
 		// Render entities
 		for (auto& dc : s_SceneRendererData.DrawList)
 		{
+			// Get base material from mesh
 			auto& baseMaterial = dc.Mesh->GetMaterial();
+
+			// Set values
 			baseMaterial->Set("u_ViewProjectionMatrix", viewProjection);
 			baseMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
 
-			auto overrideMaterial = nullptr; // dc.Material;
+			Renderer::SubmitMesh(dc.Mesh, dc.Transform, nullptr);
+		}
+		Renderer::EndRenderPass();
+	}
+
+	void SceneRenderer::EntityIDPass()
+	{
+		Renderer::BeginRenderPass(s_SceneRendererData.EntityIDPass);
+
+		auto& sceneCamera = s_SceneRendererData.SceneData.SceneCamera;
+
+		auto viewProjection = sceneCamera.Camera.GetProjection() * sceneCamera.ViewMatrix;
+		glm::vec3 cameraPosition = glm::inverse(s_SceneRendererData.SceneData.SceneCamera.ViewMatrix)[3]; // TODO: Negate instead
+
+		// Render entities
+		for (auto& dc : s_SceneRendererData.EntityIDDrawList)
+		{
+			// Get overriden material 
+			auto& overrideMaterial = dc.Material;
+
+			// Set values
+			overrideMaterial->Set("u_ViewProjectionMatrix", viewProjection);
+			overrideMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+
 			Renderer::SubmitMesh(dc.Mesh, dc.Transform, overrideMaterial);
 		}
 		Renderer::EndRenderPass();
 	}
-	void SceneRenderer::CompositePass()
-	{
-	}
-	void SceneRenderer::BloomBlurPass()
-	{
-	}
-	void SceneRenderer::ShadowMapPass()
-	{
-	}
+
 }

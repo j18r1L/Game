@@ -24,18 +24,27 @@ namespace HE
         std::string path_to_project = CMAKE_PATH;
 
         // Create environment entity
-        environmentEntity = m_Scene->CreateEntity("backpack");
-        MeshComponent* envMeshComponent = environmentEntity->AddComponent<MeshComponent>();
-        std::shared_ptr<Mesh> encMesh(new Mesh(path_to_project + "/assets/meshes/obj/backpack/backpack.obj"));
-        envMeshComponent->SetMesh(encMesh);
+        
+        auto mesh = new Mesh(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
+        for (int i = 0; i < 50; i++)
+        {
+            environmentEntity = m_Scene->CreateEntity();
+            auto transform = environmentEntity->GetComponent<TransformComponent>();
+            transform->SetPosition({ i, 0.0f, 0.0f });
+            MeshComponent* envMeshComponent = environmentEntity->AddComponent<MeshComponent>();
+            std::shared_ptr<Mesh> encMesh(mesh);
+            envMeshComponent->SetMesh(encMesh);
+        }
+        
+        
 
-
+        /*
         Entity* sponza = m_Scene->CreateEntity("Sponza");
         sponza->GetComponent<TransformComponent>()->SetScale({ 0.01f, 0.01f, 0.01f });
         MeshComponent* sponzaMeshComponent = sponza->AddComponent<MeshComponent>();
         std::shared_ptr<Mesh> sponzaMesh(new Mesh(path_to_project + "/assets/meshes/obj/sponza/sponza.obj"));
         sponzaMeshComponent->SetMesh(sponzaMesh);
-
+        */
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
@@ -111,6 +120,33 @@ namespace HE
         else
         {
             m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
+
+            {
+                auto EntityIDFramebuffer = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get();
+                EntityIDFramebuffer->Bind();
+
+                auto [mx_a, my_a] = ImGui::GetMousePos();
+                float mx = mx_a, my = my_a;
+                mx -= m_ViewportBounds[0].x;
+                my -= m_ViewportBounds[0].y;
+                auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
+                auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
+                my = viewportHeight - my;
+                if (mx >= 0.0f && my >= 0.0f && mx < viewportWidth && my < viewportHeight)
+                {
+                    HE_CORE_TRACE("mx, my: {0}, {1}", mx, my);
+
+                    int entityID;
+                    Renderer::Submit([EntityIDFramebuffer, &entityID, mx, my]() mutable
+                        {
+                            entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
+                        });
+                    HE_CORE_TRACE("EntityID: {0}", entityID);
+                    Entity* selectedEntity = m_Scene->GetEntity(entityID);
+                    m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
+                }
+                EntityIDFramebuffer->UnBind();
+            }
             /*
             // environment
             RenderCommand::SetDepthTest(false);
@@ -297,7 +333,6 @@ namespace HE
             }
             else
             {
-                
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
                 SceneRenderer::SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
                 m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
@@ -306,7 +341,7 @@ namespace HE
         }
 
 
-        uint32_t FrameBufferID = SceneRenderer::GetFinalRenderPass().get()->GetSpecification().TargetFramebuffer.get()->GetColorAttachmentRendererID();
+        uint32_t FrameBufferID = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get()->GetColorAttachmentRendererID();
         ImGui::Image((void*)FrameBufferID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 
         auto windowSize = ImGui::GetWindowSize();
@@ -347,9 +382,11 @@ namespace HE
     {
         if (event.GetMouseButton() == HE_MOUSE_BUTTON_1 && !m_Gizmo.IsUsing() && !m_Gizmo.IsOver() && m_SceneState != SceneState::Play)
         {
-            //m_IDFrameBuffer->Bind();
+            auto EntityIDFramebuffer = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get();
+            EntityIDFramebuffer->Bind();
 
-            auto [mx, my] = ImGui::GetMousePos();
+            auto [mx_a, my_a] = ImGui::GetMousePos();
+            float mx = mx_a, my = my_a;
             mx -= m_ViewportBounds[0].x;
             my -= m_ViewportBounds[0].y;
             auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
@@ -357,11 +394,18 @@ namespace HE
             my = viewportHeight - my;
             if (mx >= 0.0f && my >= 0.0f && mx < viewportWidth && my < viewportHeight)
             {
-                int entityID = RenderCommand::ReadPixel(mx, my);
+                HE_CORE_TRACE("mx, my: {0}, {1}", mx, my);
+
+                int entityID;
+                Renderer::Submit([EntityIDFramebuffer, &entityID, mx, my]() mutable
+                    {
+                        entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
+                    });
+                HE_CORE_TRACE("EntityID: {0}", entityID);
                 Entity* selectedEntity = m_Scene->GetEntity(entityID);
                 m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
             }
-            //m_IDFrameBuffer->UnBind();
+            EntityIDFramebuffer->UnBind();
         }
         return false;
     }

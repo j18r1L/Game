@@ -45,7 +45,7 @@ namespace HE
 		void Set(const std::string& name, const T& value)
 		{
 			auto decl = FindUniformDeclaration(name);
-			HE_CORE_ASSERT(decl, "Could not find uniform with name 'x'");
+			HE_CORE_ASSERT(decl, "Could not find uniform with name " + name);
 			auto& buffer = GetUniformBufferTarget(decl);
 			buffer.Write((byte*)&value, decl->GetSize(), decl->GetOffset());
 

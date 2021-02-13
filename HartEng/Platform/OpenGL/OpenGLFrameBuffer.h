@@ -24,10 +24,11 @@ namespace HE
 
         void Invalidate();
 
-        void Bind(FramebufferBindType type = FramebufferBindType::FRAMEBUFFER) override;
-        void UnBind() override;
+        void Bind(FramebufferBindType type = FramebufferBindType::FRAMEBUFFER) const override;
+        void UnBind() const override;
         void Resize(uint32_t width, uint32_t height) override;
         
+        int ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const override;
 
         const FrameBufferSpecification & GetSpecification() const override;
     };

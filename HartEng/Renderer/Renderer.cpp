@@ -29,7 +29,7 @@ namespace HE
         // Now we can load shaders that 100% will be used
         std::string PathToProject = CMAKE_PATH;
         Renderer::GetShaderLibrary()->Load(PathToProject + "/assets/shaders/Black.glsl");
-
+        Renderer::GetShaderLibrary()->Load(PathToProject + "/assets/shaders/EntityID.glsl");
         //Renderer3D::Init();
         //Renderer2D::Init();
     }
@@ -38,7 +38,6 @@ namespace HE
     {
         HE_CORE_ASSERT(renderPass, "RenderPass cannot be nullptr!");
 
-        // TODO: Convert all of this into a render command buffer
         s_RenderData.m_ActiveRenderPass = renderPass;
 
         renderPass->GetSpecification().TargetFramebuffer->Bind();
@@ -84,14 +83,14 @@ namespace HE
 
             Renderer::Submit([mesh, submesh, material]() {
                 if (material->GetFlag(MaterialFlag::DepthTest))
-                    glEnable(GL_DEPTH_TEST);
+                    RenderCommand::SetDepthTest(true);
                 else
-                    glDisable(GL_DEPTH_TEST);
+                    RenderCommand::SetDepthTest(false);
 
                 if (!material->GetFlag(MaterialFlag::TwoSided))
-                    Renderer::Submit([]() { glEnable(GL_CULL_FACE); });
+                    glEnable(GL_CULL_FACE);
                 else
-                    Renderer::Submit([]() { glDisable(GL_CULL_FACE); });
+                    glDisable(GL_CULL_FACE);
 
                 glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
                 });

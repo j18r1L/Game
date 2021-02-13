@@ -197,11 +197,11 @@ namespace HE
             {
                 cameraPosition -= m_Right * velocity;
             }
-            if (Input::IsKeyPressed(HE_KEY_Q)) // up
+            if (Input::IsKeyPressed(HE_KEY_SPACE)) // up
             {
                 cameraPosition += m_Up * velocity;
             }
-            if (Input::IsKeyPressed(HE_KEY_E)) // down
+            if (Input::IsKeyPressed(HE_KEY_C)) // down
             {
                 cameraPosition -= m_Up * velocity;
             }
