@@ -666,7 +666,7 @@ namespace HE
 			UploadUniformMat4(uniform->GetLocation(), *(glm::mat4*)&buffer.Data[offset]);
 			break;
 		case OpenGLShaderUniformDeclaration::Type::STRUCT:
-			UploadUniformStruct(uniform, buffer.Data, offset);
+			UploadUniformStruct(uniform, &buffer.Data[0], offset);
 			break;
 		default:
 			HE_CORE_ASSERT(false, "Unknown uniform type!");
@@ -705,7 +705,7 @@ namespace HE
 			UploadUniformMat4Array(uniform->GetLocation(), *(glm::mat4*)&buffer.Data[offset], uniform->GetCount());
 			break;
 		case OpenGLShaderUniformDeclaration::Type::STRUCT:
-			UploadUniformStruct(uniform, buffer.Data, offset);
+			UploadUniformStruct(uniform, &buffer.Data[0], offset);
 			break;
 		default:
 			HE_CORE_ASSERT(false, "Unknown uniform type!");

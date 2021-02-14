@@ -27,15 +27,15 @@ void main()
 #type fragment
 #version 410 core
 
-layout (location = 0) out vec4 o_IDBuffer;
+layout (location = 0) out int o_IDBuffer;
 
 flat in int v_EntityID;
 
 void main()
 {
-    float id = v_EntityID;
-    id = id / 255.0;
-    o_IDBuffer = vec4(id, id, id, 1.);
-    //o_IDBuffer= 200;
+    //float id = v_EntityID;
+    //id = id / 255.0;
+    //o_IDBuffer = vec4(id, id, id, 1.);
+    o_IDBuffer = v_EntityID;
     //o_IDBuffer = v_EntityID;
 }

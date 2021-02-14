@@ -120,7 +120,7 @@ namespace HE
         else
         {
             m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
-
+            /*
             {
                 auto EntityIDFramebuffer = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get();
                 EntityIDFramebuffer->Bind();
@@ -137,16 +137,18 @@ namespace HE
                     HE_CORE_TRACE("mx, my: {0}, {1}", mx, my);
 
                     int entityID;
-                    Renderer::Submit([EntityIDFramebuffer, &entityID, mx, my]() mutable
+                    Renderer::Submit([EntityIDFramebuffer, entityID, mx, my]() mutable
                         {
                             entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
+                            
                         });
-                    HE_CORE_TRACE("EntityID: {0}", entityID);
+                    
                     Entity* selectedEntity = m_Scene->GetEntity(entityID);
                     m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
                 }
                 EntityIDFramebuffer->UnBind();
             }
+            */
             /*
             // environment
             RenderCommand::SetDepthTest(false);
@@ -341,7 +343,7 @@ namespace HE
         }
 
 
-        uint32_t FrameBufferID = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get()->GetColorAttachmentRendererID();
+        uint32_t FrameBufferID = SceneRenderer::GetGeometryRenderPass().get()->GetSpecification().TargetFramebuffer.get()->GetColorAttachmentRendererID();
         ImGui::Image((void*)FrameBufferID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 
         auto windowSize = ImGui::GetWindowSize();
@@ -397,13 +399,13 @@ namespace HE
                 HE_CORE_TRACE("mx, my: {0}, {1}", mx, my);
 
                 int entityID;
-                Renderer::Submit([EntityIDFramebuffer, &entityID, mx, my]() mutable
+                Renderer::Submit([this, EntityIDFramebuffer, &entityID, mx, my]() mutable
                     {
                         entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
+                        Entity* selectedEntity = m_Scene->GetEntity(entityID);
+                        m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
                     });
-                HE_CORE_TRACE("EntityID: {0}", entityID);
-                Entity* selectedEntity = m_Scene->GetEntity(entityID);
-                m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
+                
             }
             EntityIDFramebuffer->UnBind();
         }

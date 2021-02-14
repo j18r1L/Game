@@ -239,8 +239,9 @@ namespace HE
             sceneCamera.SetPerspective(camera.GetFov(), camera.GetAspectRatio(), camera.GetNear(), camera.GetFar());
             SceneRenderer::BeginScene(this, { sceneCamera, camera.GetView() });
 
-            // Create Material Instance to store EntityID
-            auto materialInstance = MaterialInstance::Create(Material::Create(Renderer::GetShaderLibrary().get()->Get("EntityID")));
+           
+            auto& material = Material::Create(Renderer::GetShaderLibrary().get()->Get("EntityID"));
+            
 
             // For all entities
             for (auto& [name, entity] : m_Entities)
@@ -260,7 +261,12 @@ namespace HE
                         SceneRenderer::SubmitMesh(meshComponent->GetMesh(), transformComponent->GetTransform());
 
                         // Submit mesh to entityID pass
-                        materialInstance.get()->Set("u_EntityID", entity->GetID());
+                        uint32_t entityID = entity->GetID();
+
+                        // Create Material Instance to store EntityID
+                        auto& materialInstance = MaterialInstance::Create(material);
+                        materialInstance.get()->Set("u_EntityID", entityID);
+
                         SceneRenderer::SubmitEntityIDMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), materialInstance);
                     }
                 }

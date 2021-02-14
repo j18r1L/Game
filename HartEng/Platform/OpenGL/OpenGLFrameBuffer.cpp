@@ -253,11 +253,9 @@ namespace HE
         HE_CORE_ASSERT(attachmentIndex < m_Attachments.size(), "There is no attachment with index: " + std::to_string(attachmentIndex));
         //glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
         glReadBuffer(GL_COLOR_ATTACHMENT0);
-        float pixelData = -1.0f;
-        glReadPixels(x, y, 1, 1, GL_RED, GL_FLOAT, &pixelData);
-        int status = glGetError();
-        if (status)
-            HE_CORE_ERROR("OpenGL Error: {0}", status);
+        int pixelData = -1.0f;
+        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+        HE_CORE_TRACE("pixelData: {0}", pixelData);
         return pixelData;
     }
 

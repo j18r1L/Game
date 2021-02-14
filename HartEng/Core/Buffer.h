@@ -1,47 +1,87 @@
 #pragma once
 
+#include <stdint.h>
+#include <vector>
+
 namespace HE 
 {
-	struct Buffer
+	class Buffer
 	{
-		uint8_t* Data;
+	public:
+		std::vector<uint8_t> Data;
 		uint32_t Size;
 
-		Buffer()
-			: Data(nullptr), Size(0)
+		Buffer();
+		Buffer(uint8_t* data, uint32_t size);
+		virtual ~Buffer();
+		void Allocate(uint32_t size);
+		void ZeroInitialize();
+		void Write(void* data, uint32_t size, uint32_t offset = 0);
+		inline uint32_t GetSize() const { return Size; }
+
+
+		template<typename T>
+		T& Read(uint32_t offset = 0)
 		{
+			return *(T*)(&Data[0] + offset);
 		}
 
-		Buffer(uint8_t* data, uint32_t size)
-			: Data(data), Size(size)
+		template<typename T>
+		T* As()
 		{
+			return (T*)&Data[0];
 		}
 
-		static Buffer Copy(void* data, uint32_t size)
+		operator bool() const
 		{
-			Buffer buffer;
-			buffer.Allocate(size);
-			memcpy(buffer.Data, data, size);
-			return buffer;
+			return Size;
 		}
 
-		void Allocate(uint32_t size)
+		uint8_t& operator[](int index)
 		{
-			delete[] Data;
-			Data = nullptr;
-
-			if (size == 0)
-				return;
-
-			Data = new uint8_t[size];
-			Size = size;
+			return Data[index];
+		}
+		/*
+		operator void*()
+		{
+			return &Data[0];
 		}
 
-		void ZeroInitialize()
+		operator const void* () const
 		{
-			if (Data)
-				memset(Data, 0, Size);
+			return &Data[0];
 		}
+		*/
+
+		uint8_t operator[](int index) const
+		{
+			return Data[index];
+		}
+
+
+	};
+	/*
+	class Buffer
+	{
+	public:
+		uint8_t* Data = nullptr;
+		uint32_t Size;
+
+		Buffer();
+
+		Buffer(uint8_t* data, uint32_t size);
+
+		~Buffer();
+
+		//static Buffer Copy(void* data, uint32_t size);
+
+		void Allocate(uint32_t size);
+
+		void ZeroInitialize();
+
+		void Write(void* data, uint32_t size, uint32_t offset = 0);
+
+		inline uint32_t GetSize() const { return Size; }
 
 		template<typename T>
 		T& Read(uint32_t offset = 0)
@@ -49,10 +89,10 @@ namespace HE
 			return *(T*)(Data + offset);
 		}
 
-		void Write(void* data, uint32_t size, uint32_t offset = 0)
+		template<typename T>
+		T* As()
 		{
-			HE_CORE_ASSERT(offset + size <= Size, "Buffer overflow!");
-			memcpy(Data + offset, data, size);
+			return (T*)Data;
 		}
 
 		operator bool() const
@@ -69,13 +109,7 @@ namespace HE
 		{
 			return Data[index];
 		}
-
-		template<typename T>
-		T* As()
-		{
-			return (T*)Data;
-		}
-
-		inline uint32_t GetSize() const { return Size; }
+		
 	};
+	*/
 }

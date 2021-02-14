@@ -73,7 +73,7 @@ namespace HE
 			FrameBufferSpecification entityIdFramebufferSpec;
 			entityIdFramebufferSpec.Width = Application::Get().GetWindow().GetWidth();
 			entityIdFramebufferSpec.Height = Application::Get().GetWindow().GetHeight();
-			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::RGBA8 };
+			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::R32I };
 			entityIdFramebufferSpec.Samples = 1;
 			entityIdFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
@@ -172,6 +172,16 @@ namespace HE
 				});
 		}
 
+		for (auto& drawlist : s_SceneRendererData.DrawList)
+		{
+			drawlist.Mesh.reset();
+			drawlist.Material.reset();
+		}
+		for (auto& drawlist : s_SceneRendererData.EntityIDDrawList)
+		{
+			drawlist.Mesh.reset();
+			drawlist.Material.reset();
+		}
 		s_SceneRendererData.DrawList.clear();
 		s_SceneRendererData.EntityIDDrawList.clear();
 		s_SceneRendererData.SceneData = {};

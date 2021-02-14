@@ -5,7 +5,7 @@ namespace HE
 	
 	std::shared_ptr<Material> Material::Create(const std::shared_ptr<Shader>& shader)
 	{
-		return std::shared_ptr<Material>(new Material(shader));
+		return std::make_shared<Material>(shader);
 	}
 
 	Material::Material(const std::shared_ptr<Shader>& shader): 
@@ -124,14 +124,14 @@ namespace HE
 
 	std::shared_ptr<MaterialInstance> MaterialInstance::Create(const std::shared_ptr<Material>& material)
 	{
-		return std::shared_ptr<MaterialInstance>(new MaterialInstance(material));
+		return std::make_shared<MaterialInstance>(material);
 	}
 
 	MaterialInstance::MaterialInstance(const std::shared_ptr<Material>& material, const std::string& name):
 		m_Material(material), m_Name(name)
 	{
 		m_Material->m_MaterialInstances.insert(this);
-		AllocateStorage();
+		AllocateStorage(); 
 	}
 
 	MaterialInstance::~MaterialInstance()
@@ -151,14 +151,14 @@ namespace HE
 		{
 			const auto& vsBuffer = m_Material->m_Shader->GetVSMaterialUniformBuffer();
 			m_VSUniformStorageBuffer.Allocate(vsBuffer.GetSize());
-			memcpy(m_VSUniformStorageBuffer.Data, m_Material->m_VSUniformStorageBuffer.Data, vsBuffer.GetSize());
+			memcpy(&m_VSUniformStorageBuffer.Data[0], &m_Material->m_VSUniformStorageBuffer.Data[0], vsBuffer.GetSize());
 		}
 
 		if (m_Material->m_Shader->HasFSMaterialUniformBuffer())
 		{
 			const auto& psBuffer = m_Material->m_Shader->GetFSMaterialUniformBuffer();
 			m_FSUniformStorageBuffer.Allocate(psBuffer.GetSize());
-			memcpy(m_FSUniformStorageBuffer.Data, m_Material->m_FSUniformStorageBuffer.Data, psBuffer.GetSize());
+			memcpy(&m_FSUniformStorageBuffer.Data[0], &m_Material->m_FSUniformStorageBuffer.Data[0], psBuffer.GetSize());
 		}
 	}
 
@@ -180,7 +180,7 @@ namespace HE
 		{
 			auto& buffer = GetUniformBufferTarget(decl);
 			auto& materialBuffer = m_Material->GetUniformBufferTarget(decl);
-			buffer.Write(materialBuffer.Data + decl->GetOffset(), decl->GetSize(), decl->GetOffset());
+			buffer.Write(&materialBuffer.Data[0] + decl->GetOffset(), decl->GetSize(), decl->GetOffset());
 		}
 	}
 

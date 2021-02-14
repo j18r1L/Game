@@ -17,9 +17,14 @@ namespace HE
         stbi_set_flip_vertically_on_load(false);
         {
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-            m_ImageData.Data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
+            stbi_uc* data;
+            data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
+            m_ImageData.Allocate(width * height * channels);
+            m_ImageData.Write(data, width * height * channels);
+            stbi_image_free(data);
+            //m_ImageData.Data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
         }
-        if (m_ImageData.Data == nullptr)
+        if (&m_ImageData.Data[0] == nullptr)
         {
             HE_CORE_ERROR("Failed to load image from: " + filepath);
             return;
@@ -66,12 +71,13 @@ namespace HE
                     // OpenGL 4.1
                     glGenTextures(1, &m_RendererID);
                     glBindTexture(GL_TEXTURE_2D, m_RendererID);
-                    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, m_ImageData.Data);
+                    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, &m_ImageData.Data[0]);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                    stbi_image_free(m_ImageData.Data);
+                    m_ImageData.Data.clear();
+                    //stbi_image_free(&m_ImageData.Data[0]);
                 });
             
         }
@@ -184,9 +190,14 @@ namespace HE
         {
             {
                 HE_PROFILE_SCOPE("stbi_load - OpenGLTextureCube::OpenGLTextureCube(const std::string&)");
-                m_ImageData[i].Data = stbi_load((path + faces[i]).c_str(), &width, &height, &channels, 0);
+                stbi_uc* data;
+                data = stbi_load((path + faces[i]).c_str(), &width, &height, &channels, 0);
+                m_ImageData[i].Allocate(width * height * channels);
+                m_ImageData[i].Write(data, width * height * channels);
+                stbi_image_free(data);
+                
             }
-            if (m_ImageData[i].Data == nullptr)
+            if (&m_ImageData[i].Data[0] == nullptr)
             {
                 HE_CORE_ERROR("Failed to load image from: " + path);
                 return;
@@ -222,8 +233,9 @@ namespace HE
                 {
 
 
-                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_InternalFormat[i], m_Width[i], m_Height[i], 0, m_DataFormat[i], GL_UNSIGNED_BYTE, m_ImageData[i].Data);
-                    stbi_image_free(m_ImageData[i].Data);
+                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_InternalFormat[i], m_Width[i], m_Height[i], 0, m_DataFormat[i], GL_UNSIGNED_BYTE, &m_ImageData[i].Data[0]);
+                    m_ImageData[i].Data.clear();
+                    //stbi_image_free(&m_ImageData[i].Data[0]);
                 }
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

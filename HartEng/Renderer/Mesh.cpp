@@ -71,7 +71,8 @@ namespace HE
 		m_Scene = scene;
 
 		m_MeshShader = Renderer::GetShaderLibrary()->Get("Black");
-		m_BaseMaterial = std::shared_ptr<Material>(new Material(m_MeshShader));
+		m_BaseMaterial = std::make_shared<Material>(m_MeshShader);
+		//m_BaseMaterial = std::shared_ptr<Material>(new Material(m_MeshShader));
 		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));
 
 		uint32_t vertexCount = 0;
@@ -145,7 +146,8 @@ namespace HE
 				auto aiMaterial = scene->mMaterials[i];
 				auto aiMaterialName = aiMaterial->GetName();
 
-				auto mi = std::shared_ptr<MaterialInstance>(new MaterialInstance(m_BaseMaterial, aiMaterialName.data));
+				auto mi = std::make_shared<MaterialInstance>(m_BaseMaterial, aiMaterialName.data);
+				//auto mi = std::shared_ptr<MaterialInstance>(new MaterialInstance(m_BaseMaterial, aiMaterialName.data));
 
 				// TODO redo two sided
 				mi->SetFlag(MaterialFlag::TwoSided, false);
