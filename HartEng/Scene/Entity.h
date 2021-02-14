@@ -70,6 +70,8 @@ namespace HE
         }
         void RemoveComponent(const std::type_index type);
 
+        Scene* GetScene() const { return m_SceneHandle; }
+
         // Overloads
         bool operator==(const Entity& other) const
         {

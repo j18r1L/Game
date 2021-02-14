@@ -7,6 +7,7 @@
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/Circle2DColliderComponent.h"
 
 #include "HartEng/Renderer/Renderer.h"
 #include "HartEng/Renderer/SceneRenderer.h"
@@ -173,6 +174,7 @@ namespace HE
     void Scene::OnUpdate(Timestep& ts)
     {
         HE_PROFILE_FUNCTION();
+        // Update scripts
         {
             HE_PROFILE_SCOPE("OnUpdate: update script");
             for (auto& [name, entity]: m_Entities)
@@ -181,6 +183,38 @@ namespace HE
                 {
                     ScriptComponent* scriptComponent = entity->GetComponent<ScriptComponent>();
                     scriptComponent->OnUpdate(ts);
+                }
+            }
+        }
+
+        // Update collisions
+        {
+            std::vector<Entity*> colliderEntities;
+            for (auto& [name, entity] : m_Entities)
+            {
+                if (entity->HasComponent<Circle2DColliderComponent>())
+                {
+                    colliderEntities.push_back(entity);
+                }
+            }
+
+            for (int i = 0; i < colliderEntities.size(); i++)
+            {
+                for (int j = i + 1; j < colliderEntities.size(); j++)
+                {
+                    auto circleCollider_1 = colliderEntities[i]->GetComponent<Circle2DColliderComponent>();
+                    auto circleCollider_2 = colliderEntities[j]->GetComponent<Circle2DColliderComponent>();
+                    if (circleCollider_1->Collision(*circleCollider_2))
+                    {
+                        if (colliderEntities[i]->HasComponent<ScriptComponent>())
+                        {
+                            colliderEntities[i]->GetComponent<ScriptComponent>()->OnCollision(colliderEntities[j]);
+                        }
+                        if (colliderEntities[j]->HasComponent<ScriptComponent>())
+                        {
+                            colliderEntities[j]->GetComponent<ScriptComponent>()->OnCollision(colliderEntities[i]);
+                        }
+                    }
                 }
             }
         }

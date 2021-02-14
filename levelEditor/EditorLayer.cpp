@@ -1,7 +1,8 @@
 #include "EditorLayer.h"
 
-#include "assets/scripts/RotateScript.h"
+
 #include "HartEng/Core/Utils.h"
+
 
 namespace HE
 {
@@ -11,7 +12,7 @@ namespace HE
         m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
     {
         m_Gizmo.SetCamera(&m_CameraController);
-        m_Scene = std::make_shared<Scene>(Scene("first_scene"));
+        m_Scene = std::make_shared<Scene>(Scene("game_scene"));
         m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
 
         RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
@@ -23,36 +24,34 @@ namespace HE
 
         std::string path_to_project = CMAKE_PATH;
 
-        // Create environment entity
-        
-        auto mesh = new Mesh(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
-        for (int i = 0; i < 50; i++)
+        SceneSerializer serializer(m_Scene, Renderer::GetShaderLibrary());
+        serializer.Deserialize(path_to_project + "/assets/scenes/game.he");
+
         {
-            environmentEntity = m_Scene->CreateEntity();
-            auto transform = environmentEntity->GetComponent<TransformComponent>();
-            transform->SetPosition({ i, 0.0f, 0.0f });
-            MeshComponent* envMeshComponent = environmentEntity->AddComponent<MeshComponent>();
-            std::shared_ptr<Mesh> encMesh(mesh);
-            envMeshComponent->SetMesh(encMesh);
+            Entity* entity = m_Scene->GetEntity("Ship");
+            auto script = new PlayerControllerScript(entity);
+            entity->AddComponent<ScriptComponent>(script);
+            
+            
         }
-        
-        
 
+        {
+            Entity* entity = m_Scene->GetEntity("Obstacle_1");
+            auto script = new ObstacleScript(entity);
+            entity->AddComponent<ScriptComponent>(script);
+            //auto collider = entity->AddComponent<Circle2DColliderComponent>();
+            //collider->SetRadius(1.0f);
+            //collider->SetOrigin({ entity->GetComponent<TransformComponent>()->GetPosition().x, entity->GetComponent<TransformComponent>()->GetPosition().y });
+        }
         /*
-        Entity* sponza = m_Scene->CreateEntity("Sponza");
-        sponza->GetComponent<TransformComponent>()->SetScale({ 0.01f, 0.01f, 0.01f });
-        MeshComponent* sponzaMeshComponent = sponza->AddComponent<MeshComponent>();
-        std::shared_ptr<Mesh> sponzaMesh(new Mesh(path_to_project + "/assets/meshes/obj/sponza/sponza.obj"));
-        sponzaMeshComponent->SetMesh(sponzaMesh);
+        Entity* obstacle = m_Scene->CreateEntity("Obstacle_1");
+        obstacle->AddComponent<MeshComponent>()->SetMesh(std::make_shared<Mesh>(path_to_project + "/assets/meshes/obj/quad.obj"));
+        ObstacleScript* obstacleScript = new ObstacleScript(obstacle);
+        obstacle->AddComponent<ScriptComponent>(obstacleScript);
         */
-
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(Renderer::GetShaderLibrary());
-        
-        //SceneSerializer serializer(m_Scene, m_ShaderLibrary);
-        //serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");
-
     }
 
     void EditorLayer::OnScenePlay()
@@ -83,28 +82,10 @@ namespace HE
 
         {
             HE_PROFILE_SCOPE("Render prep");
-
-            // Renderer
-            //RenderCommand::Clear();
-            //RenderCommand::SetDepthTest(true);
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
             Draw(ts);
-            
-            // Blit msaa frambuffer to normal framebuffer
-            //m_FrameBuffer_msaa->Bind(FramebufferBindType::READ_FRAMEBUFFER);
-            //m_FrameBuffer->Bind(FramebufferBindType::DRAW_FRAMEBUFFER);
-            //auto& spec_msaa = m_FrameBuffer_msaa->GetSpecification();
-            //auto& spec = m_FrameBuffer->GetSpecification();
-            //RenderCommand::Blit(0, 0, spec_msaa.Width, spec_msaa.Height, 0, 0, spec.Width, spec.Height);
-            /*
-            // Render to ID buffer
-            m_IDFrameBuffer->Bind();
-            RenderCommand::Clear();
-            m_Scene->OnRenderShader(m_ShaderLibrary->Get("EntityID"), m_CameraController.GetCamera());
-            m_IDFrameBuffer->UnBind();
-            */
         }
 
     }
@@ -120,52 +101,6 @@ namespace HE
         else
         {
             m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
-
-            {
-                auto EntityIDFramebuffer = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get();
-                EntityIDFramebuffer->Bind();
-
-                auto [mx_a, my_a] = ImGui::GetMousePos();
-                float mx = mx_a, my = my_a;
-                mx -= m_ViewportBounds[0].x;
-                my -= m_ViewportBounds[0].y;
-                auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
-                auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
-                my = viewportHeight - my;
-                if (mx >= 0.0f && my >= 0.0f && mx < viewportWidth && my < viewportHeight)
-                {
-                    HE_CORE_TRACE("mx, my: {0}, {1}", mx, my);
-
-                    int entityID;
-                    Renderer::Submit([EntityIDFramebuffer, &entityID, mx, my]() mutable
-                        {
-                            entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
-                        });
-                    HE_CORE_TRACE("EntityID: {0}", entityID);
-                    Entity* selectedEntity = m_Scene->GetEntity(entityID);
-                    m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
-                }
-                EntityIDFramebuffer->UnBind();
-            }
-            /*
-            // environment
-            RenderCommand::SetDepthTest(false);
-            if (environmentEntity->HasComponent<MeshComponent>())
-            {
-                MeshComponent* meshComponent = environmentEntity->GetComponent<MeshComponent>();
-                auto environmentShader = m_ShaderLibrary->Get("Environment");
-                auto& subMeshes = meshComponent->GetSubMeshes();
-                for (auto& subMesh : subMeshes)
-                {
-                    environmentShader->Bind();
-                    environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
-                    auto& attribute = subMesh->GetAttribute();
-                    Renderer::Submit(environmentShader, attribute);
-                }
-            }
-            RenderCommand::SetDepthTest(true);
-            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
-            */
         }
     }
 
@@ -236,16 +171,16 @@ namespace HE
             {
                 if (ImGui::MenuItem("Play"))
                 {
-                    m_SceneState == SceneState::Play;
+                    m_SceneState = SceneState::Play;
                     m_Scene->OnRuntimeStart();
                 }
                 if (ImGui::MenuItem("Pause"))
                 {
-                    m_SceneState == SceneState::Pause;
+                    m_SceneState = SceneState::Pause;
                 }  
                 if (ImGui::MenuItem("Stop"))
                 {
-                    m_SceneState == SceneState::Edit;
+                    m_SceneState = SceneState::Edit;
                     m_Scene->OnRuntimeStop();
                 }
 
@@ -341,7 +276,7 @@ namespace HE
         }
 
 
-        uint32_t FrameBufferID = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get()->GetColorAttachmentRendererID();
+        uint32_t FrameBufferID = SceneRenderer::GetGeometryRenderPass().get()->GetSpecification().TargetFramebuffer.get()->GetColorAttachmentRendererID();
         ImGui::Image((void*)FrameBufferID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 
         auto windowSize = ImGui::GetWindowSize();
@@ -355,7 +290,7 @@ namespace HE
 
         // Draw Gizmo
         Entity* selectedEntity = m_SceneHierarchyPanel->GetSelectedEntity();
-        if (selectedEntity)
+        if (selectedEntity && m_SceneState != SceneState::Play)
         {
             m_Gizmo.Draw(selectedEntity);
         }

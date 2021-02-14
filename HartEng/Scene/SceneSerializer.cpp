@@ -323,7 +323,7 @@ namespace HE
         auto cameraProps = deserializedComponent["Camera"];
         auto& camera = cameraComponent->GetCamera();
 
-        //camera.SetProjectionType((ProjectionType)cameraProps["ProjectionType"].as<int>());
+        camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
         camera.SetPerspectiveFov(cameraProps["PerspectiveFOV"].as<float>());
         camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
         camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());

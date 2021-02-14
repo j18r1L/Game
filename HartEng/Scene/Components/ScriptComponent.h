@@ -15,5 +15,6 @@ namespace HE
 		virtual void OnCreate() {};
 		virtual void OnUpdate(Timestep& timestep) {};
 		virtual void OnDestroy() {};
+		virtual void OnCollision(Entity* entity) {};
 	};
 }

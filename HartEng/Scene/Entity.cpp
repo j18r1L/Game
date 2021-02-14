@@ -7,6 +7,8 @@
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/Circle2DColliderComponent.h"
+#include "HartEng/Scene/Components/TagComponent.h"
 
 namespace HE
 {
@@ -56,20 +58,33 @@ namespace HE
             Component* component = nullptr;
             if (type == std::type_index(typeid(TransformComponent)))
                 component = new TransformComponent(this);
+
             //else if (type == std::type_index(typeid(MaterialComponent)))
             //    component = new MaterialComponent(this);
+
             else if (type == std::type_index(typeid(MeshComponent)))
                 component = new MeshComponent(this);
+
             //else if (type == std::type_index(typeid(SubMeshComponent)))
             //    component = new SubMeshComponent(this);
+
             else if (type == std::type_index(typeid(Texture2DComponent)))
                 component = new Texture2DComponent(this);
+
             else if (type == std::type_index(typeid(CameraComponent)))
                 component = new CameraComponent(this);
+
             else if (type == std::type_index(typeid(LightComponent)))
                 component = new LightComponent(this);
+
             else if (type == std::type_index(typeid(ScriptComponent)))
                 component = new ScriptComponent(this);
+
+            else if (type == std::type_index(typeid(Circle2DColliderComponent)))
+                component = new Circle2DColliderComponent(this);
+
+            else if (type == std::type_index(typeid(TagComponent)))
+                component = new TagComponent(this);
 
             m_Components.insert(std::make_pair(type, component));
             return component;

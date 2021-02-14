@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.15.1)
 
 project(game_engine LANGUAGES CXX)
 
@@ -141,7 +141,7 @@ file(GLOB game_engine_files
 
 file(GLOB level_editor_files
     "levelEditor/*.h" 
-    "levelEditor/*.cpp"
+    "levelEditor/*.cpp" 
 
     "levelEditor/Panels/*.h"
     "levelEditor/Panels/*.cpp"
@@ -179,6 +179,8 @@ TARGET_LINK_LIBRARIES(${LEVEL_EDITOR_EXE} game_engine)
 
 add_executable(${SANDBOX_EXE} ${sandbox_files})
 TARGET_LINK_LIBRARIES(${SANDBOX_EXE} game_engine)
+
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/assets/scripts/*")
 
 #target_precompile_headers(game_engine PUBLIC "HartEng/pch.h")
 

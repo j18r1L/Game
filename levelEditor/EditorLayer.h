@@ -4,6 +4,9 @@
 #include "Panels/SceneHierarchyPanel.h"
 #include "Gizmo/Gizmo.h"
 
+#include "assets/scripts/ObstacleScript.h"
+#include "assets/scripts/PlayerControllerScript.h"
+
 namespace HE
 {
     class EditorLayer: public Layer
@@ -47,3 +50,10 @@ namespace HE
         void OnEvent(Event &e) override;
     };
 }
+
+
+
+
+
+
+

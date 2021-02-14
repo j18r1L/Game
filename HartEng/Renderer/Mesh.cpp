@@ -148,7 +148,7 @@ namespace HE
 				auto mi = std::shared_ptr<MaterialInstance>(new MaterialInstance(m_BaseMaterial, aiMaterialName.data));
 
 				// TODO redo two sided
-				mi->SetFlag(MaterialFlag::TwoSided, false);
+				mi->SetFlag(MaterialFlag::TwoSided, true);
 
 				m_Materials[i] = mi;
 

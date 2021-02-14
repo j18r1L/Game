@@ -7,6 +7,7 @@
 #include "HartEng/Core/Log.h"
 #include "HartEng/Core/Layer.h"
 #include "HartEng/Core/Input.h"
+#include "HartEng/Core/Timer.h"
 
 // Scene
 #include "HartEng/Scene/Scene.h"
@@ -16,6 +17,8 @@
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/Circle2DColliderComponent.h"
+#include "HartEng/Scene/Components/TagComponent.h"
 #include "HartEng/Scene/SceneSerializer.h"
 
 
