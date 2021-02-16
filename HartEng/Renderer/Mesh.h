@@ -5,6 +5,7 @@
 #include "HartEng/Renderer/Texture.h"
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Core/Timestep.h"
+#include "HartEng/Core/AABB.h"
 
 #include <GLM/glm.hpp>
 #include <assimp/Importer.hpp>
@@ -62,6 +63,8 @@ namespace HE
 		glm::mat4 Transform;
 		glm::mat4 LocalTransform;
 
+		AABB aabb;
+
 		std::string NodeName, MeshName;
 	};
 
@@ -76,6 +79,8 @@ namespace HE
 
 		std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
 		const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
+
+		const AABB& GetAABB() const { return m_AABB; }
 
 		const std::vector<Vertex>& GetStaticVertices() const { return m_StaticVertices; }
 		const std::vector<Index>& GetIndices() const { return m_Indices; }
@@ -97,6 +102,7 @@ namespace HE
 
 		glm::mat4 m_InverseTransform;
 
+		AABB m_AABB;
 
 		std::shared_ptr<VertexArray> m_VertexArray;
 		std::shared_ptr<VertexBuffer> m_VertexBuffer;

@@ -79,6 +79,9 @@ namespace HE
 		uint32_t indexCount = 0;
 
 		m_Submeshes.reserve(scene->mNumMeshes);
+
+		m_AABB.SetMin({ FLT_MAX, FLT_MAX, FLT_MAX });
+		m_AABB.SetMax({ -FLT_MAX, -FLT_MAX, -FLT_MAX });
 		for (size_t m = 0; m < scene->mNumMeshes; m++)
 		{
 			aiMesh* mesh = scene->mMeshes[m];
@@ -99,12 +102,19 @@ namespace HE
 
 			
 
-
+			auto& boundingBox = submesh.aabb;
+			boundingBox.SetMin({ FLT_MAX, FLT_MAX, FLT_MAX });
+			boundingBox.SetMax({ -FLT_MAX, -FLT_MAX, -FLT_MAX });
 			for (size_t i = 0; i < mesh->mNumVertices; i++)
 			{
 				Vertex vertex;
 				vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 				vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+
+				// Set submesh AABB
+				boundingBox.SetMin(glm::min(vertex.Position, boundingBox.GetMin()));
+				boundingBox.SetMax(glm::max(vertex.Position, boundingBox.GetMax()));
+				
 
 				if (mesh->HasTangentsAndBitangents())
 				{
@@ -117,6 +127,10 @@ namespace HE
 
 				m_StaticVertices.push_back(vertex);
 			}
+
+			// Set Mesh AABB
+			m_AABB.SetMin(glm::min(boundingBox.GetMin(), m_AABB.GetMin()));
+			m_AABB.SetMax(glm::max(boundingBox.GetMax(), m_AABB.GetMax()));
 
 			// Indices
 			for (size_t i = 0; i < mesh->mNumFaces; i++)
