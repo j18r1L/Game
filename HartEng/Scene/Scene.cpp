@@ -2,14 +2,16 @@
 
 
 #include "HartEng/Scene/Components/TransformComponent.h"
-#include "HartEng/Scene/Components/MeshComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
-#include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
 
-#include "HartEng/Renderer/Renderer.h"
 #include "HartEng/Renderer/SceneRenderer.h"
+#include "HartEng/Renderer/Renderer.h"
+
+#include "HartEng/Physics/Physics.h"
 
 #include "HartEng/Core/Log.h"
 #include <iostream>
@@ -183,6 +185,10 @@ namespace HE
                     scriptComponent->OnUpdate(ts);
                 }
             }
+        }
+        {
+            HE_PROFILE_SCOPE("OnUpdate: update physics");
+            Physics::Simulate(ts);
         }
     }
 

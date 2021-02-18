@@ -14,6 +14,11 @@ namespace HE
 		virtual ~ScriptComponent() = default;
 		virtual void OnCreate() {};
 		virtual void OnUpdate(Timestep& timestep) {};
+		virtual void OnPhysicsUpdate(float fixedTimestep) {};
 		virtual void OnDestroy() {};
+		virtual void OnCollisionBegin(const Entity& entity) {};
+		virtual void OnCollisionEnd(const Entity& entity) {};
+		virtual void OnTriggerBegin(const Entity& entity) {};
+		virtual void OnTriggerEnd(const Entity& entity) {};
 	};
 }

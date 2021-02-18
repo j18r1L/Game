@@ -92,6 +92,12 @@ include_directories(${imGUI_DIR})
 set(STB_DIR "${LIB_DIR}/stb")
 include_directories("${STB_DIR}")
 
+# PhysX
+add_definitions(-DPX_PHYSX_STATIC_LIB)
+set(PHYSX_DIR "${LIB_DIR}/PhysX")
+include_directories("${PHYSX_DIR}/include")
+link_directories("${PHYSX_DIR}/lib/Debug")
+
 
 
 file(GLOB game_engine_files
@@ -116,6 +122,12 @@ file(GLOB game_engine_files
 
     "HartEng/Platform/OpenGL/*.h"
     "HartEng/Platform/OpenGL/*.cpp"
+
+    "HartEng/Physics/*.h"
+    "HartEng/Physics/*.cpp"
+
+    "HartEng/Asset/*.h"
+    "HartEng/Asset/*.cpp"
 
     "HartEng/Debug/*.h"
     "HartEng/Debug/*.cpp"
@@ -196,7 +208,7 @@ target_link_libraries(${PROJECT_NAME} "assimp" "${ASSIMP_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${ASSIMP_DIR}/include")
 
 # yaml
-target_link_libraries(${PROJECT_NAME} "yaml-cpp" "${YAML_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "yaml-cpp")
 target_include_directories(${PROJECT_NAME} PRIVATE "${YAML_DIR}/include")
 
 # GLM
@@ -207,6 +219,20 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${GLM_DIR}")
 target_link_libraries(${PROJECT_NAME} "spdlog" "${SPDLOG_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${SPDLOG_DIR}/include")
 
+# PhysX
+#target_link_libraries(${PROJECT_NAME} "PhysX" "${PHYSX_LIBRARIES}")
+#target_link_libraries(${PROJECT_NAME} "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysXExtensions_static_64" "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysX_static_64" "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysXPvdSDK_static_64" "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysXCharacterKinematic_static_64" "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysXCooking_static_64" "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysXCommon_static_64" "${PHYSX_LIBRARIES}")
+target_link_libraries(${PROJECT_NAME} "PhysXFoundation_static_64" "${PHYSX_LIBRARIES}")
+
+
+target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_DIR}/lib/Debug")
+#target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_DIR}/lib/Release")
 
 
 

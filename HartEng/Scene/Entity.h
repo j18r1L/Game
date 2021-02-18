@@ -33,6 +33,7 @@ namespace HE
 
         const std::unordered_map<std::type_index, Component*>& GetComponents();
         const std::string& GetName() const;
+        Scene* GetScene() const;
         uint32_t GetID() const;
 
         // Templated functions
