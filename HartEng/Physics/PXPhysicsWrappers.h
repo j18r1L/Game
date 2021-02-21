@@ -2,7 +2,7 @@
 
 #include "HartEng/Physics/PhysicsUtils.h"
 
-#include <PhysX/PxPhysicsAPI.h>
+#include <PxPhysicsAPI.h>
 
 #define OVERLAP_MAX_COLLIDERS 10
 
@@ -22,7 +22,7 @@ namespace HE
 	};
 
 	class ContactListener : public physx::PxSimulationEventCallback
-	{
+	{	
 	public:
 		virtual void onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count) override;
 		virtual void onWake(physx::PxActor** actors, physx::PxU32 count) override;

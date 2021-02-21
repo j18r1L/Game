@@ -25,26 +25,32 @@ namespace HE
 
         // Create environment entity
         
-        auto mesh = new Mesh(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
-        for (int i = 0; i < 50; i++)
+        std::shared_ptr<Mesh> backpackMesh = std::make_shared<Mesh>(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
+        std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>(path_to_project + "/assets/meshes/fbx/Cube.fbx");
+        for (int i = 0; i < 10; i++)
         {
-            environmentEntity = m_Scene->CreateEntity();
-            auto transform = environmentEntity->GetComponent<TransformComponent>();
-            transform->SetPosition({ i, 0.0f, 0.0f });
-            MeshComponent* envMeshComponent = environmentEntity->AddComponent<MeshComponent>();
-            std::shared_ptr<Mesh> encMesh(mesh);
-            envMeshComponent->SetMesh(encMesh);
+            Entity* entity = m_Scene->CreateEntity();
+            auto transform = entity->GetComponent<TransformComponent>();
+            transform->SetPosition({ i * 10 + i, 0.0f, 0.0f });
+            MeshComponent* meshComponent = entity->AddComponent<MeshComponent>();
+            meshComponent->SetMesh(backpackMesh);
+
+            entity->AddComponent<RigidBodyComponent>();
+            auto boxcollider = entity->AddComponent<BoxColliderComponent>();
         }
         
-        
+        {
+            Entity* entity = m_Scene->CreateEntity();
+            auto transform = entity->GetComponent<TransformComponent>();
+            transform->SetPosition({ 0.0f, -30.0f, 0.0f });
+            transform->SetScale({ 100.0f, 1.0f, 100.0f });
+            MeshComponent* meshComponent = entity->AddComponent<MeshComponent>();
+            meshComponent->SetMesh(boxMesh);
 
-        /*
-        Entity* sponza = m_Scene->CreateEntity("Sponza");
-        sponza->GetComponent<TransformComponent>()->SetScale({ 0.01f, 0.01f, 0.01f });
-        MeshComponent* sponzaMeshComponent = sponza->AddComponent<MeshComponent>();
-        std::shared_ptr<Mesh> sponzaMesh(new Mesh(path_to_project + "/assets/meshes/obj/sponza/sponza.obj"));
-        sponzaMeshComponent->SetMesh(sponzaMesh);
-        */
+            auto rigidbody = entity->AddComponent<RigidBodyComponent>();
+            rigidbody->SetBodyType(RigidBodyComponent::Type::Static);
+            auto boxcollider = entity->AddComponent<BoxColliderComponent>();
+        }
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
@@ -77,34 +83,18 @@ namespace HE
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
-            if (m_ViewportFocused && m_SceneState != SceneState::Play)
+            //if (m_ViewportFocused && m_SceneState != SceneState::Play)
                 m_CameraController.OnUpdate(ts);
         }
 
         {
             HE_PROFILE_SCOPE("Render prep");
 
-            // Renderer
-            //RenderCommand::Clear();
-            //RenderCommand::SetDepthTest(true);
         }
         {
             HE_PROFILE_SCOPE("Renderer Draw");
             Draw(ts);
-            
-            // Blit msaa frambuffer to normal framebuffer
-            //m_FrameBuffer_msaa->Bind(FramebufferBindType::READ_FRAMEBUFFER);
-            //m_FrameBuffer->Bind(FramebufferBindType::DRAW_FRAMEBUFFER);
-            //auto& spec_msaa = m_FrameBuffer_msaa->GetSpecification();
-            //auto& spec = m_FrameBuffer->GetSpecification();
-            //RenderCommand::Blit(0, 0, spec_msaa.Width, spec_msaa.Height, 0, 0, spec.Width, spec.Height);
-            /*
-            // Render to ID buffer
-            m_IDFrameBuffer->Bind();
-            RenderCommand::Clear();
-            m_Scene->OnRenderShader(m_ShaderLibrary->Get("EntityID"), m_CameraController.GetCamera());
-            m_IDFrameBuffer->UnBind();
-            */
+
         }
 
     }
@@ -115,59 +105,12 @@ namespace HE
         if (m_SceneState == SceneState::Play)
         {
             m_Scene->OnUpdate(ts); // Use runtime camera
-            m_Scene->OnRenderRuntime(ts);
+            //m_Scene->OnRenderRuntime(ts);
+            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
         }
         else
         {
-            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
-            /*
-            {
-                auto EntityIDFramebuffer = SceneRenderer::GetEntityIDRenderPass().get()->GetSpecification().TargetFramebuffer.get();
-                EntityIDFramebuffer->Bind();
-
-                auto [mx_a, my_a] = ImGui::GetMousePos();
-                float mx = mx_a, my = my_a;
-                mx -= m_ViewportBounds[0].x;
-                my -= m_ViewportBounds[0].y;
-                auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
-                auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
-                my = viewportHeight - my;
-                if (mx >= 0.0f && my >= 0.0f && mx < viewportWidth && my < viewportHeight)
-                {
-                    HE_CORE_TRACE("mx, my: {0}, {1}", mx, my);
-
-                    int entityID;
-                    Renderer::Submit([EntityIDFramebuffer, entityID, mx, my]() mutable
-                        {
-                            entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
-                            
-                        });
-                    
-                    Entity* selectedEntity = m_Scene->GetEntity(entityID);
-                    m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
-                }
-                EntityIDFramebuffer->UnBind();
-            }
-            */
-            /*
-            // environment
-            RenderCommand::SetDepthTest(false);
-            if (environmentEntity->HasComponent<MeshComponent>())
-            {
-                MeshComponent* meshComponent = environmentEntity->GetComponent<MeshComponent>();
-                auto environmentShader = m_ShaderLibrary->Get("Environment");
-                auto& subMeshes = meshComponent->GetSubMeshes();
-                for (auto& subMesh : subMeshes)
-                {
-                    environmentShader->Bind();
-                    environmentShader->SetMat4("u_ProjectionView", m_CameraController.GetCamera().GetProjection() * glm::mat4(glm::mat3(m_CameraController.GetCamera().GetView())));
-                    auto& attribute = subMesh->GetAttribute();
-                    Renderer::Submit(environmentShader, attribute);
-                }
-            }
-            RenderCommand::SetDepthTest(true);
-            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
-            */
+            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());  
         }
     }
 
@@ -238,16 +181,16 @@ namespace HE
             {
                 if (ImGui::MenuItem("Play"))
                 {
-                    m_SceneState == SceneState::Play;
+                    m_SceneState = SceneState::Play;
                     m_Scene->OnRuntimeStart();
                 }
                 if (ImGui::MenuItem("Pause"))
                 {
-                    m_SceneState == SceneState::Pause;
+                    m_SceneState = SceneState::Pause;
                 }  
                 if (ImGui::MenuItem("Stop"))
                 {
-                    m_SceneState == SceneState::Edit;
+                    m_SceneState = SceneState::Edit;
                     m_Scene->OnRuntimeStop();
                 }
 

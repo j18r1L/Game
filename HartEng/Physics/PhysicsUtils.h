@@ -3,7 +3,7 @@
 #include "HartEng/Scene/Components/TransformComponent.h"
 
 #include <string>
-#include <PhysX/PxPhysicsAPI.h>
+#include <PxPhysicsAPI.h>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace HE

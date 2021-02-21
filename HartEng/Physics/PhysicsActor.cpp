@@ -20,10 +20,13 @@ namespace HE
 
 	PhysicsActor::~PhysicsActor()
 	{
-		if (m_ActorInternal && m_ActorInternal->isReleasable())
+		if (m_ActorInternal)
 		{
-			m_ActorInternal->release();
-			m_ActorInternal = nullptr;
+			if (m_ActorInternal->isReleasable())
+			{
+				m_ActorInternal->release();
+				m_ActorInternal = nullptr;
+			}
 		}
 	}
 
@@ -249,7 +252,8 @@ namespace HE
 
 	void PhysicsActor::SynchronizeTransform()
 	{
-		if (IsDynamic())
+		//if (IsDynamic())
+		if (true)
 		{
 			auto transform = m_Entity.GetComponent<TransformComponent>();
 			physx::PxTransform actorPose = m_ActorInternal->getGlobalPose();

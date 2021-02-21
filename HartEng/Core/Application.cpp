@@ -2,6 +2,7 @@
 
 #include "HartEng/Core/Log.h"
 #include "HartEng/Core/Input.h"
+#include "HartEng/Physics/Physics.h"
 
 namespace HE
 {
@@ -25,6 +26,7 @@ namespace HE
 
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
         Renderer::Init();
+        Physics::Init();
         Renderer::WaitAndRender();
         PushOverlay(m_ImGuiLayer);
     }
@@ -32,6 +34,7 @@ namespace HE
     Application::~Application()
     {
         Renderer::Shutdown();
+        Physics::Shutdown();
     }
 
     void Application::PushLayer(Layer* layer)

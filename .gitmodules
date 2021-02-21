@@ -19,3 +19,6 @@
 [submodule "HartEng/vendor/yaml"]
 	path = HartEng/vendor/yaml
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "HartEng/vendor/PhysX"]
+	path = HartEng/vendor/PhysX
+	url = https://github.com/NVIDIAGameWorks/PhysX.git

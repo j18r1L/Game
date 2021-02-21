@@ -4,8 +4,8 @@
 #include "HartEng/Physics/PhysicsLayer.h"
 #include "HartEng/Physics/PhysicsActor.h"
 
-#include <PhysX/extensions/PxBroadPhaseExt.h>
-#include <PhysX/PxPhysicsAPI.h>
+#include <extensions/PxBroadPhaseExt.h>
+#include <PxPhysicsAPI.h>
 
 namespace HE
 {

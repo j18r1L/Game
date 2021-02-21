@@ -12,8 +12,7 @@ namespace HE
 		EnvMap,
 		Audio,
 		Script,
-		PhysicsMat,
-		Other
+		PhysicsMat
 	};
 
 	class Asset

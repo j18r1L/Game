@@ -15,8 +15,6 @@ namespace HE
         };
         SceneState m_SceneState = SceneState::Edit;
 
-        Entity* environmentEntity;
-
         std::shared_ptr<Scene> m_Scene;
         PerspectiveCameraController m_CameraController;
 

@@ -3,10 +3,12 @@
 
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
+#include "HartEng/Scene/Components/CollidersComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/MeshComponent.h"
+
 
 #include "HartEng/Renderer/SceneRenderer.h"
 #include "HartEng/Renderer/Renderer.h"
@@ -24,7 +26,7 @@ namespace HE
         m_Name("Undefined"),
         m_ObjectsCount(0)
     {
-
+        Physics::CreateScene();
     }
     Scene::Scene(const std::string& scene_name):
         m_Entities(),
@@ -33,6 +35,7 @@ namespace HE
 
     {
         HE_CORE_TRACE("Creating scene with name: {0}", scene_name);
+        Physics::CreateScene();
     }
 
     Entity* Scene::CreateEntity()
@@ -150,6 +153,17 @@ namespace HE
                 }
             }
         }
+
+        {
+            for (auto& [name, entity] : m_Entities)
+            {
+                if (entity->HasComponent<RigidBodyComponent>())
+                {
+                    Physics::CreateActor(*entity);
+                }
+                
+            }
+        }
         
     }
 
@@ -169,6 +183,7 @@ namespace HE
                 }
             }
         }
+        Physics::DestroyScene();
     }
 
     // Update scripts
@@ -222,11 +237,10 @@ namespace HE
                 {
                     MeshComponent* meshComponent = entity->GetComponent<MeshComponent>();
                     TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
-                    if (meshComponent)
-                    {
-                        meshComponent->GetMesh().get()->OnUpdate(ts);
-                        SceneRenderer::SubmitMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), nullptr);
-                    }
+
+                    meshComponent->GetMesh().get()->OnUpdate(ts);
+                    SceneRenderer::SubmitMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), nullptr);
+                    
                 }
             }
             SceneRenderer::EndScene();
