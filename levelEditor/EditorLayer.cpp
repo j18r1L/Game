@@ -2,6 +2,7 @@
 
 #include "assets/scripts/RotateScript.h"
 #include "HartEng/Core/Utils.h"
+#include "HartEng/Asset/AssetManager.h"
 
 namespace HE
 {
@@ -24,9 +25,13 @@ namespace HE
         std::string path_to_project = CMAKE_PATH;
 
         // Create environment entity
-        
-        std::shared_ptr<Mesh> backpackMesh = std::make_shared<Mesh>(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
-        std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>(path_to_project + "/assets/meshes/fbx/Cube.fbx");
+        //UUID backpackID = AssetManager::GetAssetIDForFile(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
+        //auto backpackMesh = AssetManager::GetAsset<Mesh>(backpackID);
+
+        //UUID boxID = AssetManager::GetAssetIDForFile(path_to_project + "/assets/meshes/fbx/Cube.fbx");
+        //auto boxMesh = AssetManager::GetAsset<Mesh>(boxID);
+
+        /*
         for (int i = 0; i < 10; i++)
         {
             Entity* entity = m_Scene->CreateEntity();
@@ -51,13 +56,14 @@ namespace HE
             rigidbody->SetBodyType(RigidBodyComponent::Type::Static);
             auto boxcollider = entity->AddComponent<BoxColliderComponent>();
         }
+        */
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(Renderer::GetShaderLibrary());
-        
-        //SceneSerializer serializer(m_Scene, m_ShaderLibrary);
-        //serializer.Deserialize(path_to_project + "/assets/scenes/scene.he");
+
+        SceneSerializer serializer(m_Scene, Renderer::GetShaderLibrary());
+        serializer.Deserialize(path_to_project + "/assets/scenes/AssetsID.he");
 
     }
 

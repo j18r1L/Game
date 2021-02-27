@@ -9,6 +9,7 @@
 #include "HartEng/Scene/Components/MeshComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
+#include "HartEng/Asset/AssetManager.h"
 
 namespace YAML
 {
@@ -153,8 +154,6 @@ namespace HE
             SerializeCamera(out, entity);
         if (entity->HasComponent<MeshComponent>())
             SerializeMesh(out, entity);
-        //if (entity->HasComponent<MaterialComponent>())
-        //    SerializeMaterial(out, entity);
         if (entity->HasComponent<LightComponent>())
             SerializeLight(out, entity);
 
@@ -208,26 +207,12 @@ namespace HE
         out << YAML::Key << "MeshComponent";
         {
             out << YAML::BeginMap; // Mesh component
-            std::string filePath = meshComponent->GetMesh().get()->GetFilePath();
-            out << YAML::Key << "FilePath" << YAML::Value << filePath;
+            std::string assetID = meshComponent->GetMesh().get()->Handle;
+            out << YAML::Key << "AssetID" << YAML::Value << assetID;
             out << YAML::EndMap; // Mesh component
         }
     }
-    /*
-    void SceneSerializer::SerializeMaterial(YAML::Emitter& out, Entity* entity)
-    {
-        MaterialComponent* materialComponent = entity->GetComponent<MaterialComponent>();
-        out << YAML::Key << "MaterialComponent";
-        {
-            out << YAML::BeginMap; // Material component
-            std::string shaderName = materialComponent->GetShaderName();
-            std::string filePath = materialComponent->GetShader()->GetFilePath();
-            out << YAML::Key << "ShaderName" << YAML::Value << shaderName;
-            out << YAML::Key << "FilePath" << YAML::Value << filePath;
-            out << YAML::EndMap; // Material component
-        }
-    }
-    */
+
     void SceneSerializer::SerializeLight(YAML::Emitter& out, Entity* entity)
     {
         LightComponent* lightComponent = entity->GetComponent<LightComponent>();
@@ -294,11 +279,6 @@ namespace HE
                 auto deserializedMeshComponent = entity["MeshComponent"];
                 if (deserializedMeshComponent)
                     DeserializeMesh(deserializedMeshComponent, deserializedEntity);
-                /*
-                auto deserializedMaterialComponent = entity["MaterialComponent"];
-                if (deserializedMaterialComponent)
-                    DeserializeMaterial(deserializedMaterialComponent, deserializedEntity);
-                */
                 
                 auto deserializedLightComponent = entity["LightComponent"];
                 if (deserializedLightComponent)
@@ -337,28 +317,27 @@ namespace HE
     }
     void SceneSerializer::DeserializeMesh(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
-        auto filePath = deserializedComponent["FilePath"].as<std::string>();
-        MeshComponent* meshComponent = deserializedEntity->AddComponent<MeshComponent>();
-        std::shared_ptr<Mesh> mesh(new Mesh(filePath));
-        meshComponent->SetMesh(mesh);
-    }
-    /*
-    void SceneSerializer::DeserializeMaterial(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
-    {
-        auto shaderName = deserializedComponent["ShaderName"].as<std::string>();
-        auto shaderPath = deserializedComponent["FilePath"].as<std::string>();
-        MaterialComponent* materialComponent = nullptr;
-        if (deserializedEntity->HasComponent<MaterialComponent>())
-            materialComponent = deserializedEntity->GetComponent<MaterialComponent>();
-        else
-            materialComponent = deserializedEntity->AddComponent<MaterialComponent>();
-        if (materialComponent)
+        std::string assetID = deserializedComponent["AssetID"].as<std::string>();
+        UUID uuid(assetID);
+        std::string asset = uuid;
+        if (AssetManager::IsAssetHandleValid(uuid))
         {
-            m_ShaderLibrary->Load(shaderPath);
-            materialComponent->SetShader(m_ShaderLibrary, shaderName);
+            if (!deserializedEntity->HasComponent<MeshComponent>())
+            {
+                auto meshComponent = deserializedEntity->AddComponent<MeshComponent>();
+                meshComponent->SetMesh(AssetManager::GetAsset<Mesh>(assetID));
+            }
+            else
+            {
+                HE_CORE_ERROR("Serialized entity already has mesh component!");
+            }
+        }
+        else
+        {
+            HE_CORE_ERROR("Serialized mesh AssetID is not valid!");
         }
     }
-    */
+
     void SceneSerializer::DeserializeLight(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
         LightComponent* lightComponent = deserializedEntity->AddComponent<LightComponent>();

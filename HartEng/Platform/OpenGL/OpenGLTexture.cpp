@@ -13,24 +13,23 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
-        int width, height, channels;
+        int width = 0, height = 0, channels = 0;
         stbi_set_flip_vertically_on_load(false);
+        stbi_uc* data;
         {
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-            stbi_uc* data;
+            
             data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
-            m_ImageData.Allocate(width * height * channels);
-            m_ImageData.Write(data, width * height * channels);
-            stbi_image_free(data);
-            //m_ImageData.Data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
         }
-        if (&m_ImageData.Data[0] == nullptr)
+        if (data == nullptr)
         {
             HE_CORE_ERROR("Failed to load image from: " + filepath);
             return;
         }
+        m_ImageData.Allocate(width * height * channels);
+        m_ImageData.Write(data, width * height * channels);
+        stbi_image_free(data);
             
-        //HE_CORE_ASSERT(data, "Failed to load image from: " + path);
         GLenum internalFormat = 0;
         if (channels == 1)
         {
@@ -76,8 +75,8 @@ namespace HE
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                    m_ImageData.Data.clear();
-                    //stbi_image_free(&m_ImageData.Data[0]);
+                    m_ImageData.Data = std::vector<uint8_t>();
+                    //m_ImageData.Data.clear();
                 });
             
         }

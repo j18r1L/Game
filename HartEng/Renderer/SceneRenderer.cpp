@@ -73,7 +73,7 @@ namespace HE
 			FrameBufferSpecification entityIdFramebufferSpec;
 			entityIdFramebufferSpec.Width = Application::Get().GetWindow().GetWidth();
 			entityIdFramebufferSpec.Height = Application::Get().GetWindow().GetHeight();
-			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::R32I };
+			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::R32I, FramebufferTextureFormat::DEPTH24STENCIL8 };
 			entityIdFramebufferSpec.Samples = 1;
 			entityIdFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 

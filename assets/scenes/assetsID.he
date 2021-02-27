@@ -1,0 +1,79 @@
+Scene: first_scene
+Entities:
+  - Entity: __obj_first_scene_0
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_1
+    TransformComponent:
+      Position: [11, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_2
+    TransformComponent:
+      Position: [22, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_3
+    TransformComponent:
+      Position: [33, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_4
+    TransformComponent:
+      Position: [44, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_5
+    TransformComponent:
+      Position: [55, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_6
+    TransformComponent:
+      Position: [66, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_7
+    TransformComponent:
+      Position: [77, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_8
+    TransformComponent:
+      Position: [88, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_9
+    TransformComponent:
+      Position: [99, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+  - Entity: __obj_first_scene_10
+    TransformComponent:
+      Position: [0, -30, 0]
+      Rotation: [0, 0, 0]
+      Scale: [100, 1, 100]
+    MeshComponent:
+      AssetID: 226c8cd5-cd63-5342-af47-4c8e4e7e7700

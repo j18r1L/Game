@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HartEng/Core/UUID.h"
+
 #include <string>
 
 namespace HE
@@ -12,13 +14,14 @@ namespace HE
 		EnvMap,
 		Audio,
 		Script,
-		PhysicsMat
+		PhysicsMat,
+		Other
 	};
 
 	class Asset
 	{
 	public:
-		uint32_t Handle;
+		UUID Handle;
 		AssetType Type;
 
 		std::string FilePath;
@@ -42,5 +45,7 @@ namespace HE
 			DynamicFriction(dynamicFriction), 
 			Bounciness(bounciness)
 		{ }
+
+		virtual ~PhysicsMaterial() = default;
 	};
 }

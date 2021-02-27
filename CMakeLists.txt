@@ -134,10 +134,8 @@ set(STB_DIR "${LIB_DIR}/stb")
 include_directories("${STB_DIR}")
 
 # PhysX
-#add_definitions(-DPX_PHYSX_STATIC_LIB)
-#set(PHYSX_DIR "${LIB_DIR}/PhysX")
-#include_directories("${PHYSX_DIR}/include")
-#link_directories("${PHYSX_DIR}/lib/Debug")
+set(UUID_DIR "${LIB_DIR}/stduuid")
+include_directories("${UUID_DIR}")
 
 
 
@@ -173,8 +171,17 @@ file(GLOB game_engine_files
     "HartEng/Debug/*.h"
     "HartEng/Debug/*.cpp"
 
+    "HartEng/Scene/*.h"
+    "HartEng/Scene/*.cpp"
+
+    "HartEng/Scene/Components/*.h"
+    "HartEng/Scene/Components/*.cpp"
+
     "HartEng/vendor/stb/*.h"
     "HartEng/vendor/stb/*.cpp"
+
+    "HartEng/vendor/stduuid/*.h"
+    "HartEng/vendor/stduuid/*.cpp"
 
     "HartEng/vendor/imGUI/*.h"
     "HartEng/vendor/imGUI/*.cpp"
@@ -185,11 +192,7 @@ file(GLOB game_engine_files
     "HartEng/vendor/imGUI/backends/imgui_impl_glfw.h"
     "HartEng/vendor/imGUI/backends/imgui_impl_glfw.cpp"
 
-    "HartEng/Scene/*.h"
-    "HartEng/Scene/*.cpp"
-
-    "HartEng/Scene/Components/*.h"
-    "HartEng/Scene/Components/*.cpp"
+    
 )
 
 file(GLOB level_editor_files

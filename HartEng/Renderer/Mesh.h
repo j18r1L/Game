@@ -5,6 +5,7 @@
 #include "HartEng/Renderer/Texture.h"
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Core/Timestep.h"
+#include "HartEng/Asset/Assets.h"
 #include "HartEng/Core/AABB.h"
 
 #include <GLM/glm.hpp>
@@ -68,12 +69,12 @@ namespace HE
 		std::string NodeName, MeshName;
 	};
 
-	class Mesh
+	class Mesh: public Asset
 	{
 	public:
 		Mesh(const std::string& filename);
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform);
-		~Mesh() = default;
+		virtual ~Mesh() = default;
 
 		void OnUpdate(Timestep ts);
 
