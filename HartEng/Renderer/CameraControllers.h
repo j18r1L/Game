@@ -52,7 +52,7 @@ namespace HE
         float m_AspectRatio = 0.0f;
         float m_Fov = 45.0f;
         float m_CameraSensivity = 0.15f;
-        float m_CameraTranslationSpeed = 1.0f;
+        float m_CameraTranslationSpeed = 5.0f;
 
         glm::vec2 m_LastMousePosition;
 

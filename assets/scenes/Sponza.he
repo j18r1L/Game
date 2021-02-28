@@ -1,0 +1,46 @@
+Scene: first_scene
+Entities:
+  - Entity: __obj_first_scene_0
+    TransformComponent:
+      Position: [-2.91270542, 2.65546584, -0.350229859]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+  - Entity: __obj_first_scene_1
+    TransformComponent:
+      Position: [1.92818892, 1.63071108, 0]
+      Rotation: [0, 0, 0.251009941]
+      Scale: [0.810000002, 0.810000002, 0.810000002]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+  - Entity: __obj_first_scene_2
+    TransformComponent:
+      Position: [-2.36295843, 4.3459177, -0.779054403]
+      Rotation: [0, 0, 0]
+      Scale: [0.364032, 0.364032, 0.364032]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+  - Entity: __obj_first_scene_4
+    TransformComponent:
+      Position: [8.32873154, 3.20231247, 0]
+      Rotation: [0, 0, 89.604187]
+      Scale: [0.999999881, 1, 0.999999881]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 45
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: __obj_first_scene_11
+    TransformComponent:
+      Position: [0, -0.1758008, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.00999999978, 0.00999999978, 0.00999999978]
+    MeshComponent:
+      AssetID: 54b413e9-3195-52d5-bcb7-9ff273d59178

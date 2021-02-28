@@ -95,6 +95,7 @@ namespace HE
 		{
 			asset = DeserializeYAML(filepath, type);
 			HE_CORE_ASSERT(asset, "Failed to load asset");
+			loaded = true;
 		}
 		if (loaded)
 		{

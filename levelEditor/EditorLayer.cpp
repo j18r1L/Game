@@ -24,46 +24,14 @@ namespace HE
 
         std::string path_to_project = CMAKE_PATH;
 
-        // Create environment entity
-        //UUID backpackID = AssetManager::GetAssetIDForFile(path_to_project + "/assets/meshes/obj/backpack/backpack.obj");
-        //auto backpackMesh = AssetManager::GetAsset<Mesh>(backpackID);
-
-        //UUID boxID = AssetManager::GetAssetIDForFile(path_to_project + "/assets/meshes/fbx/Cube.fbx");
-        //auto boxMesh = AssetManager::GetAsset<Mesh>(boxID);
-
-        /*
-        for (int i = 0; i < 10; i++)
-        {
-            Entity* entity = m_Scene->CreateEntity();
-            auto transform = entity->GetComponent<TransformComponent>();
-            transform->SetPosition({ i * 10 + i, 0.0f, 0.0f });
-            MeshComponent* meshComponent = entity->AddComponent<MeshComponent>();
-            meshComponent->SetMesh(backpackMesh);
-
-            entity->AddComponent<RigidBodyComponent>();
-            auto boxcollider = entity->AddComponent<BoxColliderComponent>();
-        }
-        
-        {
-            Entity* entity = m_Scene->CreateEntity();
-            auto transform = entity->GetComponent<TransformComponent>();
-            transform->SetPosition({ 0.0f, -30.0f, 0.0f });
-            transform->SetScale({ 100.0f, 1.0f, 100.0f });
-            MeshComponent* meshComponent = entity->AddComponent<MeshComponent>();
-            meshComponent->SetMesh(boxMesh);
-
-            auto rigidbody = entity->AddComponent<RigidBodyComponent>();
-            rigidbody->SetBodyType(RigidBodyComponent::Type::Static);
-            auto boxcollider = entity->AddComponent<BoxColliderComponent>();
-        }
-        */
 
         // Create scene hirarchy panel
         m_SceneHierarchyPanel->SetScene(m_Scene);
         m_SceneHierarchyPanel->SetShaderLibrary(Renderer::GetShaderLibrary());
 
         SceneSerializer serializer(m_Scene, Renderer::GetShaderLibrary());
-        serializer.Deserialize(path_to_project + "/assets/scenes/AssetsID.he");
+        serializer.Deserialize(path_to_project + "/assets/scenes/Sponza.he");
+
 
     }
 
@@ -89,7 +57,7 @@ namespace HE
         {
             HE_PROFILE_SCOPE("m_CameraController::OnUpdate");
             // Update
-            //if (m_ViewportFocused && m_SceneState != SceneState::Play)
+            if (m_ViewportFocused && m_SceneState != SceneState::Play)
                 m_CameraController.OnUpdate(ts);
         }
 
@@ -111,8 +79,8 @@ namespace HE
         if (m_SceneState == SceneState::Play)
         {
             m_Scene->OnUpdate(ts); // Use runtime camera
-            //m_Scene->OnRenderRuntime(ts);
-            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
+            m_Scene->OnRenderRuntime(ts);
+            //m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
         }
         else
         {

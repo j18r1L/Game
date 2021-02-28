@@ -67,7 +67,7 @@ namespace HE
 
 		static bool IsDirectory(const std::string& filepath);
 
-		static UUID GetAssetIDForFile(const std::string& newName);
+		static UUID GetAssetIDForFile(const std::string& filepath);
 		static bool IsAssetHandleValid(UUID assetHandle);
 
 		static void Rename(std::shared_ptr<Asset>& asset, const std::string& newName);
@@ -81,12 +81,14 @@ namespace HE
 			auto& directory = GetDirectoryInfo(directoryIndex);
 
 			std::shared_ptr<T> asset = std::make_shared<T>(std::forward<Args>(args)...);
+			UUID uuid(0);
+			uuid.GenerateFromString(asset->FilePath);
 			asset->Type = type;
 			asset->FilePath = directory.FilePath + "/" + filename;
 			asset->FileName = Utils::RemoveExtension(Utils::GetFilename(asset->FilePath));
 			asset->Extension = Utils::GetFilename(filename);
 			asset->ParentDirectory = directoryIndex;
-			asset->Handle = UUID(asset->FilePath);
+			asset->Handle = uuid;
 			s_LoadedAssets[asset->Handle] = asset;
 
 			AssetSerializer::SerializeAsset(asset);
@@ -111,7 +113,6 @@ namespace HE
 		static std::string StripExtras(const std::string& filename);
 	private:
 		static void ImportAsset(const std::string& filepath, bool reimport = false, int parentIndex = -1);
-		static void ConvertAsset(const std::string& assetPath, const std::string& conversionType);
 		static int ProcessDirectory(const std::string& directoryPath, int parentIndex = -1);
 		static void ReloadAssets();
 

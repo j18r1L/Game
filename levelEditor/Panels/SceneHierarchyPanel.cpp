@@ -3,6 +3,7 @@
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Log.h"
 #include "HartEng/Core/Utils.h"
+#include "HartEng/Asset/AssetManager.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include <glm/gtx/matrix_decompose.hpp>
@@ -86,13 +87,6 @@ namespace HE
                     m_SelectionContext->AddComponent<CameraComponent>();
                     ImGui::CloseCurrentPopup();
                 }
-                /*
-                if (ImGui::MenuItem("Material"))
-                {
-                    m_SelectionContext->AddComponent<MaterialComponent>();
-                    ImGui::CloseCurrentPopup();
-                }
-                */
                 if (ImGui::MenuItem("Mesh"))
                 {
                     m_SelectionContext->AddComponent<MeshComponent>();
@@ -101,6 +95,35 @@ namespace HE
                 if (ImGui::MenuItem("Light"))
                 {
                     m_SelectionContext->AddComponent<LightComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Rigid Body"))
+                {
+                    m_SelectionContext->AddComponent<RigidBodyComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Box collider"))
+                {
+                    m_SelectionContext->AddComponent<BoxColliderComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Sphere collider"))
+                {
+                    m_SelectionContext->AddComponent<SphereColliderComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Capsule collider"))
+                {
+                    m_SelectionContext->AddComponent<CapsuleColliderComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Mesh Collider"))
+                {
+                    auto meshColliderComponent = m_SelectionContext->AddComponent<MeshColliderComponent>();
+                    if (m_SelectionContext->HasComponent<MeshComponent>())
+                    {
+                        meshColliderComponent->SetCollisionMesh(m_SelectionContext->GetComponent<MeshComponent>()->GetMesh());
+                    }
                     ImGui::CloseCurrentPopup();
                 }
                 ImGui::EndPopup();
@@ -158,38 +181,86 @@ namespace HE
             m_Scene->RenameEntity(name, newName);
 
         if (entity->HasComponent<TransformComponent>())
+        {
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<TransformComponent>()), treeNodeFlags, "Transform Component"))
             {
                 DrawTransform(entity);
                 ImGui::TreePop();
             }
-        /*
-        if (entity->HasComponent<MaterialComponent>())
-            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MaterialComponent>()), treeNodeFlags, "Material Component"))
-            {
-                DrawMaterial(entity);
-                ImGui::TreePop();
-            }
-        */
+        }
+            
         if (entity->HasComponent<MeshComponent>())
+        {
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MeshComponent>()), treeNodeFlags, "Mesh Component"))
             {
-                // TODO add mesh to scenehierarchyt panel
-                //DrawMesh(entity);
+                DrawMesh(entity);
                 ImGui::TreePop();
             }
+        }
+            
         if (entity->HasComponent<CameraComponent>())
+        {
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<CameraComponent>()), treeNodeFlags, "Camera Component"))
             {
                 DrawCamera(entity);
                 ImGui::TreePop();
             }
+        }
+            
         if (entity->HasComponent<LightComponent>())
+        {
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<LightComponent>()), treeNodeFlags, "Light Component"))
             {
                 DrawLight(entity);
                 ImGui::TreePop();
             }
+        }
+
+        if (entity->HasComponent<RigidBodyComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<RigidBodyComponent>()), treeNodeFlags, "RigidBody Component"))
+            {
+                DrawRigidBody(entity);
+                ImGui::TreePop();
+            }
+        }
+
+        if (entity->HasComponent<BoxColliderComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<BoxColliderComponent>()), treeNodeFlags, "BoxCollider Component"))
+            {
+                DrawBoxCollider(entity);
+                ImGui::TreePop();
+            }
+        }
+
+        if (entity->HasComponent<SphereColliderComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<SphereColliderComponent>()), treeNodeFlags, "SphereCollider Component"))
+            {
+                DrawSphereCollider(entity);
+                ImGui::TreePop();
+            }
+        }
+
+        if (entity->HasComponent<CapsuleColliderComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<CapsuleColliderComponent>()), treeNodeFlags, "CapsuleCollider Component"))
+            {
+                DrawCapsuleCollider(entity);
+                ImGui::TreePop();
+            }
+        }
+
+        if (entity->HasComponent<MeshColliderComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<MeshColliderComponent>()), treeNodeFlags, "MeshCollider Component"))
+            {
+                DrawMeshCollider(entity);
+                ImGui::TreePop();
+            }
+        }
+            
     }
 
     void SceneHierarchyPanel::DrawTransform(Entity* entity)
@@ -296,107 +367,8 @@ namespace HE
         if (removeComponent)
             entity->RemoveComponent<CameraComponent>();
     }
-    /*
-    void SceneHierarchyPanel::DrawMaterial(Entity* entity)
-    {
-        const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
-
-        // Remove Component
-        ImGui::SameLine();
-        if (ImGui::Button("+"))
-            ImGui::OpenPopup("Component Settings");
-
-        bool removeComponent = false;
-        static bool addShader = false;
-        if (ImGui::BeginPopup("Component Settings"))
-        {
-            if (ImGui::MenuItem("Remove Component"))
-            {
-                removeComponent = true;
-            }
-            if (ImGui::MenuItem("Add Shader"))
-            {
-                addShader = true;
-            }
-            ImGui::EndPopup();
-        }
-
-        MaterialComponent* material = entity->GetComponent<MaterialComponent>();
-        auto& shaderName = material->GetShaderName();
-        auto& shaders = m_ShaderLibrary->GetShaders();
-        if (ImGui::BeginCombo("Shader", shaderName.c_str()))
-        {
-            for (auto& [name, shader]: shaders)
-            {
-                bool isSelected = shaderName == name;
-                if (ImGui::Selectable(name.c_str(), isSelected))
-                {
-                    material->SetShader(m_ShaderLibrary, name);
-                }
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-        // Add new shader
-        if (addShader)
-        {
-#ifdef HE_PLATFORM_WINDOWS
-            addShader = false;
-            std::string filepath = FileDialog::OpenFile("Shader (*.glsl)\0*.glsl\0 ");
-            if (!filepath.empty())
-            {
-                std::string project_path = CMAKE_PATH;
-                filepath = filepath.substr(project_path.length(), filepath.length());
-                auto shader = m_ShaderLibrary->Load(filepath);
-                material->SetShader(m_ShaderLibrary, shader->GetName());
-            }
-#elif HE_PLATFORM_LINUX
-            ImGui::Begin("New Shader");
-            static std::string ShaderName(256, '\0');
-            std::string path_to_project = CMAKE_PATH;
-            ImGui::Text(path_to_project.c_str());
-            ImGui::SameLine();
-            ImGui::InputText("", &ShaderName[0], 256);
-
-
-            if (ImGui::Button("Accept"))
-            {
-                addShader = false;
-                auto shader = m_ShaderLibrary->Load(ShaderName);
-                material->SetShader(m_ShaderLibrary, shader->GetName());
-            }
-            ImGui::End();
-#endif
-        }
-
-
-        auto& textures = material->GetTextures();
-        // Shader name
-        ImGui::Text("Shader name: %s", material->GetShaderName().c_str());
-
-        for (auto& [name, texture]: textures)
-        {
-            if (ImGui::TreeNodeEx((void*)(name.c_str()), treeNodeFlags, name.c_str()))
-            {
-                auto& texture2D = texture->GetTexture();
-                auto rendererID = texture->GetTexture().GetRendererID();
-                ImGui::Image((void*)(intptr_t)rendererID, ImVec2(64, 64), ImVec2{0.0f, 1.0f}, ImVec2{1.0f, 0.0f});
-                ImGui::Text("Material name: %s", name.c_str());
-                ImGui::Text("Texture Width: %d", texture2D.GetWidth());
-                ImGui::Text("Texture Height: %d", texture2D.GetHeight());
-                ImGui::TreePop();
-            }
-        }
-
-
-        // Remove Component
-        if (removeComponent)
-            entity->RemoveComponent<MaterialComponent>();
-
-    }
-    */
-    /* TODO add mesh to scenehierarchy panel
+    
+    
     void SceneHierarchyPanel::DrawMesh(Entity* entity)
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
@@ -416,85 +388,42 @@ namespace HE
             }
             if (ImGui::MenuItem("Load new mesh"))
             {
-
                 createMesh = true;
-
             }
             ImGui::EndPopup();
         }
         if (createMesh)
         {
+            // TODO this should be mahaged by assetManager
 #ifdef HE_PLATFORM_WINDOWS
             createMesh = false;
             std::string filepath = FileDialog::OpenFile("Mesh (*.obj)\0*.obj\0(*.fbx)\0*.fbx\0 ");
             if (!filepath.empty())
             {
-                std::string project_path = CMAKE_PATH;
-                filepath = filepath.substr(project_path.length(), filepath.length());
-                bool HasMaterial = false;
-                std::shared_ptr<ShaderLibrary> shaderLibrary = nullptr;
-                std::string shaderName = "undefined";
-                if (m_SelectionContext->HasComponent<MaterialComponent>())
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
+                if (!uuid.IsNil())
                 {
-                    HasMaterial = true;
-                    MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
-                    shaderLibrary = materialComponent->GetShaderLibrary();
-                    shaderName = materialComponent->GetShaderNameCopy();
-                    m_SelectionContext->RemoveComponent<MaterialComponent>();
-
-                }
-                if (m_SelectionContext->HasComponent<MeshComponent>())
-                    m_SelectionContext->RemoveComponent<MeshComponent>();
-
-                if (m_SelectionContext->HasComponent<SubMeshComponent>())
-                    m_SelectionContext->RemoveComponent<SubMeshComponent>();
-                if (LoadMesh::CreateMesh(m_SelectionContext, filepath))
-                {
-                    if (HasMaterial)
-                    {
-                        // Add shader to material
-                        MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
-                        materialComponent->SetShader(shaderLibrary, shaderName);
-                    }
+                    entity->GetComponent<MeshComponent>()->SetMesh(AssetManager::GetAsset<Mesh>(uuid));
                 }
             }
 #elif HE_PLATFORM_LINUX
             ImGui::Begin("New mesh");
-            static std::string MeshName(256, '\0');
+            static std::string meshName(256, '\0');
             std::string path_to_project = CMAKE_PATH;
             ImGui::Text(path_to_project.c_str());
             ImGui::SameLine();
-            ImGui::InputText("", &MeshName[0], 256);
+            ImGui::InputText("", &meshName[0], 256);
 
 
             if (ImGui::Button("Accept"))
             {
                 createMesh = false;
-                bool HasMaterial = false;
-                std::shared_ptr<ShaderLibrary> shaderLibrary = nullptr;
-                std::string shaderName = "undefined";
-                if (m_SelectionContext->HasComponent<MaterialComponent>())
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
+                if (!uuid.IsNil())
                 {
-                    HasMaterial = true;
-                    MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
-                    shaderLibrary = materialComponent->GetShaderLibrary();
-                    shaderName = materialComponent->GetShaderNameCopy();
-                    m_SelectionContext->RemoveComponent<MaterialComponent>();
-
-                }
-                if (m_SelectionContext->HasComponent<MeshComponent>())
-                    m_SelectionContext->RemoveComponent<MeshComponent>();
-
-                if (m_SelectionContext->HasComponent<SubMeshComponent>())
-                    m_SelectionContext->RemoveComponent<SubMeshComponent>();
-                if (LoadMesh::CreateMesh(m_SelectionContext, MeshName))
-                {
-                    if (HasMaterial)
-                    {
-                        // Add shader to material
-                        MaterialComponent* materialComponent = m_SelectionContext->GetComponent<MaterialComponent>();
-                        materialComponent->SetShader(shaderLibrary, shaderName);
-                    }
+                    entity->GetComponent<MeshComponent>()->SetMesh(AssetManager::GetAsset<Mesh>(uuid));
                 }
 
             }
@@ -503,70 +432,14 @@ namespace HE
         }
         if (entity->HasComponent<MeshComponent>())
         {
-            auto& submeshes = entity->GetComponent<MeshComponent>()->GetSubMeshes();
-            for (auto& subMesh : submeshes)
-            {
-                if (ImGui::TreeNodeEx((void*)(subMesh), treeNodeFlags, "SubMeshes"))
-                {
-                    auto& vertexArray = subMesh->GetAttribute();
-                    auto& name = subMesh->GetName();
-
-                    // vertex array name
-                    ImGui::Text("VertexArray name: %s", name.c_str());
-
-                    // For every vertexBuffer in one VertexArray
-                    for (auto& vertexBuffer : vertexArray->GetVertexBuffers())
-                    {
-                        if (ImGui::TreeNodeEx((void*)(vertexBuffer.get()), treeNodeFlags, "VertexBuffer"))
-                        {
-                            // Buffer array layout
-                            auto& bufferLayout = vertexBuffer->GetLayout();
-                            // Stride
-                            ImGui::Text("Stride: %d", bufferLayout.GetStride());
-                            // For evety bufferElement in one vertexBuffer
-                            const ImGuiTreeNodeFlags treeNodeFlagsBufferElement = ImGuiTreeNodeFlags_AllowItemOverlap;
-                            for (auto& bufferElement : bufferLayout.GetElements())
-                            {
-                                if (ImGui::TreeNodeEx((void*)(bufferElement.Name.c_str()), treeNodeFlagsBufferElement, bufferElement.Name.c_str()))
-                                {
-                                    ImGui::Text("Name: %s", bufferElement.Name.c_str());
-                                    ImGui::Text("Offset: %d", bufferElement.Offset);
-                                    ImGui::Text("Size: %d", bufferElement.Size);
-                                    ImGui::Text("Normalized: %s", bufferElement.Normalized ? "true" : "false");
-                                    const char* shaderDataType[] = {
-                                        "None",
-                                        "Float",
-                                        "Float2",
-                                        "Float3",
-                                        "Float4",
-                                        "Mat3",
-                                        "Mat4",
-                                        "Int",
-                                        "Int2",
-                                        "Int3",
-                                        "Int4",
-                                        "Bool"
-                                    };
-                                    ImGui::Text("Data type: %s", shaderDataType[(int)bufferElement.Type]);
-                                    ImGui::TreePop();
-                                }
-                            }
-                            ImGui::TreePop();
-                        }
-                    }
-                    // Index array count
-                    ImGui::Text("IndexArray count: %d", vertexArray->GetIndexBuffer()->GetCount());
-                    ImGui::TreePop();
-                }
-            }
-
             // Remove Component
             if (removeComponent)
                 entity->RemoveComponent<MeshComponent>();
         }
 
     }
-    */
+    
+
     void SceneHierarchyPanel::DrawLight(Entity* entity)
     {
         // Remove Component
@@ -666,6 +539,532 @@ namespace HE
         // Remove Component
         if (removeComponent)
             entity->RemoveComponent<CameraComponent>();
+    }
+
+    void SceneHierarchyPanel::DrawRigidBody(Entity* entity)
+    {
+        // Remove Component
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+            ImGui::OpenPopup("Component Settings");
+
+        bool removeComponent = false;
+        if (ImGui::BeginPopup("Component Settings"))
+        {
+            if (ImGui::MenuItem("Remove Component"))
+            {
+                removeComponent = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        auto rigidBody = entity->GetComponent<RigidBodyComponent>();
+
+
+        const char* bodyTypeChar[] = { "Static", "Dynamic"};
+        const char* currentBodyTypeString = bodyTypeChar[(int)rigidBody->GetBodyType()];
+        if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                bool isSelected = currentBodyTypeString == bodyTypeChar[i];
+                if (ImGui::Selectable(bodyTypeChar[i], isSelected))
+                {
+                    currentBodyTypeString = bodyTypeChar[i];
+                    rigidBody->SetBodyType((RigidBodyComponent::Type)i);
+                }
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+
+        float mass = rigidBody->GetMass();
+        float linearDrag = rigidBody->GetLinearDrag();
+        float angularDrag = rigidBody->GetAngularDrag();
+        bool disableGravity = rigidBody->GetDisableGravity();
+        bool isKinematic = rigidBody->GetIsKinematic();
+        int layer = rigidBody->GetLayer();
+        bool lockPosX = rigidBody->GetLockPositionX();
+        bool lockPosY = rigidBody->GetLockPositionY();
+        bool lockPosZ = rigidBody->GetLockPositionZ();
+        bool lockRotX = rigidBody->GetLockRotationX();
+        bool lockRotY = rigidBody->GetLockRotationY();
+        bool lockRotZ = rigidBody->GetLockRotationZ();
+
+        if (ImGui::InputInt("Layer", &layer))
+        {
+            if (layer >= 0)
+                rigidBody->SetLayer(layer);
+        }
+
+        if (rigidBody->GetBodyType() == RigidBodyComponent::Type::Dynamic)
+        {
+            if (ImGui::DragFloat("Mass", &mass, 0.1f))
+                rigidBody->SetMass(mass);
+            if (ImGui::DragFloat("Linear Drag", &linearDrag, 0.01f))
+                rigidBody->SetLinearDrag(linearDrag);
+            if (ImGui::DragFloat("Angular Drag", &angularDrag, 0.01f))
+                rigidBody->SetAngularDrag(angularDrag);
+            if (ImGui::Checkbox("Disable gravity", &disableGravity))
+                rigidBody->SetDisableGravity(disableGravity);
+            if (ImGui::Checkbox("Is kinematic", &isKinematic))
+                rigidBody->SetIsKinematic(isKinematic);
+
+
+            if (ImGui::Checkbox("Lock position X", &lockPosX))
+                rigidBody->SetLockPositionX(lockPosX);
+            if (ImGui::Checkbox("Lock position Y", &lockPosY))
+                rigidBody->SetLockPositionY(lockPosY);
+            if (ImGui::Checkbox("Lock position Z", &lockPosZ))
+                rigidBody->SetLockPositionZ(lockPosZ);
+
+            if (ImGui::Checkbox("Lock rotation X", &lockRotX))
+                rigidBody->SetLockRotationX(lockPosX);
+            if (ImGui::Checkbox("Lock rotation Y", &lockRotY))
+                rigidBody->SetLockRotationY(lockRotY);
+            if (ImGui::Checkbox("Lock rotation Z", &lockRotZ))
+                rigidBody->SetLockRotationZ(lockRotZ);
+        }
+
+
+        // Remove Component
+        if (removeComponent)
+            entity->RemoveComponent<RigidBodyComponent>();
+    }
+
+    void SceneHierarchyPanel::DrawBoxCollider(Entity* entity)
+    {
+        // Remove Component
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+            ImGui::OpenPopup("Component Settings");
+
+        bool removeComponent = false;
+        bool loadPhysicsMaterial = false;
+        if (ImGui::BeginPopup("Component Settings"))
+        {
+            if (ImGui::MenuItem("Remove Component"))
+            {
+                removeComponent = true;
+            }
+            if (ImGui::MenuItem("Load physics material"))
+            {
+                loadPhysicsMaterial = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        auto boxCollider = entity->GetComponent<BoxColliderComponent>();
+
+        if (loadPhysicsMaterial)
+        {
+#ifdef HE_PLATFORM_WINDOWS
+            loadPhysicsMaterial = false;
+            std::string filepath = FileDialog::OpenFile("Physics material (*.pm)\0");
+            if (!filepath.empty())
+            {
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
+                if (!uuid.IsNil())
+                {
+                    boxCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+            }
+#elif HE_PLATFORM_LINUX
+            ImGui::Begin("Load physics material");
+            static std::string filepath(256, '\0');
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &filepath[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                loadPhysicsMaterial = false;
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
+                if (!uuid.IsNil())
+                {
+                    boxCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+
+                }
+            ImGui::End();
+#endif
+        }
+        
+
+        glm::vec3 size = boxCollider->GetSize();
+        glm::vec3 offset = boxCollider->GetOffset();
+        bool isTrigger = boxCollider->GetTrigger();
+
+        
+
+        if (ImGui::DragFloat3("Size", glm::value_ptr(size), 0.1f))
+            boxCollider->SetSize(size);
+        if (ImGui::DragFloat3("Offset", glm::value_ptr(offset), 0.1f))
+            boxCollider->SetOffset(offset);
+        if (ImGui::Checkbox("Is trigger", &isTrigger))
+            boxCollider->SetTrigger(isTrigger);
+
+
+        auto physicsMaterial = boxCollider->GetPhysicsMaterial().get();
+        if (physicsMaterial)
+        {
+            ImGui::Text("Physics material: ");
+            ImGui::Text("Bounciness %f", physicsMaterial->Bounciness);
+            ImGui::Text("Dynamic friction %f", physicsMaterial->DynamicFriction);
+            ImGui::Text("Static friction %f", physicsMaterial->StaticFriction);
+        }
+        
+        auto debugMesh = boxCollider->GetMesh().get();
+        if (debugMesh)
+        {
+            ImGui::Text("Debug mesh: ");
+            std::string filename = "Filename: " + debugMesh->FileName;
+            ImGui::Text(filename.c_str());
+        }
+
+        // Remove Component
+        if (removeComponent)
+            entity->RemoveComponent<BoxColliderComponent>();
+    }
+
+    void SceneHierarchyPanel::DrawSphereCollider(Entity* entity)
+    {
+        // Remove Component
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+            ImGui::OpenPopup("Component Settings");
+
+        bool removeComponent = false;
+        bool loadPhysicsMaterial = false;
+        if (ImGui::BeginPopup("Component Settings"))
+        {
+            if (ImGui::MenuItem("Remove Component"))
+            {
+                removeComponent = true;
+            }
+            if (ImGui::MenuItem("Load physics material"))
+            {
+                loadPhysicsMaterial = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        auto sphereCollider = entity->GetComponent<SphereColliderComponent>();
+
+        if (loadPhysicsMaterial)
+        {
+#ifdef HE_PLATFORM_WINDOWS
+            loadPhysicsMaterial = false;
+            std::string filepath = FileDialog::OpenFile("Physics material (*.pm)\0");
+            if (!filepath.empty())
+            {
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
+                if (!uuid.IsNil())
+                {
+                    sphereCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+            }
+#elif HE_PLATFORM_LINUX
+            ImGui::Begin("Load physics material");
+            static std::string filepath(256, '\0');
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &filepath[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                loadPhysicsMaterial = false;
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
+                if (!uuid.IsNil())
+                {
+                    sphereCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+
+            }
+            ImGui::End();
+#endif
+        }
+
+        float radius = sphereCollider->GetRadius();
+        bool isTrigger = sphereCollider->GetTrigger();
+
+
+
+        if (ImGui::DragFloat("Radius", &radius, 0.1f))
+            sphereCollider->SetRadius(radius);
+        if (ImGui::Checkbox("Is trigger", &isTrigger))
+            sphereCollider->SetTrigger(isTrigger);
+
+
+        auto physicsMaterial = sphereCollider->GetPhysicsMaterial().get();
+        if (physicsMaterial)
+        {
+            ImGui::Text("Physics material: ");
+            ImGui::Text("Bounciness %f", physicsMaterial->Bounciness);
+            ImGui::Text("Dynamic friction %f", physicsMaterial->DynamicFriction);
+            ImGui::Text("Static friction %f", physicsMaterial->StaticFriction);
+        }
+
+        auto debugMesh = sphereCollider->GetMesh().get();
+        if (debugMesh)
+        {
+            ImGui::Text("Debug mesh: ");
+            std::string filename = "Filename: " + debugMesh->FileName;
+            ImGui::Text(filename.c_str());
+        }
+
+        // Remove Component
+        if (removeComponent)
+            entity->RemoveComponent<SphereColliderComponent>();
+    }
+
+    void SceneHierarchyPanel::DrawCapsuleCollider(Entity* entity)
+    {
+        // Remove Component
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+            ImGui::OpenPopup("Component Settings");
+
+        bool removeComponent = false;
+        bool loadPhysicsMaterial = false;
+        if (ImGui::BeginPopup("Component Settings"))
+        {
+            if (ImGui::MenuItem("Remove Component"))
+            {
+                removeComponent = true;
+            }
+            if (ImGui::MenuItem("Load physics material"))
+            {
+                loadPhysicsMaterial = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        auto capsuleCollider = entity->GetComponent<CapsuleColliderComponent>();
+
+        if (loadPhysicsMaterial)
+        {
+#ifdef HE_PLATFORM_WINDOWS
+            loadPhysicsMaterial = false;
+            std::string filepath = FileDialog::OpenFile("Physics material (*.pm)\0");
+            if (!filepath.empty())
+            {
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
+                if (!uuid.IsNil())
+                {
+                    capsuleCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+            }
+#elif HE_PLATFORM_LINUX
+            ImGui::Begin("Load physics material");
+            static std::string filepath(256, '\0');
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &filepath[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                loadPhysicsMaterial = false;
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
+                if (!uuid.IsNil())
+                {
+                    capsuleCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+
+            }
+            ImGui::End();
+#endif
+        }
+
+        float radius = capsuleCollider->GetRadius();
+        float height = capsuleCollider->GetHeight();
+        bool isTrigger = capsuleCollider->GetTrigger();
+
+
+
+        if (ImGui::DragFloat("Radius", &radius, 0.1f))
+            capsuleCollider->SetRadius(radius);
+        if (ImGui::DragFloat("Height", &height, 0.1f))
+            capsuleCollider->SetRadius(height);
+        if (ImGui::Checkbox("Is trigger", &isTrigger))
+            capsuleCollider->SetTrigger(isTrigger);
+
+
+        auto physicsMaterial = capsuleCollider->GetPhysicsMaterial().get();
+        if (physicsMaterial)
+        {
+            ImGui::Text("Physics material: ");
+            ImGui::Text("Bounciness %f", physicsMaterial->Bounciness);
+            ImGui::Text("Dynamic friction %f", physicsMaterial->DynamicFriction);
+            ImGui::Text("Static friction %f", physicsMaterial->StaticFriction);
+        }
+
+        auto debugMesh = capsuleCollider->GetMesh().get();
+        if (debugMesh)
+        {
+            ImGui::Text("Debug mesh: ");
+            std::string filename = "Filename: " + debugMesh->FileName;
+            ImGui::Text(filename.c_str());
+        }
+
+
+        // Remove Component
+        if (removeComponent)
+            entity->RemoveComponent<CapsuleColliderComponent>();
+    }
+
+    void SceneHierarchyPanel::DrawMeshCollider(Entity* entity)
+    {
+        // Remove Component
+        ImGui::SameLine();
+        if (ImGui::Button("+"))
+            ImGui::OpenPopup("Component Settings");
+
+        bool removeComponent = false;
+        bool loadPhysicsMaterial = false;
+        bool loadCollisionMesh = false;
+        if (ImGui::BeginPopup("Component Settings"))
+        {
+            if (ImGui::MenuItem("Remove Component"))
+            {
+                removeComponent = true;
+            }
+            if (ImGui::MenuItem("Load physics material"))
+            {
+                loadPhysicsMaterial = true;
+            }
+            if (ImGui::MenuItem("Load collision mesh"))
+            {
+                loadCollisionMesh = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        auto meshCollider = entity->GetComponent<MeshColliderComponent>();
+
+        if (loadPhysicsMaterial)
+        {
+#ifdef HE_PLATFORM_WINDOWS
+            loadPhysicsMaterial = false;
+            std::string filepath = FileDialog::OpenFile("Physics material (*.pm)\0");
+            if (!filepath.empty())
+            {
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
+                if (!uuid.IsNil())
+                {
+                    meshCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+            }
+#elif HE_PLATFORM_LINUX
+            ImGui::Begin("Load physics material");
+            static std::string filepath(256, '\0');
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &filepath[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                loadPhysicsMaterial = false;
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
+                if (!uuid.IsNil())
+                {
+                    meshCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
+                }
+
+            }
+            ImGui::End();
+#endif
+        }
+        else if (loadCollisionMesh)
+        {
+#ifdef HE_PLATFORM_WINDOWS
+            loadCollisionMesh = false;
+            std::string filepath = FileDialog::OpenFile("Mesh (*.obj)\0*.obj\0(*.fbx)\0*.fbx\0 ");
+            if (!filepath.empty())
+            {
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
+                if (!uuid.IsNil())
+                {
+                    meshCollider->SetCollisionMesh(AssetManager::GetAsset<Mesh>(uuid));
+                }
+            }
+#elif HE_PLATFORM_LINUX
+            ImGui::Begin("Load dubug mesh");
+            static std::string meshName(256, '\0');
+            std::string path_to_project = CMAKE_PATH;
+            ImGui::Text(path_to_project.c_str());
+            ImGui::SameLine();
+            ImGui::InputText("", &meshName[0], 256);
+
+
+            if (ImGui::Button("Accept"))
+            {
+                loadCollisionMesh = false;
+                Utils::ReplaceSlash(filepath);
+                const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
+                if (!uuid.IsNil())
+                {
+                    meshCollider->SetCollisionMesh(AssetManager::GetAsset<Mesh>(uuid));
+                }
+            }
+            ImGui::End();
+#endif
+        }
+
+        bool convex = meshCollider->GetConvex();
+        bool overrideMesh = meshCollider->GetOverrideMesh();
+        bool isTrigger = meshCollider->GetTrigger();
+
+
+
+        if (ImGui::Checkbox("Convex", &convex))
+            meshCollider->SetConvex(convex);
+        if (ImGui::Checkbox("Override mesh", &overrideMesh))
+            meshCollider->SetOverrideMesh(overrideMesh);
+        if (ImGui::Checkbox("Is trigger", &isTrigger))
+            meshCollider->SetTrigger(isTrigger);
+
+
+        auto physicsMaterial = meshCollider->GetPhysicsMaterial().get();
+        if (physicsMaterial)
+        {
+            ImGui::Text("Physics material: ");
+            ImGui::Text("Bounciness: %f", physicsMaterial->Bounciness);
+            ImGui::Text("Dynamic friction: %f", physicsMaterial->DynamicFriction);
+            ImGui::Text("Static friction: %f", physicsMaterial->StaticFriction);
+        }
+
+        auto collisionMesh = meshCollider->GetCollisionMesh().get();
+        if (collisionMesh)
+        {
+            ImGui::Text("Collision mesh: ");
+            std::string filename = "Filename: " + collisionMesh->FileName;
+            ImGui::Text(filename.c_str());
+        }
+
+
+        // Remove Component
+        if (removeComponent)
+            entity->RemoveComponent<MeshColliderComponent>();
     }
 
     Entity* SceneHierarchyPanel::GetSelectedEntity() const

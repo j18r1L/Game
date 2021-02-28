@@ -2,6 +2,7 @@
 
 #include "HartEng/Scene/SceneCamera.h"
 #include "HartEng/Scene/Component.h"
+#include "HartEng/Renderer/Mesh.h"
 
 namespace HE
 {
@@ -11,6 +12,10 @@ namespace HE
         SceneCamera m_Camera;
         bool m_Primary = false;
         bool m_FixedAspectRatio = false;
+
+        std::shared_ptr<Mesh> m_DebugMesh;
+
+        void LoadCameraDebugMesh();
     public:
         CameraComponent();
         CameraComponent(Entity* entityHandle);
@@ -28,6 +33,7 @@ namespace HE
         bool GetPrimary() const;
         bool GetFixedAspectRatio() const;
         SceneCamera& GetCamera();
+        std::shared_ptr<Mesh> GetMesh() { return m_DebugMesh; }
     };
 }
 

@@ -92,6 +92,14 @@ namespace HE
                 else
                     glDisable(GL_CULL_FACE);
 
+                if (material->GetFlag(MaterialFlag::LineMode))
+                {
+                    glEnable(GL_LINE_SMOOTH);
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                }
+                else
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
                 glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
                 });
         }

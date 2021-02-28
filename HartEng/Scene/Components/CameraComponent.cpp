@@ -1,15 +1,19 @@
 #include "CameraComponent.h"
 
+#include "HartEng/Asset/AssetManager.h"
+
 namespace HE
 {
     CameraComponent::CameraComponent()
     {
         m_EntityHandle = nullptr;
+        LoadCameraDebugMesh();
     }
 
     CameraComponent::CameraComponent(Entity* entityHandle)
     {
         m_EntityHandle = entityHandle;
+        LoadCameraDebugMesh();
     }
 
     void CameraComponent::SetPrimary(bool primary)
@@ -45,6 +49,20 @@ namespace HE
     SceneCamera& CameraComponent::GetCamera()
     {
         return m_Camera;
+    }
+
+    void CameraComponent::LoadCameraDebugMesh()
+    {
+        std::string pathToProject = CMAKE_PATH;
+        const UUID uuid = AssetManager::GetAssetIDForFile(pathToProject + "/assets/meshes/obj/camera/camera.obj");
+        if (!uuid.IsNil())
+        {
+            m_DebugMesh = AssetManager::GetAsset<Mesh>(uuid);
+        }
+        else
+        {
+            HE_CORE_ERROR("CameraComponent::LoadCameraDebugMesh AssetID for camera debug mesh is not valid!");
+        }
     }
 }
 

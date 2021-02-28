@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HartEng/Physics/PhysicsUtils.h"
+#include "HartEng/Scene/Components/CollidersComponent.h"
 
 #include <PxPhysicsAPI.h>
 
@@ -38,9 +39,17 @@ namespace HE
 		static physx::PxScene* CreateScene();
 
 		static void AddBoxCollider(PhysicsActor& actor);
+		static void AddSphereCollider(PhysicsActor& actor);
+		static void AddCapsuleCollider(PhysicsActor& actor);
+		static void AddMeshCollider(PhysicsActor& actor);
+
+		static std::vector<physx::PxShape*> CreateConvexMesh(MeshColliderComponent& collider, const glm::vec3& size, bool invalidateOld = false);
+		static std::vector<physx::PxShape*> CreateTriangleMesh(MeshColliderComponent& collider, const glm::vec3& scale = glm::vec3(1.0f), bool invalidateOld = false);
 
 		static bool OverlapBox(const glm::vec3& origin, const glm::vec3& halfSize, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count);
-	
+		static bool OverlapCapsule(const glm::vec3& origin, float radius, float halfHeight, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count);
+		static bool OverlapSphere(const glm::vec3& origin, float radius, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count);
+
 	private:
 		static void Initialize();
 		static void Shutdown();

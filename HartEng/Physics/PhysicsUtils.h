@@ -30,4 +30,13 @@ namespace HE
 		const void* constantBlock, 
 		physx::PxU32 constantBlockSize);
 
+	class PhysicsMeshSerializer
+	{
+	public:
+		static void DeleteIfSerialized(const std::string& filepath);
+		static void SerializeMesh(const std::string& filepath, const physx::PxDefaultMemoryOutputStream& data, const std::string& submeshName = "");
+		static bool IsSerialized(const std::string& filepath);
+		static physx::PxDefaultMemoryInputData DeserializeMesh(const std::string& filepath, const std::string& submeshName);
+	};
+
 }

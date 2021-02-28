@@ -227,6 +227,9 @@ namespace HE
 		}
 
 		if (m_Entity.HasComponent<BoxColliderComponent>()) PXPhysicsWrappers::AddBoxCollider(*this);
+		if (m_Entity.HasComponent<SphereColliderComponent>()) PXPhysicsWrappers::AddSphereCollider(*this);
+		if (m_Entity.HasComponent<CapsuleColliderComponent>()) PXPhysicsWrappers::AddCapsuleCollider(*this);
+		if (m_Entity.HasComponent<MeshColliderComponent>()) PXPhysicsWrappers::AddMeshCollider(*this);
 
 		if (!PhysicsLayerManager::IsLayerValid(m_RigidBody.GetLayer()))
 			m_RigidBody.SetLayer(0);
@@ -252,13 +255,12 @@ namespace HE
 
 	void PhysicsActor::SynchronizeTransform()
 	{
-		//if (IsDynamic())
-		if (true)
+		if (IsDynamic())
 		{
 			auto transform = m_Entity.GetComponent<TransformComponent>();
 			physx::PxTransform actorPose = m_ActorInternal->getGlobalPose();
 			transform->SetPosition(FromPhysXVector(actorPose.p));
-			transform->SetRotation(glm::eulerAngles(FromPhysXQuat(actorPose.q)));
+			transform->SetRotation(glm::degrees(glm::eulerAngles(FromPhysXQuat(actorPose.q))));
 		}
 		else
 		{

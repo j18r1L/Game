@@ -76,6 +76,15 @@ namespace HE
             else if (type == std::type_index(typeid(BoxColliderComponent)))
                 component = new BoxColliderComponent(this);
 
+            else if (type == std::type_index(typeid(SphereColliderComponent)))
+                component = new SphereColliderComponent(this);
+
+            else if (type == std::type_index(typeid(CapsuleColliderComponent)))
+                component = new CapsuleColliderComponent(this);
+
+            else if (type == std::type_index(typeid(MeshColliderComponent)))
+                component = new MeshColliderComponent(this);
+
             else if (type == std::type_index(typeid(RigidBodyComponent)))
                 component = new RigidBodyComponent(this);
 

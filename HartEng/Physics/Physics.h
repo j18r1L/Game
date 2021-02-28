@@ -27,6 +27,7 @@ namespace HE
 		SweepAndPrune,
 		MultiBoxPrune,
 		AutomaticBoxPrune
+		// TODO: GPU?
 	};
 
 	enum class FrictionType

@@ -290,12 +290,54 @@ namespace HE
                         SceneRenderer::SubmitEntityIDMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), materialInstance);
                     }
                 }
+
+
+                // Render debugmeshes
+                if (entity->HasComponent<CameraComponent>())
+                {
+                    auto cameraComponent = entity->GetComponent<CameraComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    SceneRenderer::SubmitColliderMesh(cameraComponent->GetMesh(), transformComponent->GetTransform());
+                }
+
+                if (entity->HasComponent<BoxColliderComponent>())
+                {
+                   auto boxColliderComponent = entity->GetComponent<BoxColliderComponent>();
+                   auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                   SceneRenderer::SubmitColliderMesh(boxColliderComponent->GetMesh(), glm::translate(transformComponent->GetTransform(), boxColliderComponent->GetOffset()));
+                }
+
+                if (entity->HasComponent<SphereColliderComponent>())
+                {
+                    auto sphereColliderComponent = entity->GetComponent<SphereColliderComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    SceneRenderer::SubmitColliderMesh(sphereColliderComponent->GetMesh(), transformComponent->GetTransform());
+                }
+
+                if (entity->HasComponent<CapsuleColliderComponent>())
+                {
+                    auto capsuleColliderComponent = entity->GetComponent<CapsuleColliderComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    SceneRenderer::SubmitColliderMesh(capsuleColliderComponent->GetMesh(), transformComponent->GetTransform());
+                }
+
+                if (entity->HasComponent<MeshColliderComponent>())
+                {
+                    auto capsuleColliderComponent = entity->GetComponent<MeshColliderComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    for (auto& mesh : capsuleColliderComponent->GetProcessedMeshes())
+                    {
+                        SceneRenderer::SubmitColliderMesh(mesh, transformComponent->GetTransform());
+                    }
+                }
             }
             SceneRenderer::EndScene();
-
         }
-
-
     }
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)

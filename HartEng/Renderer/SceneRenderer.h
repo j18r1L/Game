@@ -32,6 +32,7 @@ namespace HE
 		static void EndScene();
 
 		static void SubmitMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), std::shared_ptr<MaterialInstance> overrideMaterial = nullptr);
+		static void SubmitColliderMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), std::shared_ptr<MaterialInstance> overrideMaterial = nullptr);
 		static void SubmitEntityIDMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform = glm::mat4(1.0f), std::shared_ptr<MaterialInstance> overrideMaterial = nullptr);
 
 		static std::shared_ptr<RenderPass> GetGeometryRenderPass();

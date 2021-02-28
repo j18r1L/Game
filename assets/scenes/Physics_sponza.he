@@ -1,0 +1,104 @@
+Scene: first_scene
+Entities:
+  - Entity: __obj_first_scene_0
+    TransformComponent:
+      Position: [-2.91270542, 2.65546584, -0.350229859]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      DebugMeshAssetID: 00000000-0000-0000-0000-000000000000
+      PhysicsMaterialAssetID: 0e74be3d-232b-578b-99e1-db7a56bc1b39
+  - Entity: __obj_first_scene_1
+    TransformComponent:
+      Position: [1.92818892, 1.63071108, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.810000002, 0.810000002, 0.810000002]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      DebugMeshAssetID: 00000000-0000-0000-0000-000000000000
+      PhysicsMaterialAssetID: 00000000-0000-0000-0000-000000000000
+  - Entity: __obj_first_scene_2
+    TransformComponent:
+      Position: [5.89479113, 5.79158401, 1.956043]
+      Rotation: [0, 0, 0]
+      Scale: [0.364032, 0.364032, 0.364032]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      DebugMeshAssetID: 00000000-0000-0000-0000-000000000000
+      PhysicsMaterialAssetID: 00000000-0000-0000-0000-000000000000
+  - Entity: __obj_first_scene_11
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.00999999978, 0.00999999978, 0.00999999978]
+    MeshComponent:
+      AssetID: 54b413e9-3195-52d5-bcb7-9ff273d59178
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false

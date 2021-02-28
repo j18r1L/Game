@@ -1,6 +1,7 @@
 #include <HartEng/Core/Utils.h>
 
 #include <vector>
+#include <algorithm>
 
 namespace HE
 {
@@ -62,6 +63,11 @@ namespace HE
 		std::vector<std::string> SplitString(const std::string& string, const char delimiter)
 		{
 			return SplitString(string, std::string(1, delimiter));
+		}
+
+		void ReplaceSlash(std::string& filepath)
+		{
+			std::replace(filepath.begin(), filepath.end(), '\\', '/'); // replace all '\\' to '/'
 		}
 	}
 }

@@ -13,7 +13,8 @@ namespace HE
 		None = BIT(0),
 		DepthTest = BIT(1),
 		Blend = BIT(2),
-		TwoSided = BIT(3)
+		TwoSided = BIT(3),
+		LineMode = BIT(4),
 	};
 
 

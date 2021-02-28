@@ -7,6 +7,26 @@ Entities:
       Scale: [1, 1, 1]
     MeshComponent:
       AssetID: 9940e0cb-fa93-5f3c-93aa-1e9896eeec90
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      DebugMeshAssetID: 00000000-0000-0000-0000-000000000000
+      PhysicsMaterialAssetID: 0e74be3d-232b-578b-99e1-db7a56bc1b39
   - Entity: __obj_first_scene_1
     TransformComponent:
       Position: [11, 0, 0]
@@ -77,3 +97,23 @@ Entities:
       Scale: [100, 1, 100]
     MeshComponent:
       AssetID: 226c8cd5-cd63-5342-af47-4c8e4e7e7700
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      DebugMeshAssetID: 00000000-0000-0000-0000-000000000000
+      PhysicsMaterialAssetID: 00000000-0000-0000-0000-000000000000
