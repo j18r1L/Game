@@ -21,6 +21,8 @@ namespace HE
 
 		glm::vec3 GetPosition();
 		glm::quat GetRotation();
+		void SetPosition(const glm::vec3 position);
+		void SetRotation(const glm::quat& rotation);
 		void Rotate(const glm::vec3& rotation);
 
 		float GetMass() const;

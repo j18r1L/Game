@@ -20,6 +20,8 @@ namespace HE
         TransformComponent(Entity* entityHandle);
         virtual ~TransformComponent() = default;
 
+        void Copy(Component* other_base) override;
+
         void SetPosition(const glm::vec3& position);
         //void SetRotation(const glm::quat& position);
         void SetRotation(const glm::vec3& angles);

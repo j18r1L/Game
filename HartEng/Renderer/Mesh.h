@@ -72,7 +72,7 @@ namespace HE
 	class Mesh: public Asset
 	{
 	public:
-		Mesh(const std::string& filename);
+		Mesh(const std::string& filename, bool flippedTextures = false);
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform);
 		virtual ~Mesh() = default;
 
@@ -92,7 +92,7 @@ namespace HE
 		const std::vector<std::shared_ptr<Texture2D>>& GetTextures() const { return m_Textures; }
 		const std::string& GetFilePath() const { return m_FilePath; }
 
-		const std::vector<Triangle> GetTriangleCache(uint32_t index) const { return m_TriangleCache.at(index); }
+		//const std::vector<Triangle> GetTriangleCache(uint32_t index) const { return m_TriangleCache.at(index); }
 	private:
 		void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
 
@@ -120,7 +120,7 @@ namespace HE
 		std::vector<std::shared_ptr<Texture2D>> m_NormalMaps;
 		std::vector<std::shared_ptr<MaterialInstance>> m_Materials;
 
-		std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
+		//std::unordered_map<uint32_t, std::vector<Triangle>> m_TriangleCache;
 
 		std::string m_FilePath;
 

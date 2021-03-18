@@ -46,6 +46,16 @@ namespace HE
 		m_DebugMesh = std::make_shared<Mesh>(vertices, indices, glm::mat4(1.0F));
 	}
 
+	void BoxColliderComponent::Copy(Component* other_base)
+	{
+		BoxColliderComponent* other = dynamic_cast<BoxColliderComponent*>(other_base);
+		m_Size = other->m_Size;
+		m_Offset = other->m_Offset;
+		m_IsTrigger = other->m_IsTrigger;
+		//m_DebugMesh = other->m_DebugMesh;
+		m_PhysicsMaterial = other->m_PhysicsMaterial;
+	}
+
 	SphereColliderComponent::SphereColliderComponent(Entity* entityHandle)
 	{
 		m_EntityHandle = entityHandle;
@@ -89,6 +99,15 @@ namespace HE
 		}
 
 		m_DebugMesh = std::make_shared<Mesh>(vertices, indices, glm::mat4(1.0F));
+	}
+
+	void SphereColliderComponent::Copy(Component* other_base)
+	{
+		SphereColliderComponent* other = dynamic_cast<SphereColliderComponent*>(other_base);
+		m_Radius = other->m_Radius;
+		m_IsTrigger = other->m_IsTrigger;
+		//m_DebugMesh = other->m_DebugMesh;
+		m_PhysicsMaterial = other->m_PhysicsMaterial;
 	}
 
 	CapsuleColliderComponent::CapsuleColliderComponent(Entity* entityHandle)
@@ -174,9 +193,30 @@ namespace HE
 		m_DebugMesh = std::make_shared<Mesh>(vertices, indices, glm::mat4(1.0F));
 	}
 
+	void CapsuleColliderComponent::Copy(Component* other_base)
+	{
+		CapsuleColliderComponent* other = dynamic_cast<CapsuleColliderComponent*>(other_base);
+		m_Radius = other->m_Radius;
+		m_Height = other->m_Height;
+		m_IsTrigger = other->m_IsTrigger;
+		//m_DebugMesh = other->m_DebugMesh;
+		m_PhysicsMaterial = other->m_PhysicsMaterial;
+	}
+
 	MeshColliderComponent::MeshColliderComponent(Entity* entityHandle)
 	{
 		m_EntityHandle = entityHandle;
+	}
+
+	void MeshColliderComponent::Copy(Component* other_base)
+	{
+		MeshColliderComponent* other = dynamic_cast<MeshColliderComponent*>(other_base);
+		m_CollisionMesh = other->m_CollisionMesh;
+		m_ProcessedMeshes = other->m_ProcessedMeshes;
+		m_IsConvex = other->m_IsConvex;
+		m_IsTrigger = other->m_IsTrigger;
+		m_OverrideMesh = other->m_OverrideMesh;
+		m_PhysicsMaterial = other->m_PhysicsMaterial;
 	}
 
 	void MeshColliderComponent::SetCollisionMesh(std::shared_ptr<Mesh> collisionMesh) 
@@ -188,5 +228,27 @@ namespace HE
 	RigidBodyComponent::RigidBodyComponent(Entity* entityHandle)
 	{
 		m_EntityHandle = entityHandle;
+	}
+
+	void RigidBodyComponent::Copy(Component* other_base)
+	{
+		RigidBodyComponent* other = dynamic_cast<RigidBodyComponent*>(other_base);
+		m_BodyType = other->m_BodyType;
+
+		m_Mass = other->m_Mass;
+		m_LinearDrag = other->m_LinearDrag;
+		m_AngularDrag = other->m_AngularDrag;
+
+		m_DisableGravity = other->m_DisableGravity;
+		m_IsKinematic = other->m_IsKinematic;
+
+		m_Layer = other->m_Layer;
+
+		m_LockPositionX = other->m_LockPositionX;
+		m_LockPositionY = other->m_LockPositionY;
+		m_LockPositionZ = other->m_LockPositionZ;
+		m_LockRotationX = other->m_LockRotationX;
+		m_LockRotationY = other->m_LockRotationY;
+		m_LockRotationZ = other->m_LockRotationZ;
 	}
 }

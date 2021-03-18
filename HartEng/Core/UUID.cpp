@@ -16,7 +16,7 @@ namespace HE
 
 	UUID::UUID(const std::string& uuid)
 	{
-		m_UUID = uuids::uuid::from_string(uuid).value();
+		m_UUID = uuids::uuid::from_string(uuid).value(); 
 	}
 
 	UUID::UUID(int32_t zero)

@@ -4,6 +4,7 @@
 #include "HartEng/Core/FileSystem.h"
 #include "HartEng/Renderer/Mesh.h"
 #include "HartEng/Core/Utils.h"
+#include "HartEng/Core/Log.h"
 
 
 #include <yaml-cpp/yaml.h>
@@ -120,11 +121,83 @@ namespace HE
 			}
 
 			if (!hasMeta)
-				CreateMetaFile(asset);
+				CreateMeta(asset);
 		}
 		
 
 		return asset;
+	}
+
+	void AssetSerializer::LoadMetaFile(const std::string& filepath, int parentIndex, bool reimport, AssetType type)
+	{
+		std::shared_ptr<Asset> asset = std::make_shared<Asset>();
+		std::string extension = Utils::GetExtension(filepath);
+
+		bool loadYAMLData = true;
+		bool loaded = false;
+
+		switch (type)
+		{
+		case AssetType::Mesh:
+		{
+			if (extension != "blend")
+			{
+				if (asset)
+				{
+					loaded = true;
+				}
+			}
+
+			loadYAMLData = false;
+
+			break;
+		}
+		case AssetType::Texture:
+		{
+			loaded = true;
+			loadYAMLData = false;
+			break;
+		}
+		case AssetType::EnvMap:
+		{
+			loadYAMLData = false;
+			break;
+		}
+		case AssetType::Scene:
+		case AssetType::Audio:
+		case AssetType::Script:
+		case AssetType::Other:
+		{
+			loadYAMLData = false;
+			break;
+		}
+		}
+
+		if (loadYAMLData)
+		{
+			loaded = true;
+		}
+		if (loaded)
+		{
+			asset->FilePath = filepath;
+			std::replace(asset->FilePath.begin(), asset->FilePath.end(), '\\', '/');
+
+			bool hasMeta = FileSystem::Exists(asset->FilePath + ".meta");
+			if (!hasMeta)
+			{
+				UUID uuid(0);
+				uuid.GenerateFromString(filepath);
+
+				asset->Handle = uuid;
+				asset->FileName = Utils::RemoveExtension(Utils::GetFilename(filepath));
+				asset->Extension = Utils::GetExtension(filepath);
+				asset->ParentDirectory = parentIndex;
+				asset->Type = type;
+			}
+
+			if (!hasMeta)
+				CreateMeta(asset);
+		}
 	}
 
 	std::shared_ptr<Asset> AssetSerializer::DeserializeYAML(const std::string& filepath, AssetType type)
@@ -167,7 +240,7 @@ namespace HE
 		asset->Type = (AssetType)data["Type"].as<int>();
 	}
 
-	void AssetSerializer::CreateMetaFile(const std::shared_ptr<Asset>& asset)
+	void AssetSerializer::CreateMeta(const std::shared_ptr<Asset>& asset)
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;

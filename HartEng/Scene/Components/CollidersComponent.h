@@ -21,6 +21,8 @@ namespace HE
 		BoxColliderComponent(Entity* entityHandle);
 		virtual ~BoxColliderComponent() = default;
 
+		void Copy(Component* other_base) override;
+
 		void SetSize(const glm::vec3& size)			{ m_Size = size; }
 		void SetOffset(const glm::vec3& offset)		{ m_Offset = offset; }
 		void SetTrigger(bool trigger)				{ m_IsTrigger = trigger; }
@@ -48,6 +50,8 @@ namespace HE
 		SphereColliderComponent(Entity* entityHandle);
 		virtual ~SphereColliderComponent() = default;
 
+		void Copy(Component* other_base) override;
+
 		void SetRadius(float radius) { m_Radius = radius; }
 		void SetTrigger(bool trigger) { m_IsTrigger = trigger; }
 		void SetMesh(const std::shared_ptr<Mesh>& mesh) { m_DebugMesh = mesh; }
@@ -73,6 +77,7 @@ namespace HE
 		CapsuleColliderComponent(Entity* entityHandle);
 		virtual ~CapsuleColliderComponent() = default;
 
+		void Copy(Component* other_base) override;
 
 		void SetRadius(float radius) { m_Radius = radius; }
 		void SetHeight(float height) { m_Height = height; }
@@ -100,6 +105,8 @@ namespace HE
 	public:
 		MeshColliderComponent(Entity* entityHandle);
 		virtual ~MeshColliderComponent() = default;
+
+		void Copy(Component* other_base) override;
 
 		void SetCollisionMesh(std::shared_ptr<Mesh> collisionMesh);
 		void SetProcessedMeshes(const std::vector<std::shared_ptr<Mesh>>& processedMeshes) { m_ProcessedMeshes = processedMeshes; }
@@ -151,6 +158,7 @@ namespace HE
 		RigidBodyComponent(Entity* entityHandle);
 		virtual ~RigidBodyComponent() = default;
 
+		void Copy(Component* other_base) override;
 
 		void SetBodyType(Type type)					{ m_BodyType = type; }
 		void SetMass(float mass)					{ m_Mass = mass; }

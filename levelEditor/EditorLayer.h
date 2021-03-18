@@ -15,7 +15,8 @@ namespace HE
         };
         SceneState m_SceneState = SceneState::Edit;
 
-        std::shared_ptr<Scene> m_Scene;
+        //std::shared_ptr<Scene> m_Scene;
+        std::shared_ptr<Scene> m_RuntimeScene, m_EditorScene, m_CurrentScene;
         PerspectiveCameraController m_CameraController;
 
         // Viewport Size
@@ -29,6 +30,7 @@ namespace HE
         std::shared_ptr<SceneHierarchyPanel> m_SceneHierarchyPanel;
 
         // Event functions
+        bool OnKeyPressed(KeyPressedEvent& event);
         bool OnMouseButton(MouseButtonPressedEvent& event);
 
         void Draw(Timestep& ts);

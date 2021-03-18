@@ -56,8 +56,11 @@ namespace HE
 
 	public:
 		static void Init();
+		static void CreateMeta();
 		static void SetAssetChangeCallback(const std::function<void()>& callback);
 		static void Shutdown();
+
+		static const std::unordered_map<UUID, std::shared_ptr<Asset>>& GetAssets();
 
 		static DirectoryInfo& GetDirectoryInfo(int index);
 		static std::vector<std::shared_ptr<Asset>> GetAssetsInDirectory(int dirIndex);
@@ -72,6 +75,44 @@ namespace HE
 
 		static void Rename(std::shared_ptr<Asset>& asset, const std::string& newName);
 		static void Rename(int directoryIndex, const std::string& newName);
+
+
+		template<typename T>
+		static std::shared_ptr<T> LoadOrCreateAsset(const std::string& filepath)
+		{
+			auto& uuid = GetAssetIDForFile(filepath);
+			if (uuid.IsNil())
+			{
+				// Create new asset
+				return CreateAsset<T>(filepath);
+			}
+			else
+			{
+				// Get asset
+				return GetAsset<T>(uuid);
+			}
+		}
+
+		// Can be used to load asset from file, better to call this function after .meta files were created
+		template<typename T>
+		static std::shared_ptr<T> CreateAsset(const std::string& filepath_c)
+		{
+			static_assert(std::is_base_of<Asset, T>::value, "CreateAsset only works for types derived from Asset");
+
+			std::string filepath = filepath_c;
+			Utils::ReplaceSlash(filepath);
+			LoadAsset(filepath, true);
+			auto uuid = GetAssetIDForFile(filepath);
+			if (!uuid.IsNil())
+			{
+				return GetAsset<T>(uuid);
+			}
+			else
+			{
+				HE_CORE_ERROR("Creating asset failed!");
+				return nullptr;
+			}
+		}
 
 		template<typename T, typename... Args>
 		static std::shared_ptr<T> CreateAsset(const std::string& filename, AssetType type, int directoryIndex, Args&&... args)
@@ -111,9 +152,13 @@ namespace HE
 		}
 
 		static std::string StripExtras(const std::string& filename);
+		
+		// Can be called to load asset from file, 
+		static void LoadAsset(const std::string& filepath, bool loadAssets, bool reimport = false, int parentIndex = -1);
+
 	private:
-		static void ImportAsset(const std::string& filepath, bool reimport = false, int parentIndex = -1);
-		static int ProcessDirectory(const std::string& directoryPath, int parentIndex = -1);
+	
+		static int ProcessDirectory(const std::string& directoryPath, bool loadAssets, int parentIndex = -1);
 		static void ReloadAssets();
 
 		static void OnFileSystemChanged(FileSystemChangedEvent e);

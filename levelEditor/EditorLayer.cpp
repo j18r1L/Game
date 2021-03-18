@@ -1,19 +1,22 @@
 #include "EditorLayer.h"
 
-#include "assets/scripts/RotateScript.h"
+#include "assets/scripts/CameraScript.h"
+#include "assets/scripts/FPSScript.h"
 #include "HartEng/Core/Utils.h"
 #include "HartEng/Asset/AssetManager.h"
+#include "Panels/AssetManagerPanel.h"
 
 namespace HE
 {
     EditorLayer::EditorLayer() :
         Layer("EditorLayer"),
-        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0.1f, 100.0f),
+        m_CameraController(45.0f, Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight(), 0.5f, 7000.0f),
         m_ViewportSize(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight())
     {
         m_Gizmo.SetCamera(&m_CameraController);
-        m_Scene = std::make_shared<Scene>(Scene("first_scene"));
-        m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>(SceneHierarchyPanel());
+        m_EditorScene = std::make_shared<Scene>(Scene("Editor scene"));
+        m_CurrentScene = m_EditorScene;
+        m_SceneHierarchyPanel = std::make_shared<SceneHierarchyPanel>();
 
         RenderCommand::SetClearColor(glm::vec4(1.0, 0., 1.0, 1.0));
     }
@@ -26,23 +29,55 @@ namespace HE
 
 
         // Create scene hirarchy panel
-        m_SceneHierarchyPanel->SetScene(m_Scene);
+        m_SceneHierarchyPanel->SetScene(m_EditorScene);
         m_SceneHierarchyPanel->SetShaderLibrary(Renderer::GetShaderLibrary());
 
-        SceneSerializer serializer(m_Scene, Renderer::GetShaderLibrary());
-        serializer.Deserialize(path_to_project + "/assets/scenes/Sponza.he");
+        
+        SceneSerializer serializer(m_EditorScene, Renderer::GetShaderLibrary());
+        serializer.Deserialize(path_to_project + "/assets/scenes/Platformer.he");
 
+        {
+            // Manually add FPS script
+            Entity* entity = m_EditorScene->GetEntity("Player");
+            auto script = new FPSScript(entity);
+            entity->AddComponent<ScriptComponent>(script);
+        }
+        
+        {
+            Entity* entity = m_EditorScene->GetEntity("Camera");
+            auto script = new CameraScript(entity);
+            entity->AddComponent<ScriptComponent>(script);
+        }
+        
+        
 
     }
 
     void EditorLayer::OnScenePlay()
     {
+        // Clear clear selected entity
+        m_SceneHierarchyPanel->SetSelectedEntity(nullptr);
         m_SceneState = SceneState::Play;
+
+        
+        Scene runTimeScene(*m_EditorScene.get());
+        m_RuntimeScene = std::make_shared<Scene>(runTimeScene);
+        m_RuntimeScene->OnRuntimeStart();
+        m_SceneHierarchyPanel->SetScene(m_RuntimeScene);
+        m_CurrentScene = m_RuntimeScene;
     }
 
     void EditorLayer::OnSceneStop()
     {
+        // Clear clear selected entity
+        m_SceneHierarchyPanel->SetSelectedEntity(nullptr);
         m_SceneState = SceneState::Edit;
+
+        m_RuntimeScene->OnRuntimeStop();
+        m_RuntimeScene = nullptr;
+        m_SceneHierarchyPanel->SetScene(m_EditorScene);
+        m_CurrentScene = m_EditorScene;
+        HE::Application::Get().GetWindow().ShowCursor();
     }
 
     void EditorLayer::OnDetach()
@@ -78,13 +113,12 @@ namespace HE
         // Draw scene
         if (m_SceneState == SceneState::Play)
         {
-            m_Scene->OnUpdate(ts); // Use runtime camera
-            m_Scene->OnRenderRuntime(ts);
-            //m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());
+            m_RuntimeScene->OnUpdate(ts); // Use runtime camera
+            m_RuntimeScene->OnRenderRuntime(ts);
         }
         else
         {
-            m_Scene->OnRenderEditor(ts, m_CameraController.GetCamera());  
+            m_EditorScene->OnRenderEditor(ts, m_CameraController.GetCamera());
         }
     }
 
@@ -134,9 +168,9 @@ namespace HE
             if (ImGui::BeginMenu("File"))
             {
 
-                if (ImGui::MenuItem("New Scene"))
-                    if (m_Scene)
-                        m_Scene->Clear();
+                if (ImGui::MenuItem("New Scene") && m_SceneState == SceneState::Edit)
+                    if (m_CurrentScene)
+                        m_CurrentScene->Clear();
 
                 if (ImGui::MenuItem("Open Scene"))
                     loadScene = true;
@@ -156,7 +190,7 @@ namespace HE
                 if (ImGui::MenuItem("Play"))
                 {
                     m_SceneState = SceneState::Play;
-                    m_Scene->OnRuntimeStart();
+                    OnScenePlay();
                 }
                 if (ImGui::MenuItem("Pause"))
                 {
@@ -165,7 +199,7 @@ namespace HE
                 if (ImGui::MenuItem("Stop"))
                 {
                     m_SceneState = SceneState::Edit;
-                    m_Scene->OnRuntimeStop();
+                    OnSceneStop();
                 }
 
                 ImGui::EndMenu();
@@ -175,7 +209,7 @@ namespace HE
 
         if (saveScene || loadScene)
         {
-            SceneSerializer serializer(m_Scene, Renderer::GetShaderLibrary());
+            SceneSerializer serializer(m_CurrentScene, Renderer::GetShaderLibrary());
 #ifdef HE_PLATFORM_WINDOWS
             if (loadScene)
             {
@@ -183,8 +217,8 @@ namespace HE
                 if (!filepath.empty())
                 {
                     serializer.Deserialize(filepath);
-                    m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
-                    m_SceneHierarchyPanel->SetScene(m_Scene);
+                    m_CurrentScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+                    m_SceneHierarchyPanel->SetScene(m_CurrentScene);
                     loadScene = false;
                 }
             }
@@ -232,6 +266,7 @@ namespace HE
 
 
         m_SceneHierarchyPanel->OnImGuiRender();
+        AssetManagerPanel::RenderAssets();
 
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -254,7 +289,7 @@ namespace HE
             {
                 m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
                 SceneRenderer::SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
-                m_Scene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+                m_CurrentScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
                 m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
             }
         }
@@ -294,7 +329,7 @@ namespace HE
         HE_PROFILE_FUNCTION();
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseButtonPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnMouseButton));
-        
+        dispatcher.Dispatch<KeyPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
     }
 
     bool EditorLayer::OnMouseButton(MouseButtonPressedEvent& event)
@@ -319,12 +354,26 @@ namespace HE
                 Renderer::Submit([this, EntityIDFramebuffer, &entityID, mx, my]() mutable
                     {
                         entityID = EntityIDFramebuffer->ReadPixel(0, mx, my);
-                        Entity* selectedEntity = m_Scene->GetEntity(entityID);
+                        Entity* selectedEntity = m_CurrentScene->GetEntity(entityID);
                         m_SceneHierarchyPanel->SetSelectedEntity(selectedEntity);
                     });
                 
             }
             EntityIDFramebuffer->UnBind();
+        }
+        return false;
+    }
+
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
+    {
+        // Duplicate selected entity
+        if (Input::IsKeyPressed(HE_KEY_LEFT_CONTROL) && Input::IsKeyPressed(HE_KEY_D))
+        {
+            auto selectedEntity = m_SceneHierarchyPanel->GetSelectedEntity();
+            if (selectedEntity)
+            {
+                auto entity = m_CurrentScene->CreateEntity(*selectedEntity);
+            }
         }
         return false;
     }

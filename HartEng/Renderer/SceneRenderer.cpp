@@ -18,6 +18,8 @@ namespace HE
 		struct SceneInfo
 		{
 			SceneRendererCamera SceneCamera;
+
+			LightEnvironment SceneLightEnvironment;
 		} SceneData;
 		
 		// Geometry passes
@@ -115,7 +117,7 @@ namespace HE
 		s_SceneRendererData.ActiveScene = scene;
 		s_SceneRendererData.SceneData.SceneCamera = camera;
 
-		//s_Data.ActiveLight = scene->m_Light;
+		s_SceneRendererData.SceneData.SceneLightEnvironment = scene->GetLightEnvironment();
 	}
 	void SceneRenderer::EndScene()
 	{
@@ -230,6 +232,11 @@ namespace HE
 				// Set values
 				baseMaterial->Set("u_ViewProjectionMatrix", viewProjection);
 				baseMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+
+				// Set lights (TODO: move to light environment and don't do per mesh)
+				baseMaterial->Set("u_DirectionalLights", s_SceneRendererData.SceneData.SceneLightEnvironment.DirectionalLights);
+				baseMaterial->Set("u_PointLights", s_SceneRendererData.SceneData.SceneLightEnvironment.PointLights);
+				baseMaterial->Set("u_SpotLights", s_SceneRendererData.SceneData.SceneLightEnvironment.SpotLights);
 
 				Renderer::SubmitMesh(dc.Mesh, dc.Transform, nullptr);
 			}

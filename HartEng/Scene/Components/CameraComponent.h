@@ -19,11 +19,9 @@ namespace HE
     public:
         CameraComponent();
         CameraComponent(Entity* entityHandle);
+        virtual ~CameraComponent() = default;
 
-        virtual ~CameraComponent()
-        {
-
-        }
+        void Copy(Component* other_base) override;
 
         void SetPrimary(bool primary);
         void SetFixedAspectRatio(bool fixedAspectRatio);

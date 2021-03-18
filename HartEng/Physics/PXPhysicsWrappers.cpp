@@ -440,7 +440,7 @@ namespace HE
 		return result;
 	}
 
-	bool OverlapCapsule(const glm::vec3& origin, float radius, float halfHeight, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count)
+	bool PXPhysicsWrappers::OverlapCapsule(const glm::vec3& origin, float radius, float halfHeight, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count)
 	{
 		physx::PxScene* scene = static_cast<physx::PxScene*>(Physics::GetPhysicsScene());
 
@@ -461,7 +461,7 @@ namespace HE
 		return result;
 	}
 
-	bool OverlapSphere(const glm::vec3& origin, float radius, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count)
+	bool PXPhysicsWrappers::OverlapSphere(const glm::vec3& origin, float radius, std::array<physx::PxOverlapHit, OVERLAP_MAX_COLLIDERS>& buffer, uint32_t* count)
 	{
 		physx::PxScene* scene = static_cast<physx::PxScene*>(Physics::GetPhysicsScene());
 

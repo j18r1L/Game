@@ -43,6 +43,12 @@ namespace HE
 		ReloadAssets();
 	}
 
+	void AssetManager::CreateMeta()
+	{
+		std::string pathToProject = CMAKE_PATH;
+		ProcessDirectory(pathToProject + "/assets", false);
+	}
+
 	void AssetManager::SetAssetChangeCallback(const std::function<void()>& callback)
 	{
 		
@@ -54,6 +60,11 @@ namespace HE
 	{
 		s_LoadedAssets.clear();
 		s_Directories.clear();
+	}
+
+	const std::unordered_map<UUID, std::shared_ptr<Asset>>& AssetManager::GetAssets()
+	{
+		return s_LoadedAssets;
 	}
 
 	DirectoryInfo& AssetManager::GetDirectoryInfo(int index)
@@ -120,13 +131,13 @@ namespace HE
 			if (e.IsDirectory)
 				ProcessDirectory(e.FilePath, parentIndex);
 			else
-				ImportAsset(e.FilePath, false, parentIndex);
+				LoadAsset(e.FilePath, true, false, parentIndex);
 		}
 
 		if (e.Action == FileSystemAction::Modified)
 		{
 			if (!e.IsDirectory)
-				ImportAsset(e.FilePath, true, parentIndex);
+				LoadAsset(e.FilePath, true, true, parentIndex);
 		}
 
 		if (e.Action == FileSystemAction::Rename)
@@ -292,24 +303,30 @@ namespace HE
 		
 	}
 
-	void AssetManager::ImportAsset(const std::string& filepath, bool reimport, int parentIndex)
+	void AssetManager::LoadAsset(const std::string& filepath, bool loadAssets, bool reimport, int parentIndex)
 	{
-		
 		std::string extension = Utils::GetExtension(filepath);
 		if (extension == "meta")
 			return;
 
 		AssetType type = AssetTypes::GetAssetTypeFromExtension(extension);
-		std::shared_ptr<Asset> asset = AssetSerializer::Deserialize(filepath, parentIndex, reimport, type);
-		if (asset)
+		if (loadAssets)
 		{
-			s_LoadedAssets[asset->Handle] = asset;
-		}		
+			std::shared_ptr<Asset> asset = AssetSerializer::Deserialize(filepath, parentIndex, reimport, type);
+			if (asset)
+			{
+				s_LoadedAssets[asset->Handle] = asset;
+			}
+		}
+		else
+		{
+			AssetSerializer::LoadMetaFile(filepath, parentIndex, reimport, type);
+		}
+		
 	}
 
-	int AssetManager::ProcessDirectory(const std::string& directoryPath, int parentIndex)
+	int AssetManager::ProcessDirectory(const std::string& directoryPath, bool loadAssets, int parentIndex)
 	{
-		
 		DirectoryInfo dirInfo;
 		dirInfo.DirectoryName = std::filesystem::path(directoryPath).filename().string();
 		dirInfo.ParentIndex = parentIndex;
@@ -324,19 +341,22 @@ namespace HE
 		for (auto entry : std::filesystem::directory_iterator(directoryPath))
 		{
 			if (entry.is_directory())
-				ProcessDirectory(entry.path().string(), currentIndex);
+			{
+				ProcessDirectory(entry.path().string(), loadAssets, currentIndex);
+			}
 			else
-				ImportAsset(entry.path().string(), false, currentIndex);
+			{
+				LoadAsset(entry.path().string(), loadAssets, false, currentIndex);
+			}
 		}
 
 		return dirInfo.DirectoryIndex;
-		
 	}
 
 	void AssetManager::ReloadAssets()
 	{
 		std::string pathToProject = CMAKE_PATH;
-		ProcessDirectory(pathToProject + "/assets");
+		ProcessDirectory(pathToProject + "/assets", true);
 	}
 	
 

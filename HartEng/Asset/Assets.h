@@ -29,6 +29,7 @@ namespace HE
 		std::string Extension;
 		int ParentDirectory;
 
+		Asset() = default;
 		virtual ~Asset() {}
 	};
 

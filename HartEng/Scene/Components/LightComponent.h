@@ -28,6 +28,8 @@ namespace HE
 		LightComponent(Entity* entityHandle);
 		virtual ~LightComponent() = default;
 
+		void Copy(Component* other_base) override;
+
 		void SetLightType(const LightType& type);
 		void SetCastShadow(bool castShadow);
 		void SetDirection(const glm::vec3& direction);

@@ -25,7 +25,7 @@ namespace HE
 			if (m_ActorInternal->isReleasable())
 			{
 				m_ActorInternal->release();
-				m_ActorInternal = nullptr;
+				//m_ActorInternal = nullptr;
 			}
 		}
 	}
@@ -40,12 +40,26 @@ namespace HE
 		return FromPhysXQuat(m_ActorInternal->getGlobalPose().q);
 	}
 
+	void PhysicsActor::SetPosition(const glm::vec3 position)
+	{
+		physx::PxTransform transform = m_ActorInternal->getGlobalPose();
+		transform.p = ToPhysXVector(position);
+		m_ActorInternal->setGlobalPose(transform);
+	}
+
+	void PhysicsActor::SetRotation(const glm::quat& rotation)
+	{
+		physx::PxTransform transform = m_ActorInternal->getGlobalPose();
+		transform.q = ToPhysXQuat(rotation);
+		m_ActorInternal->setGlobalPose(transform);
+	}
+
 	void PhysicsActor::Rotate(const glm::vec3& rotation)
 	{
 		physx::PxTransform transform = m_ActorInternal->getGlobalPose();
-		transform.q *= (physx::PxQuat(glm::radians(rotation.x), { 1.0F, 0.0F, 0.0F })
-			* physx::PxQuat(glm::radians(rotation.y), { 0.0F, 1.0F, 0.0F })
-			* physx::PxQuat(glm::radians(rotation.z), { 0.0F, 0.0F, 1.0F }));
+		transform.q *= (physx::PxQuat(glm::radians(rotation.x), { 1.0f, 0.0f, 0.0f })
+			* physx::PxQuat(glm::radians(rotation.y), { 0.0f, 1.0f, 0.0f })
+			* physx::PxQuat(glm::radians(rotation.z), { 0.0f, 0.0f, 1.0f }));
 		m_ActorInternal->setGlobalPose(transform);
 	}
 

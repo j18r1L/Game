@@ -16,6 +16,16 @@ namespace HE
         LoadCameraDebugMesh();
     }
 
+    void CameraComponent::Copy(Component* other_base)
+    {
+        CameraComponent* other = dynamic_cast<CameraComponent*>(other_base);
+        m_Camera = other->m_Camera;
+        m_Primary = other->m_Primary;
+        m_FixedAspectRatio = other->m_FixedAspectRatio;
+
+        m_DebugMesh = other->m_DebugMesh;
+    }
+
     void CameraComponent::SetPrimary(bool primary)
     {
         m_Primary = primary;
@@ -61,7 +71,8 @@ namespace HE
         }
         else
         {
-            HE_CORE_ERROR("CameraComponent::LoadCameraDebugMesh AssetID for camera debug mesh is not valid!");
+            m_DebugMesh = AssetManager::CreateAsset<Mesh>(pathToProject + "/assets/meshes/obj/camera/camera.obj");
+            //HE_CORE_ERROR("CameraComponent::LoadCameraDebugMesh AssetID for camera debug mesh is not valid!");
         }
     }
 }

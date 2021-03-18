@@ -19,6 +19,7 @@ namespace HE
         void DrawComponents(Entity* entity);
 
         void DrawTransform(Entity* entity);
+        void DrawTag(Entity* entity);
         void DrawCamera(Entity* entity);
         void DrawMesh(Entity* entity);
         void DrawLight(Entity* entity);

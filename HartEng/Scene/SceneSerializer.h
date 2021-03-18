@@ -15,6 +15,7 @@ namespace HE
 
         void SerializeEntity(YAML::Emitter& out, Entity* entity);
         void SerializeTransform(YAML::Emitter& out, Entity* entity);
+        void SerializeTag(YAML::Emitter& out, Entity* entity);
         void SerializeCamera(YAML::Emitter& out, Entity* entity);
         void SerializeMesh(YAML::Emitter& out, Entity* entity);
         void SerializeLight(YAML::Emitter& out, Entity* entity);
@@ -25,6 +26,7 @@ namespace HE
         void SerializeMeshCollider(YAML::Emitter& out, Entity* entity);
 
         void DeserializeTransform(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
+        void DeserializeTag(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
         void DeserializeCamera(const YAML::Node& deserializedComponentt, Entity* deserializedEntity);
         void DeserializeMesh(const YAML::Node& deserializedComponent, Entity* deserializedEntity);
         void DeserializeLight(const YAML::Node& deserializedComponent, Entity* deserializedEntity);

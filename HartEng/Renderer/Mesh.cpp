@@ -4,6 +4,7 @@
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Renderer/Material.h"
 #include "HartEng/Renderer/Renderer.h"
+#include "HartEng/Asset/AssetManager.h"
 
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -52,7 +53,7 @@ namespace HE
 		}
 	};
 
-	Mesh::Mesh(const std::string& filename) :
+	Mesh::Mesh(const std::string& filename, bool flippedTextures):
 		m_FilePath(filename)
 	{
 		LogStream::Initialize();
@@ -70,9 +71,9 @@ namespace HE
 
 		m_Scene = scene;
 
+		// TODO redo shader loading
 		m_MeshShader = Renderer::GetShaderLibrary()->Get("Black");
 		m_BaseMaterial = std::make_shared<Material>(m_MeshShader);
-		//m_BaseMaterial = std::shared_ptr<Material>(new Material(m_MeshShader));
 		m_InverseTransform = glm::inverse(Mat4FromAssimpMat4(scene->mRootNode->mTransformation));
 
 		uint32_t vertexCount = 0;
@@ -135,11 +136,13 @@ namespace HE
 			// Indices
 			for (size_t i = 0; i < mesh->mNumFaces; i++)
 			{
-				HE_CORE_ASSERT(mesh->mFaces[i].mNumIndices == 3, "Must have 3 indices.");
+				if (mesh->mFaces[i].mNumIndices != 3)
+				{
+					HE_CORE_ERROR("Mesh must have 3 indices!");
+				}
 				Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
 				m_Indices.push_back(index);
-
-				m_TriangleCache[m].emplace_back(m_StaticVertices[index.V1 + submesh.BaseVertex], m_StaticVertices[index.V2 + submesh.BaseVertex], m_StaticVertices[index.V3 + submesh.BaseVertex]);
+				//m_TriangleCache[m].emplace_back(m_StaticVertices[index.V1 + submesh.BaseVertex], m_StaticVertices[index.V2 + submesh.BaseVertex], m_StaticVertices[index.V3 + submesh.BaseVertex]);
 			}
 
 
@@ -161,7 +164,6 @@ namespace HE
 				auto aiMaterialName = aiMaterial->GetName();
 
 				auto mi = std::make_shared<MaterialInstance>(m_BaseMaterial, aiMaterialName.data);
-				//auto mi = std::shared_ptr<MaterialInstance>(new MaterialInstance(m_BaseMaterial, aiMaterialName.data));
 
 				// TODO redo two sided
 				mi->SetFlag(MaterialFlag::TwoSided, false);
@@ -195,8 +197,12 @@ namespace HE
 					parentPath /= std::string(aiTexPath.data);
 					std::string texturePath = parentPath.string();
 					HE_CORE_INFO("    Albedo map path = {0}", texturePath);
-					//auto texture = Texture2D::Create(texturePath, true); // true - srgb
-					auto texture = Texture2D::Create(texturePath); 
+
+					// Get texture from assetManager or create it 
+					// TODO creating only Texture2D?
+					auto& texture = AssetManager::LoadOrCreateAsset<Texture2D>(texturePath);
+					texture->SetFlipped(flippedTextures);
+
 					if (texture->Loaded())
 					{
 						m_Textures[i] = texture;
@@ -226,7 +232,9 @@ namespace HE
 					parentPath /= std::string(aiTexPath.data);
 					std::string texturePath = parentPath.string();
 					HE_CORE_INFO("    Normal map path = {0}", texturePath);
-					auto texture = Texture2D::Create(texturePath);
+					auto& texture = AssetManager::LoadOrCreateAsset<Texture2D>(texturePath);
+					texture->SetFlipped(flippedTextures);
+
 					if (texture->Loaded())
 					{
 						mi->Set("u_NormalTexture", texture);
@@ -253,7 +261,9 @@ namespace HE
 					parentPath /= std::string(aiTexPath.data);
 					std::string texturePath = parentPath.string();
 					HE_CORE_INFO("    Roughness map path = {0}", texturePath);
-					auto texture = Texture2D::Create(texturePath);
+					auto& texture = AssetManager::LoadOrCreateAsset<Texture2D>(texturePath);
+					texture->SetFlipped(flippedTextures);
+
 					if (texture->Loaded())
 					{
 						mi->Set("u_RoughnessTexture", texture);
@@ -346,7 +356,7 @@ namespace HE
 							parentPath /= str;
 							std::string texturePath = parentPath.string();
 							HE_CORE_INFO("    Metalness map path = {0}", texturePath);
-							auto texture = Texture2D::Create(texturePath);
+							auto& texture = AssetManager::LoadOrCreateAsset<Texture2D>(texturePath);
 							if (texture->Loaded())
 							{
 								mi->Set("u_MetalnessTexture", texture);

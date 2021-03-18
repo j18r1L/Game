@@ -1,3 +1,3 @@
-StaticFriction: 2
-DynamicFriction: 2
-Bounciness: 1
+StaticFriction: 10
+DynamicFriction: 10
+Bounciness: 0

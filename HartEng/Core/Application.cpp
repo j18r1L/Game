@@ -32,7 +32,8 @@ namespace HE
         Renderer::WaitAndRender();
 
         AssetTypes::Init();
-        AssetManager::Init();
+        //AssetManager::Init(); // Init will load all assets and create .meta files in /asset folder
+        AssetManager::CreateMeta(); // Only create .meta files for assets in /asset folder
 
         PushOverlay(m_ImGuiLayer);
     }

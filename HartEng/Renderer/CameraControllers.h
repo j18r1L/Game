@@ -77,7 +77,6 @@ namespace HE
 
     public:
         PerspectiveCameraController(float fov, float width, float height, float zNear, float zFar);
-        //PerspectiveCameraController(float fov, float aspect_ratio, float zNear, float zFar);
 
         void OnUpdate(Timestep ts);
         void OnEvent(Event& e);

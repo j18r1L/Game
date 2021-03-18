@@ -82,6 +82,11 @@ namespace HE
 
             if (ImGui::BeginPopup("Add Component"))
             {
+                if (ImGui::MenuItem("Tag"))
+                {
+                    m_SelectionContext->AddComponent<TagComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
                 if (ImGui::MenuItem("Camera"))
                 {
                     m_SelectionContext->AddComponent<CameraComponent>();
@@ -136,9 +141,15 @@ namespace HE
 
     void SceneHierarchyPanel::DrawEntityNode(std::string name, Entity* entity)
     {
-
-        ImGuiTreeNodeFlags flags = ((*m_SelectionContext == *entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-        bool opened = ImGui::TreeNodeEx(name.c_str(), flags, name.c_str());
+        bool opened = false;
+        bool selected = false;
+        if (m_SelectionContext)
+        {
+            selected = *m_SelectionContext == *entity;
+        }
+        ImGuiTreeNodeFlags flags = (selected ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+        opened = ImGui::TreeNodeEx(name.c_str(), flags, name.c_str());
+        
         if (ImGui::IsItemClicked())
         {
             m_SelectionContext = entity;
@@ -185,6 +196,15 @@ namespace HE
             if (ImGui::TreeNodeEx((void*)(entity->GetComponent<TransformComponent>()), treeNodeFlags, "Transform Component"))
             {
                 DrawTransform(entity);
+                ImGui::TreePop();
+            }
+        }
+
+        if (entity->HasComponent<TagComponent>())
+        {
+            if (ImGui::TreeNodeEx((void*)(entity->GetComponent<TagComponent>()), treeNodeFlags, "Tag Component"))
+            {
+                DrawTag(entity);
                 ImGui::TreePop();
             }
         }
@@ -289,6 +309,15 @@ namespace HE
             transformComponent->SetScale(scale);
         }
     }
+
+    void SceneHierarchyPanel::DrawTag(Entity* entity)
+    {
+        auto tagComponent = entity->GetComponent<TagComponent>();
+
+        std::string tag = tagComponent->GetTag();
+        ImGui::Text(tag.c_str());
+    }
+
     void SceneHierarchyPanel::DrawCamera(Entity* entity)
     {
         // Remove Component
@@ -368,7 +397,6 @@ namespace HE
             entity->RemoveComponent<CameraComponent>();
     }
     
-    
     void SceneHierarchyPanel::DrawMesh(Entity* entity)
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
@@ -402,10 +430,16 @@ namespace HE
             {
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    entity->GetComponent<MeshComponent>()->SetMesh(AssetManager::CreateAsset<Mesh>(filepath));
+                }
+                else
                 {
                     entity->GetComponent<MeshComponent>()->SetMesh(AssetManager::GetAsset<Mesh>(uuid));
                 }
+                
+
             }
 #elif HE_PLATFORM_LINUX
             ImGui::Begin("New mesh");
@@ -421,7 +455,11 @@ namespace HE
                 createMesh = false;
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    entity->GetComponent<MeshComponent>()->SetMesh(AssetManager::CreateAsset<Mesh>(filepath));
+                }
+                else
                 {
                     entity->GetComponent<MeshComponent>()->SetMesh(AssetManager::GetAsset<Mesh>(uuid));
                 }
@@ -430,6 +468,95 @@ namespace HE
             ImGui::End();
 #endif
         }
+        // Materials
+        {
+            auto meshComponent = entity->GetComponent<MeshComponent>();
+            auto& mesh = meshComponent->GetMesh();
+            auto& materials = mesh->GetMaterials();
+            static uint32_t selectedMaterialIndex = 0;
+
+            for (uint32_t i = 0; i < materials.size(); i++)
+            {
+                auto& materialInstance = materials[i];
+
+                ImGuiTreeNodeFlags node_flags = (selectedMaterialIndex == i ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
+                bool opened = ImGui::TreeNodeEx((void*)(&materialInstance), node_flags, materialInstance->GetName().c_str());
+                if (ImGui::IsItemClicked())
+                {
+                    selectedMaterialIndex = i;
+                }
+                if (opened)
+                {
+                    ImGui::TreePop();
+                }
+            }
+
+            if (selectedMaterialIndex < materials.size())
+            {
+                // Selected materail
+                auto& materialInstance = materials[selectedMaterialIndex];
+                ImGui::Text("Shader: %s", materialInstance->GetShader()->GetName().c_str());
+                // Textures
+                {
+                    if (ImGui::CollapsingHeader("Albedo", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
+                    {
+                        auto& albedoColor = materialInstance->Get<glm::vec3>("u_AlbedoColor");
+                        bool useAlbedoMap = materialInstance->Get<float>("u_AlbedoTexToggle");
+                        auto& albedoMap = materialInstance->TryGetResource<Texture2D>("u_AlbedoTexture");
+                        
+
+                        if (albedoMap)
+                        {
+                            ImGui::Image((ImTextureID)albedoMap->GetRendererID(), ImVec2(64, 64));
+                        }
+
+                        if (ImGui::IsItemHovered())
+                        {
+                            if (albedoMap)
+                            {
+                                ImGui::BeginTooltip();
+                                //ImGui::Text("%s", albedoMap->GetPath().c_str());
+                                ImGui::Image((void*)albedoMap->GetRendererID(), ImVec2(124, 124));
+                                ImGui::EndTooltip();
+                            }
+                            if (ImGui::IsItemClicked())
+                            {
+                                std::string filepath = FileDialog::OpenFile("");
+                                if (filepath != "")
+                                {
+                                    albedoMap = AssetManager::LoadOrCreateAsset<Texture2D>(filepath);
+                                    materialInstance->Set("u_AlbedoTexture", albedoMap);
+                                }
+                            }
+                        }
+
+                        ImGui::SameLine();
+                        ImGui::BeginGroup();
+                        if (ImGui::Checkbox("Use##AlbedoMap", &useAlbedoMap))
+                        {
+                            materialInstance->Set<float>("u_AlbedoTexToggle", useAlbedoMap ? 1.0f : 0.0f);
+                        }
+
+                        if (albedoMap)
+                        {
+                            bool flipped = albedoMap->GetFlipped();
+                            ImGui::SameLine();
+                            if (ImGui::Checkbox("Flipped", &flipped))
+                            {
+                                albedoMap->SetFlipped(flipped);
+                            }
+                        }
+                        
+                        ImGui::EndGroup();
+                        ImGui::SameLine();
+                        ImGui::ColorEdit3("Color##Albedo", glm::value_ptr(albedoColor), ImGuiColorEditFlags_NoInputs);
+                    }
+                }
+            }
+        }
+
+
+
         if (entity->HasComponent<MeshComponent>())
         {
             // Remove Component
@@ -439,7 +566,6 @@ namespace HE
 
     }
     
-
     void SceneHierarchyPanel::DrawLight(Entity* entity)
     {
         // Remove Component
@@ -621,7 +747,7 @@ namespace HE
                 rigidBody->SetLockPositionZ(lockPosZ);
 
             if (ImGui::Checkbox("Lock rotation X", &lockRotX))
-                rigidBody->SetLockRotationX(lockPosX);
+                rigidBody->SetLockRotationX(lockRotX);
             if (ImGui::Checkbox("Lock rotation Y", &lockRotY))
                 rigidBody->SetLockRotationY(lockRotY);
             if (ImGui::Checkbox("Lock rotation Z", &lockRotZ))
@@ -667,7 +793,11 @@ namespace HE
             {
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    boxCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     boxCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -766,7 +896,11 @@ namespace HE
             {
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    sphereCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     sphereCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -785,7 +919,11 @@ namespace HE
                 loadPhysicsMaterial = false;
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    sphereCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     sphereCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -861,7 +999,11 @@ namespace HE
             {
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    capsuleCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     capsuleCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -880,7 +1022,11 @@ namespace HE
                 loadPhysicsMaterial = false;
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    capsuleCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     capsuleCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -899,7 +1045,7 @@ namespace HE
         if (ImGui::DragFloat("Radius", &radius, 0.1f))
             capsuleCollider->SetRadius(radius);
         if (ImGui::DragFloat("Height", &height, 0.1f))
-            capsuleCollider->SetRadius(height);
+            capsuleCollider->SetHeight(height);
         if (ImGui::Checkbox("Is trigger", &isTrigger))
             capsuleCollider->SetTrigger(isTrigger);
 
@@ -965,7 +1111,11 @@ namespace HE
             {
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    meshCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     meshCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -984,7 +1134,11 @@ namespace HE
                 loadPhysicsMaterial = false;
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    meshCollider->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(filepath));
+                }
+                else
                 {
                     meshCollider->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(uuid));
                 }
@@ -1002,7 +1156,11 @@ namespace HE
             {
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    meshCollider->SetCollisionMesh(AssetManager::CreateAsset<Mesh>(filepath));
+                }
+                else
                 {
                     meshCollider->SetCollisionMesh(AssetManager::GetAsset<Mesh>(uuid));
                 }
@@ -1021,7 +1179,11 @@ namespace HE
                 loadCollisionMesh = false;
                 Utils::ReplaceSlash(filepath);
                 const UUID& uuid = AssetManager::GetAssetIDForFile(project_path + filepath);
-                if (!uuid.IsNil())
+                if (uuid.IsNil())
+                {
+                    meshCollider->SetCollisionMesh(AssetManager::CreateAsset<Mesh>(filepath));
+                }
+                else
                 {
                     meshCollider->SetCollisionMesh(AssetManager::GetAsset<Mesh>(uuid));
                 }

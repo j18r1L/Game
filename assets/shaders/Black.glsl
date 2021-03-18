@@ -38,6 +38,10 @@ void main()
 #type fragment
 #version 430 core
 
+#define MAX_NUM_OF_DIRECTIONAL_LIGHTS 2
+#define MAX_NUM_OF_POINT_LIGHTS 2
+#define MAX_NUM_OF_SPOT_LIGHTS 2
+
 in VertexOutput
 {
 	vec3 WorldPosition;
@@ -54,7 +58,6 @@ struct s_DirectionalLight
     vec3 l_Direction;
     vec3 l_Color;
     float l_Intensity;
-    float l_Range;
 };
 
 struct s_PointLight 
@@ -62,7 +65,6 @@ struct s_PointLight
 	vec3 l_Position;
     vec3 l_Color;
     float l_Intensity;
-    float l_Range;
 };
 
 struct s_SpotLight 
@@ -71,12 +73,16 @@ struct s_SpotLight
     vec3 l_Direction;
     vec3 l_Color;
     float l_Intensity;
-    float l_Range;  
     float l_InnerConeAngle;
     float l_OuterConeAngle;
 };
 
 layout(location = 0) out vec4 color;
+
+// Light structs
+uniform s_DirectionalLight u_DirectionalLights;
+uniform s_PointLight u_PointLights;
+uniform s_SpotLight u_SpotLights;
 
 // texture inputs
 uniform sampler2D u_AlbedoTexture;
@@ -86,12 +92,86 @@ uniform float u_AlbedoTexToggle;
 
 uniform vec3 u_AlbedoColor;
 
+// Calculates the color when using a directional light.
+vec3 CalculateDirectionalLight(s_DirectionalLight light, vec3 normal, vec3 viewDirection)
+{
+    vec3 lightDir = normalize(-light.l_Direction);
+    // diffuse shading
+    float diffuse = max(dot(normal, lightDir), 0.0);
+
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float specular = pow(max(dot(viewDirection, reflectDir), 0.0), 32.0);
+
+    // combine results
+    vec3 ambient = vec3(0.1);
+
+    return (ambient + diffuse + specular) * light.l_Intensity * light.l_Color;
+}
+
+// Calculates the color when using a point light.
+vec3 CalculatePointLight(s_PointLight light, vec3 normal, vec3 viewDirection)
+{
+    vec3 lightDir = normalize(light.l_Position - vs_Input.WorldPosition);
+    // diffuse shading
+    float diffuse = max(dot(normal, lightDir), 0.0);
+	
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float specular = pow(max(dot(viewDirection, reflectDir), 0.0), 32.0);
+
+    // combine results
+    vec3 ambient = vec3(0.1);
+
+    return (ambient + diffuse + specular) * light.l_Intensity * light.l_Color;
+}
+
+// Calculates the color when using a spot light.
+vec3 CalculateSpotLight(s_SpotLight light, vec3 normal, vec3 viewDirection)
+{
+    vec3 lightDir = normalize(light.l_Position - vs_Input.WorldPosition);
+    // diffuse shading
+    float diffuse = max(dot(normal, lightDir), 0.0);
+
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float specular = pow(max(dot(viewDirection, reflectDir), 0.0), 32.0);
+
+    // spotlight intensity
+    float theta = dot(lightDir, normalize(-light.l_Direction)); 
+    float epsilon = light.l_InnerConeAngle - light.l_OuterConeAngle;
+    float intensity = clamp((theta - light.l_OuterConeAngle) / epsilon, 0.0, 1.0);
+
+    // combine results
+    vec3 ambient = vec3(0.1);
+
+    return (ambient + diffuse + specular) * light.l_Intensity * light.l_Color * intensity;
+}
+
+
 void main()
 {
 	color = texture(u_AlbedoTexture, vs_Input.TexCoord);
 
+    vec3 viewDirection = normalize(vs_Input.ViewPosition - vs_Input.WorldPosition);
+    vec3 normal = normalize(vs_Input.Normal);
+
 	// Standard inputs
 	vec3 Albedo = u_AlbedoTexToggle > 0.5 ? texture(u_AlbedoTexture, vs_Input.TexCoord).rgb : u_AlbedoColor; 
 
-	color = vec4(Albedo, 1.0);
+    vec3 light = vec3(0.0);
+    // Directional lighting
+    //for(int i = 0; i < 2; i++)
+        light += CalculateDirectionalLight(u_DirectionalLights, normal, viewDirection);
+
+    // Point lights
+    //for(int i = 0; i < 2; i++)
+        light += CalculatePointLight(u_PointLights, normal, viewDirection);
+        
+    // Spot light
+    //for(int i = 0; i < 2; i++)
+        light += CalculateSpotLight(u_SpotLights, normal, viewDirection);
+
+
+	color = vec4(Albedo * light, 1.0);
 }

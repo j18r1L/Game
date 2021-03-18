@@ -16,14 +16,17 @@ namespace HE
 
         Buffer m_ImageData;
         bool m_Loaded = false;
+        bool m_Flipped = false;
 
+        void Load();
     public:
 
-        OpenGLTexture2D(const std::string& filepath);
+        OpenGLTexture2D(const std::string& filepath, bool flipped = false);
         virtual ~OpenGLTexture2D();
 
         void Bind(uint32_t slot = 0) const override;
         void SetData(void* data, uint32_t size) const override;
+        void SetFlipped(bool flipped) override;
         bool Loaded() const override { return m_Loaded; }
 
 
@@ -39,6 +42,10 @@ namespace HE
         {
             return m_RendererID;
         }
+        bool GetFlipped() const override
+        {
+            return m_Flipped;
+        }
     };
 
     class OpenGLTextureCube: public TextureCube
@@ -52,14 +59,17 @@ namespace HE
 
         Buffer m_ImageData[6];
         bool m_Loaded = false;
+        bool m_Flipped = false;
 
+        void Load();
     public:
 
-        OpenGLTextureCube(const std::string& path);
+        OpenGLTextureCube(const std::string& path, bool flipped = false);
         virtual ~OpenGLTextureCube();
 
         void Bind(uint32_t slot = 0) const override;
         void SetData(void* data, uint32_t size) const override;
+        void SetFlipped(bool flipped) override;
         bool Loaded() const override { return m_Loaded; }
 
         uint32_t GetWidth() const override
@@ -73,6 +83,10 @@ namespace HE
         uint32_t GetRendererID() const override
         {
             return m_RendererID;
+        }
+        bool GetFlipped() const override
+        {
+            return m_Flipped;
         }
     };
 }

@@ -6,6 +6,19 @@ namespace HE
 	{
 		m_EntityHandle = entityHandle;
 	}
+	void LightComponent::Copy(Component* other_base)
+	{
+		LightComponent* other = dynamic_cast<LightComponent*>(other_base);
+		m_LightType = other->m_LightType;
+		m_CastShadow = other->m_CastShadow;
+
+		m_Direction = other->m_Direction;
+		m_Color = other->m_Color;
+		m_Intensity = other->m_Intensity;
+		m_Range = other->m_Range;
+		m_InnerConeAngle = other->m_InnerConeAngle;
+		m_OuterConeAngle = other->m_OuterConeAngle;
+	}
 	void LightComponent::SetLightType(const LightType& type)
 	{
 		m_LightType = type;
@@ -32,11 +45,11 @@ namespace HE
 	}
 	void LightComponent::SetInnerConeAngle(float angle)
 	{
-		m_InnerConeAngle = glm::cos(glm::radians(angle));
+		m_InnerConeAngle = angle;
 	}
 	void LightComponent::SetOuterConeAngle(float angle)
 	{
-		m_OuterConeAngle = glm::cos(glm::radians(angle));
+		m_OuterConeAngle = angle;
 	}
 
 	const LightType& LightComponent::GetLightType() const

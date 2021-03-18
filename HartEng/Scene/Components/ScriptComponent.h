@@ -12,6 +12,8 @@ namespace HE
 			m_EntityHandle = entityHandle;
 		}
 		virtual ~ScriptComponent() = default;
+
+		void Copy(Component* other_base) override {};
 		virtual void OnCreate() {};
 		virtual void OnUpdate(Timestep& timestep) {};
 		virtual void OnPhysicsUpdate(float fixedTimestep) {};

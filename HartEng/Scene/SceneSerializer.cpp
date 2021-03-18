@@ -1,16 +1,17 @@
 #include "HartEng/Scene/SceneSerializer.h"
 
-
-#include <fstream>
-#include "HartEng/Core/Log.h"
-#include "HartEng/Scene/SceneCamera.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
-#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/CollidersComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
-#include "HartEng/Scene/Components/CollidersComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/TagComponent.h"
 #include "HartEng/Asset/AssetManager.h"
+#include "HartEng/Scene/SceneCamera.h"
+#include "HartEng/Core/Log.h"
+
+#include <fstream>
 
 namespace YAML
 {
@@ -149,6 +150,8 @@ namespace HE
 
         if (entity->HasComponent<TransformComponent>())
             SerializeTransform(out, entity);
+        if (entity->HasComponent<TagComponent>())
+            SerializeTag(out, entity);
         if (entity->HasComponent<CameraComponent>())
             SerializeCamera(out, entity);
         if (entity->HasComponent<MeshComponent>())
@@ -181,6 +184,18 @@ namespace HE
             out << YAML::Key << "Scale" << YAML::Value << transformComponent->GetScale();
 
             out << YAML::EndMap; // Transform component
+        }
+    }
+    void SceneSerializer::SerializeTag(YAML::Emitter& out, Entity* entity)
+    {
+        auto tagComponent = entity->GetComponent<TagComponent>();
+        out << YAML::Key << "TagComponent";
+        {
+            out << YAML::BeginMap; // Tag component
+
+            out << YAML::Key << "Tag" << YAML::Value << tagComponent->GetTag();
+
+            out << YAML::EndMap; // Tag component
         }
     }
     void SceneSerializer::SerializeCamera(YAML::Emitter& out, Entity* entity)
@@ -216,8 +231,9 @@ namespace HE
         out << YAML::Key << "MeshComponent";
         {
             out << YAML::BeginMap; // Mesh component
-            std::string assetID = meshComponent->GetMesh().get()->Handle;
+            std::string assetID = meshComponent->GetMesh()->Handle;
             out << YAML::Key << "AssetID" << YAML::Value << assetID;
+            out << YAML::Key << "Filepath" << YAML::Value << meshComponent->GetMesh()->FilePath;
             out << YAML::EndMap; // Mesh component
         }
     }
@@ -278,17 +294,12 @@ namespace HE
             out << YAML::Key << "Offset" << YAML::Value << boxColliderComponent->GetOffset();
             out << YAML::Key << "IsTrigger" << YAML::Value << boxColliderComponent->GetTrigger();
 
-            auto& debugMesh = boxColliderComponent->GetMesh();
-            if (debugMesh)
-                out << YAML::Key << "DebugMeshAssetID" << YAML::Value << debugMesh->Handle;
-            else
-                out << YAML::Key << "DebugMeshAssetID" << YAML::Value << UUID(0);
-
             auto& physicsMaterial = boxColliderComponent->GetPhysicsMaterial();
             if (physicsMaterial)
+            {
                 out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << physicsMaterial->Handle;
-            else
-                out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << UUID(0);
+                out << YAML::Key << "PhysicsMaterialFilepath" << YAML::Value << physicsMaterial->FilePath;
+            }
 
             out << YAML::EndMap; // BoxCollider Component
         }
@@ -304,18 +315,12 @@ namespace HE
             out << YAML::Key << "Radius" << YAML::Value << sphereColliderComponent->GetRadius();
             out << YAML::Key << "IsTrigger" << YAML::Value << sphereColliderComponent->GetTrigger();
 
-            auto& debugMesh = sphereColliderComponent->GetMesh();
-            if (debugMesh)
-                out << YAML::Key << "DebugMeshAssetID" << YAML::Value << debugMesh->Handle;
-            else
-                out << YAML::Key << "DebugMeshAssetID" << YAML::Value << UUID(0);
-
             auto& physicsMaterial = sphereColliderComponent->GetPhysicsMaterial();
             if (physicsMaterial)
+            {
                 out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << physicsMaterial->Handle;
-            else
-                out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << UUID(0);
-
+                out << YAML::Key << "PhysicsMaterialFilepath" << YAML::Value << physicsMaterial->FilePath;
+            }
             out << YAML::EndMap; // sphereCollider Component
         }
     }
@@ -323,7 +328,7 @@ namespace HE
     void SceneSerializer::SerializeCapsuleCollider(YAML::Emitter& out, Entity* entity)
     {
         auto capsuleColliderComponent = entity->GetComponent<CapsuleColliderComponent>();
-        out << YAML::Key << "CapsuleColluderComponent";
+        out << YAML::Key << "CapsuleColliderComponent";
         {
             out << YAML::BeginMap; // capsuleCollider Component
 
@@ -331,18 +336,12 @@ namespace HE
             out << YAML::Key << "Height" << YAML::Value << capsuleColliderComponent->GetHeight();
             out << YAML::Key << "IsTrigger" << YAML::Value << capsuleColliderComponent->GetTrigger();
 
-            auto& debugMesh = capsuleColliderComponent->GetMesh();
-            if (debugMesh)
-                out << YAML::Key << "DebugMeshAssetID" << YAML::Value << debugMesh->Handle;
-            else
-                out << YAML::Key << "DebugMeshAssetID" << YAML::Value << UUID(0);
-
             auto& physicsMaterial = capsuleColliderComponent->GetPhysicsMaterial();
             if (physicsMaterial)
+            {
                 out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << physicsMaterial->Handle;
-            else
-                out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << UUID(0);
-
+                out << YAML::Key << "PhysicsMaterialFilepath" << YAML::Value << physicsMaterial->FilePath;
+            }
             out << YAML::EndMap; // capsuleCollider Component
         }
     }
@@ -359,13 +358,14 @@ namespace HE
             out << YAML::Key << "IsTrigger" << YAML::Value << meshColliderComponent->GetTrigger();
 
             out << YAML::Key << "CollisionMeshAssetID" << YAML::Value << meshColliderComponent->GetCollisionMesh()->Handle;
+            out << YAML::Key << "CollisionMeshFilepath" << YAML::Value << meshColliderComponent->GetCollisionMesh()->FilePath;
 
             auto& physicsMaterial = meshColliderComponent->GetPhysicsMaterial();
             if (physicsMaterial)
+            {
                 out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << physicsMaterial->Handle;
-            else
-                out << YAML::Key << "PhysicsMaterialAssetID" << YAML::Value << UUID(0);
-
+                out << YAML::Key << "PhysicsMaterialFilepath" << YAML::Value << physicsMaterial->FilePath;
+            }
             out << YAML::EndMap; // MeshCollider Component
         }
     }
@@ -408,6 +408,10 @@ namespace HE
                 auto deserializedTransformComponent = entity["TransformComponent"];
                 if (deserializedTransformComponent)
                     DeserializeTransform(deserializedTransformComponent, deserializedEntity);
+
+                auto deserializedTagComponent = entity["TagComponent"];
+                if (deserializedTagComponent)
+                    DeserializeTag(deserializedTagComponent, deserializedEntity);
 
                 auto deserializedCameraComponent = entity["CameraComponent"];
                 if (deserializedCameraComponent)
@@ -454,6 +458,12 @@ namespace HE
         transformComponent->SetRotation(deserializedComponent["Rotation"].as<glm::vec3>());
         transformComponent->SetScale(deserializedComponent["Scale"].as<glm::vec3>());
     }
+    void SceneSerializer::DeserializeTag(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
+    {
+        // Entities always have transform
+        auto tagComponent = deserializedEntity->AddComponent<TagComponent>();
+        tagComponent->SetTag(deserializedComponent["Tag"].as<std::string>());
+    }
     void SceneSerializer::DeserializeCamera(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
         CameraComponent* cameraComponent = deserializedEntity->AddComponent<CameraComponent>();
@@ -475,22 +485,22 @@ namespace HE
     void SceneSerializer::DeserializeMesh(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
     {
         std::string assetID = deserializedComponent["AssetID"].as<std::string>();
+        std::string filepath = deserializedComponent["Filepath"].as<std::string>();
         UUID uuid(assetID);
+
+        if (!deserializedEntity->HasComponent<MeshComponent>())
+        {
+            deserializedEntity->AddComponent<MeshComponent>();
+        }
+        auto meshComponent = deserializedEntity->GetComponent<MeshComponent>();
+
         if (AssetManager::IsAssetHandleValid(uuid))
         {
-            if (!deserializedEntity->HasComponent<MeshComponent>())
-            {
-                auto meshComponent = deserializedEntity->AddComponent<MeshComponent>();
-                meshComponent->SetMesh(AssetManager::GetAsset<Mesh>(assetID));
-            }
-            else
-            {
-                HE_CORE_ERROR("Serialized entity already has mesh component!");
-            }
+            meshComponent->SetMesh(AssetManager::GetAsset<Mesh>(assetID));
         }
         else
         {
-            HE_CORE_ERROR("Serialized mesh AssetID is not valid!");
+            meshComponent->SetMesh(AssetManager::CreateAsset<Mesh>(filepath));
         }
     }
 
@@ -538,29 +548,22 @@ namespace HE
         boxColliderComponent->SetSize(deserializedComponent["Size"].as<glm::vec3>());
         boxColliderComponent->SetOffset(deserializedComponent["Offset"].as<glm::vec3>());
         boxColliderComponent->SetTrigger(deserializedComponent["IsTrigger"].as<bool>());
+
+        if (deserializedComponent["PhysicsMaterialAssetID"].IsDefined())
+        {
+            std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
+            std::string physicsMaterialFilepath = deserializedComponent["PhysicsMaterialFilepath"].as<std::string>();
+            UUID physicsMaterialuuid(physicsMaterialAssetID);
+            if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
+            {
+                boxColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
+            }
+            else
+            {
+                boxColliderComponent->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(physicsMaterialFilepath));
+            }
+        }
         
-
-        std::string meshAssetID = deserializedComponent["DebugMeshAssetID"].as<std::string>();
-        UUID meshuuid(meshAssetID);
-        if (AssetManager::IsAssetHandleValid(meshuuid))
-        {
-            boxColliderComponent->SetMesh(AssetManager::GetAsset<Mesh>(meshuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized debugMesh AssetID is not valid!");
-        }
-
-        std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
-        UUID physicsMaterialuuid(physicsMaterialAssetID);
-        if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
-        {
-            boxColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized physicsMaterial AssetID is not valid!");
-        }
     }
 
     void SceneSerializer::DeserializeSphereCollider(const YAML::Node& deserializedComponent, Entity* deserializedEntity)
@@ -570,27 +573,19 @@ namespace HE
         sphereColliderComponent->SetRadius(deserializedComponent["Radius"].as<float>());
         sphereColliderComponent->SetTrigger(deserializedComponent["IsTrigger"].as<bool>());
 
-
-        std::string meshAssetID = deserializedComponent["DebugMeshAssetID"].as<std::string>();
-        UUID meshuuid(meshAssetID);
-        if (AssetManager::IsAssetHandleValid(meshuuid))
+        if (deserializedComponent["PhysicsMaterialAssetID"].IsDefined())
         {
-            sphereColliderComponent->SetMesh(AssetManager::GetAsset<Mesh>(meshuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized debugMesh AssetID is not valid!");
-        }
-
-        std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
-        UUID physicsMaterialuuid(physicsMaterialAssetID);
-        if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
-        {
-            sphereColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized physicsMaterial AssetID is not valid!");
+            std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
+            std::string physicsMaterialFilepath = deserializedComponent["PhysicsMaterialFilepath"].as<std::string>();
+            UUID physicsMaterialuuid(physicsMaterialAssetID);
+            if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
+            {
+                sphereColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
+            }
+            else
+            {
+                sphereColliderComponent->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(physicsMaterialFilepath));
+            }
         }
     }
 
@@ -602,27 +597,19 @@ namespace HE
         capsuleColliderComponent->SetHeight(deserializedComponent["Height"].as<float>());
         capsuleColliderComponent->SetTrigger(deserializedComponent["IsTrigger"].as<bool>());
 
-
-        std::string meshAssetID = deserializedComponent["DebugMeshAssetID"].as<std::string>();
-        UUID meshuuid(meshAssetID);
-        if (AssetManager::IsAssetHandleValid(meshuuid))
+        if (deserializedComponent["PhysicsMaterialAssetID"].IsDefined())
         {
-            capsuleColliderComponent->SetMesh(AssetManager::GetAsset<Mesh>(meshuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized debugMesh AssetID is not valid!");
-        }
-
-        std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
-        UUID physicsMaterialuuid(physicsMaterialAssetID);
-        if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
-        {
-            capsuleColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized physicsMaterial AssetID is not valid!");
+            std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
+            std::string physicsMaterialFilepath = deserializedComponent["PhysicsMaterialFilepath"].as<std::string>();
+            UUID physicsMaterialuuid(physicsMaterialAssetID);
+            if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
+            {
+                capsuleColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
+            }
+            else
+            {
+                capsuleColliderComponent->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(physicsMaterialFilepath));
+            }
         }
     }
 
@@ -635,6 +622,7 @@ namespace HE
         meshColliderComponent->SetTrigger(deserializedComponent["IsTrigger"].as<bool>());
         
         std::string collisionMeshAssetID = deserializedComponent["CollisionMeshAssetID"].as<std::string>();
+        std::string collisionMeshFilepath = deserializedComponent["CollisionMeshFilepath"].as<std::string>();
         UUID collisionMeshUUID(collisionMeshAssetID);
         if (AssetManager::IsAssetHandleValid(collisionMeshUUID))
         {
@@ -642,18 +630,22 @@ namespace HE
         }
         else
         {
-            HE_CORE_ERROR("Serialized debugMesh AssetID is not valid!");
+            meshColliderComponent->SetCollisionMesh(AssetManager::CreateAsset<Mesh>(collisionMeshFilepath));
         }
 
-        std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
-        UUID physicsMaterialuuid(physicsMaterialAssetID);
-        if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
+        if (deserializedComponent["PhysicsMaterialAssetID"].IsDefined())
         {
-            meshColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
-        }
-        else
-        {
-            HE_CORE_ERROR("Serialized physicsMaterial AssetID is not valid!");
+            std::string physicsMaterialAssetID = deserializedComponent["PhysicsMaterialAssetID"].as<std::string>();
+            std::string physicsMaterialFilepath = deserializedComponent["PhysicsMaterialFilepath"].as<std::string>();
+            UUID physicsMaterialuuid(physicsMaterialAssetID);
+            if (AssetManager::IsAssetHandleValid(physicsMaterialuuid))
+            {
+                meshColliderComponent->SetPhysicsMaterial(AssetManager::GetAsset<PhysicsMaterial>(physicsMaterialuuid));
+            }
+            else
+            {
+                meshColliderComponent->SetPhysicsMaterial(AssetManager::CreateAsset<PhysicsMaterial>(physicsMaterialFilepath));
+            }
         }
     }
 }
