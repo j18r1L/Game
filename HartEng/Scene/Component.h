@@ -1,5 +1,4 @@
-#ifndef COMPONENTS_H
-#define COMPONENTS_H
+#pragma once
 
 #include "HartEng/Scene/Entity.h"
 
@@ -15,8 +14,9 @@ namespace HE
 
         virtual ~Component();
 
+        virtual void Copy(Component* other_base) = 0;
+
         void SetEntity(Entity* entity);
     };
 }
 
-#endif // COMPONENTS_H

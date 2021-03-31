@@ -1,5 +1,4 @@
-#ifndef LIGHTCOMPONENT_H
-#define LIGHTCOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/Component.h"
 #include <glm/glm.hpp>
@@ -29,6 +28,8 @@ namespace HE
 		LightComponent(Entity* entityHandle);
 		virtual ~LightComponent() = default;
 
+		void Copy(Component* other_base) override;
+
 		void SetLightType(const LightType& type);
 		void SetCastShadow(bool castShadow);
 		void SetDirection(const glm::vec3& direction);
@@ -51,4 +52,3 @@ namespace HE
 	};
 
 }
-#endif // LIGHTCOMPONENT_H

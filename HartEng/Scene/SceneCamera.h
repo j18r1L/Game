@@ -1,5 +1,4 @@
-#ifndef SCENECAMERA_H
-#define SCENECAMERA_H
+#pragma once
 
 #include "HartEng/Renderer/Cameras.h"
 
@@ -64,5 +63,3 @@ namespace HE
     };
 }
 
-
-#endif // SCENECAMERA_H

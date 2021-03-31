@@ -1,5 +1,4 @@
-#ifndef RENDERERAPI_H
-#define RENDERERAPI_H
+#pragma once
 
 #include "glm/glm.hpp"
 
@@ -35,6 +34,7 @@ namespace HE
         virtual void SetDepthTest(bool depthTest) = 0;
 
         virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
+        virtual void DrawIndexed(uint32_t indexCount) = 0;
     private:
         static API s_API;
 
@@ -42,4 +42,3 @@ namespace HE
     };
 }
 
-#endif // RENDERERAPI_H

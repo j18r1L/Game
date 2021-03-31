@@ -1,5 +1,4 @@
-#ifndef INSTRUMENTOR_H
-#define INSTRUMENTOR_H
+#pragma once
 
 #include <algorithm>
 #include <chrono>
@@ -232,5 +231,3 @@ namespace HE
     HE_PROFILE_RENDERER_FUNCTION() HE_PROFILE_SCOPE(__FUNCSIG__)
 
 #endif
-
-#endif // INSTRUMENTOR_H

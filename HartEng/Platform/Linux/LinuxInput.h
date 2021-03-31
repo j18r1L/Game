@@ -1,6 +1,4 @@
-#ifndef LINUXINPUT_H
-#define LINUXINPUT_H
-
+#pragma once
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Input.h"
 
@@ -21,4 +19,3 @@ namespace HE
     };
 }
 
-#endif // LINUXINPUT_H

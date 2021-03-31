@@ -72,7 +72,11 @@ namespace HE
 
     PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float zNear, float zFar):
         m_Projection(glm::perspective(fov, aspectRatio, zNear, zFar)),
-        m_View(1.0f)
+        m_View(1.0f),
+        m_Fov(fov),
+        m_AspectRatio(aspectRatio),
+        m_Near(zNear),
+        m_Far(zFar)
     {
         HE_PROFILE_FUNCTION();
 
@@ -83,6 +87,8 @@ namespace HE
     {
         HE_PROFILE_FUNCTION();
 
+        m_Fov = fov;
+        m_AspectRatio = aspectRatio;
         m_Projection = glm::perspective(fov, aspectRatio, zNear, zFar);
         m_ProjectionView = m_Projection * m_View;
     }

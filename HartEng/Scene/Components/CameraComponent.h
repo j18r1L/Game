@@ -1,8 +1,8 @@
-#ifndef CAMERACOMPONENT_H
-#define CAMERACOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/SceneCamera.h"
 #include "HartEng/Scene/Component.h"
+#include "HartEng/Renderer/Mesh.h"
 
 namespace HE
 {
@@ -12,14 +12,16 @@ namespace HE
         SceneCamera m_Camera;
         bool m_Primary = false;
         bool m_FixedAspectRatio = false;
+
+        std::shared_ptr<Mesh> m_DebugMesh;
+
+        void LoadCameraDebugMesh();
     public:
         CameraComponent();
         CameraComponent(Entity* entityHandle);
+        virtual ~CameraComponent() = default;
 
-        virtual ~CameraComponent()
-        {
-
-        }
+        void Copy(Component* other_base) override;
 
         void SetPrimary(bool primary);
         void SetFixedAspectRatio(bool fixedAspectRatio);
@@ -29,8 +31,7 @@ namespace HE
         bool GetPrimary() const;
         bool GetFixedAspectRatio() const;
         SceneCamera& GetCamera();
+        std::shared_ptr<Mesh> GetMesh() { return m_DebugMesh; }
     };
 }
 
-
-#endif // CAMERACOMPONENT_H

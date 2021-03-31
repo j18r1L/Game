@@ -70,4 +70,12 @@ namespace HE
         // TODO получать флаги, что именно рисовать: GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_POINTS, ...
         glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
     }
+
+    void OpenGLRendererAPI::DrawIndexed(uint32_t indexCount)
+    {
+        HE_PROFILE_FUNCTION();
+
+        // TODO получать флаги, что именно рисовать: GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_POINTS, ...
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+    }
 }

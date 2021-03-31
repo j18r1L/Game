@@ -1,5 +1,4 @@
-#ifndef IMGUILAYER_H
-#define IMGUILAYER_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 
@@ -33,5 +32,3 @@ namespace HE
         }
     };
 }
-
-#endif // IMGUILAYER_H

@@ -1,10 +1,12 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
+#include "HartEng/Renderer/RenderCommandQueue.h"
 #include "HartEng/Renderer/RenderCommand.h"
+#include "HartEng/Renderer/RenderPass.h"
+#include "HartEng/Renderer/Material.h"
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Renderer/Shader.h"
-#include "HartEng/Scene/Components/MaterialComponent.h"
+#include "HartEng/Renderer/Mesh.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 
 namespace HE
@@ -14,39 +16,45 @@ namespace HE
     class Renderer
     {
     private:
-        // TODO временно, нужно добавить que и буффер для хранения state-ов
-        struct SceneData
-        {
-            glm::mat4 ProjectionView;
-            glm::mat4 View;
-            std::vector<Entity*> Lights;
-        };
+        static RenderCommandQueue& GetRenderCommandQueue();
 
-        static SceneData* m_SceneData;
     public:
         // BeginSCene будет принимать environment map-у, uniform-ы, источники света, view, projection матрицы
-        static void BeginScene(PerspectiveCamera& camera, const std::vector<Entity*>& lights); // This used only in level editor as non-runtime camera
-        static void BeginScene(const glm::mat4& projection, const glm::mat4 transform, const std::vector<Entity*>& lights);
-        static void EndScene();
+        static void BeginRenderPass(std::shared_ptr<RenderPass> renderPass, bool clear = true);
+        static void EndRenderPass();
 
         static void Init();
         static void Shutdown();
 
+        static void WaitAndRender();
+
         static void OnWindowResize(uint32_t width, uint32_t height);
 
-        
-        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));
-        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, uint32_t entityID, const glm::mat4& transform = glm::mat4(1.0f));
-        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform, std::shared_ptr<MaterialComponent> material);
-
+        static std::shared_ptr<ShaderLibrary> GetShaderLibrary();
         inline static RendererAPI::API GetAPI()
         {
             return RendererAPI::GetAPI();
+        }
+
+        static void SubmitMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform, std::shared_ptr<MaterialInstance> overrideMaterial = nullptr);
+        template<typename FuncT>
+        static void Submit(FuncT&& func)
+        {
+            auto renderCmd = [](void* ptr) {
+                auto pFunc = (FuncT*)ptr;
+                (*pFunc)();
+
+                // NOTE: Instead of destroying we could try and enforce all items to be trivally destructible
+                // however some items like uniforms which contain std::strings still exist for now
+                // static_assert(std::is_trivially_destructible_v<FuncT>, "FuncT must be trivially destructible");
+                pFunc->~FuncT();
+            };
+            auto storageBuffer = GetRenderCommandQueue().Allocate(renderCmd, sizeof(func));
+            new (storageBuffer) FuncT(std::forward<FuncT>(func));
         }
     };
 
 
 }
 
-#endif // RENDERER_H
 

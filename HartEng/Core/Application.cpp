@@ -2,6 +2,8 @@
 
 #include "HartEng/Core/Log.h"
 #include "HartEng/Core/Input.h"
+#include "HartEng/Physics/Physics.h"
+#include "HartEng/Asset/AssetManager.h"
 
 namespace HE
 {
@@ -24,13 +26,23 @@ namespace HE
 #endif
 
         m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
+
         Renderer::Init();
+        Physics::Init();
+        Renderer::WaitAndRender();
+
+        AssetTypes::Init();
+        //AssetManager::Init(); // Init will load all assets and create .meta files in /asset folder
+        AssetManager::CreateMeta(); // Only create .meta files for assets in /asset folder
+
         PushOverlay(m_ImGuiLayer);
     }
 
     Application::~Application()
     {
         Renderer::Shutdown();
+        Physics::Shutdown();
+        AssetManager::Shutdown();
     }
 
     void Application::PushLayer(Layer* layer)
@@ -67,6 +79,19 @@ namespace HE
         }
     }
 
+    void Application::OnRenderImGui()
+    {
+        m_ImGuiLayer->Begin();
+        {
+            HE_PROFILE_SCOPE("LayerStack::OnImGuiRender");
+            for (Layer* layer : m_LayerStack)
+            {
+                layer->OnImGuiRender();
+            }
+        }
+        m_ImGuiLayer->End();
+    }
+
     void Application::Close()
     {
         m_Running = false;
@@ -94,15 +119,13 @@ namespace HE
                     for (Layer* layer: m_LayerStack)
                         layer->OnUpdate(m_Timestep);
                 }
-                m_ImGuiLayer->Begin();
-                {
-                    HE_PROFILE_SCOPE("LayerStack::OnImGuiRender");
-                    for (Layer* layer: m_LayerStack)
-                    {
-                        layer->OnImGuiRender();
-                    }
-                }
-                m_ImGuiLayer->End();
+                Application* app = this;
+                Renderer::Submit([app]() 
+                    { 
+                        app->OnRenderImGui();
+                    });
+                Renderer::WaitAndRender();
+                
             }
             m_Window->OnUpdate();
         }

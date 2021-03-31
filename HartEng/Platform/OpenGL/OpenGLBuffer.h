@@ -1,5 +1,4 @@
-#ifndef OPENGLBUFFER_H
-#define OPENGLBUFFER_H
+#pragma once
 
 
 #include "HartEng/Renderer/Buffer.h"
@@ -10,7 +9,7 @@ namespace HE
     class OpenGLVertexBuffer: public VertexBuffer
     {
     private:
-        uint32_t m_RendererID;
+        uint32_t m_RendererID = 0;
         BufferLayout m_Layout;
     public:
         OpenGLVertexBuffer(float* vertices, uint32_t size);
@@ -35,7 +34,7 @@ namespace HE
     class OpenGLIndexBuffer: public IndexBuffer
     {
     private:
-        uint32_t m_RendererID;
+        uint32_t m_RendererID = 0;
         uint32_t m_Count;
     public:
         OpenGLIndexBuffer(uint32_t* indices, uint32_t size);
@@ -46,5 +45,3 @@ namespace HE
         uint32_t GetCount() const override;
     };
 }
-
-#endif // OPENGLBUFFER_H

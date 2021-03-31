@@ -1,5 +1,4 @@
-#ifndef CAMERACONTROLLERS_H
-#define CAMERACONTROLLERS_H
+#pragma once
 
 #include "HartEng/Renderer/Cameras.h"
 #include "HartEng/Core/Timestep.h"
@@ -7,6 +6,7 @@
 #include "HartEng/Events/Event.h"
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/Events/MousesEvent.h"
+#include "HartEng/Events/KeyEvent.h"
 
 namespace HE
 {
@@ -53,7 +53,7 @@ namespace HE
         float m_AspectRatio = 0.0f;
         float m_Fov = 45.0f;
         float m_CameraSensivity = 0.15f;
-        float m_CameraTranslationSpeed = 1.0f;
+        float m_CameraTranslationSpeed = 5.0f;
 
         glm::vec2 m_LastMousePosition;
 
@@ -74,11 +74,11 @@ namespace HE
         PerspectiveCamera m_Camera;
 
         bool OnMouseScroll(MouseScrolledEvent& e);
+        bool OnKeyPressed(KeyPressedEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);
 
     public:
         PerspectiveCameraController(float fov, float width, float height, float zNear, float zFar);
-        //PerspectiveCameraController(float fov, float aspect_ratio, float zNear, float zFar);
 
         void OnUpdate(Timestep ts);
         void OnEvent(Event& e);
@@ -90,10 +90,4 @@ namespace HE
         float GetHeight() const { return m_Height; }
 
     };
-
-
-
 }
-
-
-#endif // CAMERACONTROLLERS_H

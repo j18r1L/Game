@@ -1,5 +1,4 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Scene/Scene.h"
@@ -17,7 +16,8 @@ namespace HE
     class Entity
     {
     private:
-        uint32_t m_ID = 0; // Entity ID
+        //UUID m_UUID;
+        uint32_t m_ID = 0; // Entity ID, 0 must not be valid ID!
 
         Scene* m_SceneHandle = nullptr;
         std::unordered_map<std::type_index, Component*> m_Components;
@@ -33,7 +33,9 @@ namespace HE
         virtual ~Entity();
 
         const std::unordered_map<std::type_index, Component*>& GetComponents();
+        const std::unordered_map<std::type_index, Component*>& GetComponents() const;
         const std::string& GetName() const;
+        Scene* GetScene() const;
         uint32_t GetID() const;
 
         // Templated functions
@@ -74,7 +76,9 @@ namespace HE
         // Overloads
         bool operator==(const Entity& other) const
         {
-            return this == &other && m_SceneHandle == other.m_SceneHandle;
+            return m_ID == other.m_ID;
+            //return other.m_UUID == m_UUID;
+            //return this == &other && m_SceneHandle == other.m_SceneHandle;
         }
 
         bool operator!=(const Entity& other) const
@@ -84,4 +88,3 @@ namespace HE
     };
 }
 
-#endif // ENTITY_H

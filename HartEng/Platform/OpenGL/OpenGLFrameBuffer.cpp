@@ -3,7 +3,7 @@
 
 #include "HartEng/Core/Core.h"
 #include "HartEng/Core/Log.h"
-
+#include "HartEng/Renderer/Renderer.h"
 #include <glad/glad.h>
 
 namespace HE
@@ -141,24 +141,30 @@ namespace HE
     OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& spec):
         m_Specification(spec)
     {
-        Invalidate();
+        Renderer::Submit([this]() mutable
+            {
+                Invalidate();
+            });
+        
     }
 
     OpenGLFrameBuffer::~OpenGLFrameBuffer()
     {
         HE_PROFILE_FUNCTION();
-
-        glDeleteFramebuffers(1, &m_RendererID);
-        for (int i = 0; i < m_Attachments.size(); i++)
-        {
-            glDeleteTextures(1, &m_Attachments[i]);
-        }
+        Renderer::Submit([this]()
+            {
+                glDeleteFramebuffers(1, &this->m_RendererID);
+                for (int i = 0; i < this->m_Attachments.size(); i++)
+                {
+                    glDeleteTextures(1, &this->m_Attachments[i]);
+                }
+            });
     }
 
+    // Store this function in Renderer::Submit, the function itself does not submitting to Renderer
     void OpenGLFrameBuffer::Invalidate()
     {
         HE_PROFILE_FUNCTION();
-        
         
         if (m_RendererID != 0)
         {
@@ -170,8 +176,8 @@ namespace HE
         }
         else
         {
-            m_Attachments.resize(m_Specification.Attachemtns.Attachments.size());
-            for (auto& attachment : m_Specification.Attachemtns.Attachments)
+            m_Attachments.resize(m_Specification.Attachments.Attachments.size());
+            for (auto& attachment : m_Specification.Attachments.Attachments)
             {
                 if (attachment.TextureFormat != FramebufferTextureFormat::DEPTH24STENCIL8 && attachment.TextureFormat != FramebufferTextureFormat::DEPTH32F)
                 {
@@ -184,7 +190,7 @@ namespace HE
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
         int i = 0;
-        for (auto& attachment: m_Specification.Attachemtns.Attachments)
+        for (auto& attachment: m_Specification.Attachments.Attachments)
         {
             glGenTextures(1, &m_Attachments[i]);
             glBindTexture(TextureTarget(m_Specification.Samples), m_Attachments[i]);
@@ -221,7 +227,7 @@ namespace HE
         std::vector<GLenum> drawBuffers(m_ColorAttachmentSize);
         for (int j = 0; j < m_ColorAttachmentSize; j++)
         {
-            drawBuffers[j] = ColorAttachment(j, m_Specification.Attachemtns.Attachments[j].TextureFormat);
+            drawBuffers[j] = ColorAttachment(j, m_Specification.Attachments.Attachments[j].TextureFormat);
         }
         glDrawBuffers(m_ColorAttachmentSize, &drawBuffers[0]);
         HE_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
@@ -233,9 +239,24 @@ namespace HE
     {
         m_Specification.Width = width;
         m_Specification.Height = height;
-        glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 
-        Invalidate();
+        Renderer::Submit([this]() mutable
+            {
+                glViewport(0, 0, this->m_Specification.Width, this->m_Specification.Height);
+                this->Invalidate();
+            });
+    }
+
+    int OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const
+    {
+        // TODO decide do you need to bind and unbind the framebuffer manually or in this function
+        HE_CORE_ASSERT(attachmentIndex < m_Attachments.size(), "There is no attachment with index: " + std::to_string(attachmentIndex));
+        //glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+        int pixelData = -1.0f;
+        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+        HE_CORE_TRACE("pixelData: {0}", pixelData);
+        return pixelData;
     }
 
     const FrameBufferSpecification& OpenGLFrameBuffer::GetSpecification() const
@@ -248,19 +269,24 @@ namespace HE
         return m_Attachments[index];
     }
 
-    void OpenGLFrameBuffer::Bind(FramebufferBindType type)
+    void OpenGLFrameBuffer::Bind(FramebufferBindType type) const
     {
         HE_PROFILE_FUNCTION();
 
-        glBindFramebuffer(FramebufferType(type), m_RendererID);
+        Renderer::Submit([this, type]()
+            {
+                glBindFramebuffer(FramebufferType(type), m_RendererID);
+            });
 
     }
 
-    void OpenGLFrameBuffer::UnBind()
+    void OpenGLFrameBuffer::UnBind() const 
     {
         HE_PROFILE_FUNCTION();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        Renderer::Submit([]() 
+            {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            });
 
     }
 

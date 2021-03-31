@@ -1,5 +1,4 @@
-#ifndef LINUXWINDOW_H
-#define LINUXWINDOW_H
+#pragma once
 
 
 
@@ -78,4 +77,3 @@ namespace HE
 
 
 }
-#endif // LINUXWINDOW_H

@@ -1,5 +1,4 @@
-#ifndef EditorLayer_H
-#define EditorLayer_H
+#pragma once
 
 #include "HartEng/HartEng.h"
 #include "Panels/SceneHierarchyPanel.h"
@@ -10,23 +9,20 @@ namespace HE
     class EditorLayer: public Layer
     {
     private:
-        std::shared_ptr<ShaderLibrary> m_ShaderLibrary;
-        Entity* environmentEntity;
+        enum class SceneState
+        {
+            Edit = 0, Play = 1, Pause = 2
+        };
+        SceneState m_SceneState = SceneState::Edit;
 
-        FrameBufferSpecification m_FrameBufferSpec;
-        std::shared_ptr<FrameBuffer> m_FrameBuffer;
-        std::shared_ptr<FrameBuffer> m_FrameBuffer_msaa;
-        std::shared_ptr<FrameBuffer> m_IDFrameBuffer;
-
-        std::shared_ptr<Scene> m_Scene;
+        //std::shared_ptr<Scene> m_Scene;
+        std::shared_ptr<Scene> m_RuntimeScene, m_EditorScene, m_CurrentScene;
         PerspectiveCameraController m_CameraController;
 
         // Viewport Size
         glm::vec2 m_ViewportSize;
         glm::vec2 m_ViewportBounds[2];
         bool m_ViewportFocused = true;
-        bool m_Play = false;
-        bool m_Pause = false;
 
         // Gizmos
         Gizmo m_Gizmo;
@@ -34,9 +30,13 @@ namespace HE
         std::shared_ptr<SceneHierarchyPanel> m_SceneHierarchyPanel;
 
         // Event functions
+        bool OnKeyPressed(KeyPressedEvent& event);
         bool OnMouseButton(MouseButtonPressedEvent& event);
 
         void Draw(Timestep& ts);
+        void OnScenePlay();
+        void OnSceneStop();
+
     public:
         EditorLayer();
 
@@ -47,6 +47,3 @@ namespace HE
         void OnEvent(Event &e) override;
     };
 }
-
-
-#endif // EditorLayer_H

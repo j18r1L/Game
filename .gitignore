@@ -9,3 +9,4 @@ build*
 Lib
 data
 *.autosave
+*.meta

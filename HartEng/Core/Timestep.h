@@ -1,5 +1,4 @@
-#ifndef TIMESTEP_H
-#define TIMESTEP_H
+#pragma once
 
 namespace HE
 {
@@ -36,5 +35,3 @@ namespace HE
     };
 
 }
-
-#endif // TIMESTEP_H

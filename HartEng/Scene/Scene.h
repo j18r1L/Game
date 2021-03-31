@@ -1,5 +1,4 @@
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Scene/Entity.h"
@@ -10,6 +9,38 @@
 
 namespace HE
 {
+    struct DirectionalLight
+    {
+        glm::vec3 Direction;
+        glm::vec3 Color;
+        float Intensity;
+    };
+
+    struct PointLight
+    {
+        glm::vec3 Position;
+        glm::vec3 Color;
+        float Intensity;
+    };
+
+    struct SpotLight
+    {
+        glm::vec3 Position;
+        glm::vec3 Direction;
+        glm::vec3 Color;
+        float Intensity;
+        float InnerConeAngle;
+        float OuterConeAngle;
+    };
+
+    struct LightEnvironment
+    {
+        DirectionalLight DirectionalLights;
+        PointLight PointLights;
+        SpotLight SpotLights;
+    };
+
+
     class Entity;
 
     class Scene
@@ -20,36 +51,48 @@ namespace HE
         std::string m_Name;
         uint32_t m_ObjectsCount;
 
+        LightEnvironment m_LightEnvironment;
+
         bool m_Play = false;
         friend class SceneHierarchyPanel;
+
+        void ProcessLights();
 
     public:
         Scene();
         Scene(const std::string& scene_name);
+        Scene(const Scene& other);
 
         ~Scene() = default;
 
         Entity* CreateEntity();
+        Entity* CreateEntity(const Entity& other);
         Entity* CreateEntity(const std::string& name);
 
         Entity* GetEntity(const std::string& name);
         Entity* GetEntity(uint32_t entityID);
+        Entity GetMainCameraEntity();
         const std::unordered_map<std::string, Entity*>& GetEntities();
+        const std::unordered_map<std::string, Entity*>& GetEntities() const;
         const std::string& GetName() const;
+        const LightEnvironment& GetLightEnvironment() const;
+
+        Entity* FindEntityByTag(const std::string& tag);
 
         void DestroyEntity(const std::string& name);
         void Clear();
 
-        void OnScenePlay();
-        void OnSceneStop();
-        void OnUpdate(Timestep& ts);
-        void OnUpdateEditor(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
-        void OnUpdateShader(std::shared_ptr<Shader> shader, PerspectiveCamera& camera); // Render scene with given shader 
+        // Runtime
+        void OnRuntimeStart();
+        void OnRuntimeStop();
 
+        void OnUpdate(Timestep& ts);
+        void OnRenderRuntime(Timestep& ts);
+        void OnRenderEditor(Timestep& ts, PerspectiveCamera& camera); // This used only in levelEditor with non-runtime camera
+        
         void OnViewportResize(uint32_t width, uint32_t height);
 
         void RenameEntity(std::string oldName, std::string newName);
     };
 }
 
-#endif // SCENE_H

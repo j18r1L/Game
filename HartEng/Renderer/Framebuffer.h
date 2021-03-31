@@ -1,5 +1,4 @@
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include <glm/glm.hpp>
@@ -71,7 +70,7 @@ namespace HE
         // Struct of properties
         uint32_t Width = 0.0f, Height = 0.0f;
         glm::vec4 ClearColor{ 1.0f, 0.0f, 1.0f, 1.0f };
-        FramebufferAttachmentSpecification Attachemtns;
+        FramebufferAttachmentSpecification Attachments;
         uint32_t Samples = 1;
 
         bool SwapChainTarget = false;
@@ -87,15 +86,12 @@ namespace HE
         virtual const FrameBufferSpecification& GetSpecification() const = 0;
 
         // TODO убрать, когда будет хороший рендерер
-        virtual void Bind(FramebufferBindType type = FramebufferBindType::FRAMEBUFFER) = 0;
-        virtual void UnBind() = 0;
+        virtual void Bind(FramebufferBindType type = FramebufferBindType::FRAMEBUFFER) const = 0;
+        virtual void UnBind() const = 0;
         virtual void Resize(uint32_t width, uint32_t height) = 0;
 
-
+        virtual int ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const = 0;
 
         static std::shared_ptr<FrameBuffer> Create(const FrameBufferSpecification& spec);
     };
 }
-
-
-#endif // FRAMEBUFFER_H

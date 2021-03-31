@@ -9,13 +9,15 @@
 
 namespace HE
 {
-    std::shared_ptr<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+    std::vector<std::shared_ptr<Shader>> Shader::s_AllShaders;
+
+    std::shared_ptr<Shader> Shader::CreateFromString(const std::string& source)
     {
-        HE_CORE_INFO("Creating new shader with name {0}...", name);
+        HE_CORE_INFO("Creating new shader...");
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
-            return std::shared_ptr<OpenGLShader> (new OpenGLShader(name, vertexSrc, fragmentSrc));
+            return OpenGLShader::CreateFromString(source);
         }
         else if (api == RendererAPI::API::None)
         {
@@ -31,7 +33,7 @@ namespace HE
         RendererAPI::API api = Renderer::GetAPI();
         if (api == RendererAPI::API::OpenGL)
         {
-            return std::shared_ptr<Shader> (new OpenGLShader(path));
+            return std::shared_ptr<Shader>(new OpenGLShader(path));
         }
         else if (api == RendererAPI::API::None)
         {

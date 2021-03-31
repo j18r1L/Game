@@ -1,5 +1,4 @@
-#ifndef APPLICATIONEVENT_H
-#define APPLICATIONEVENT_H
+#pragma once
 
 #include "HartEng/Events/Event.h"
 
@@ -75,4 +74,3 @@ namespace HE
     };
 }
 
-#endif // APPLICATIONEVENT_H

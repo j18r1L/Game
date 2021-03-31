@@ -1,29 +1,24 @@
-#ifndef MESHCOMPONENT_H
-#define MESHCOMPONENT_H
+#pragma once
 
-#include "HartEng/Scene/Components/SubMeshComponent.h"
+#include "HartEng/Scene/Component.h"
+#include "HartEng/Renderer/Mesh.h"
 
 namespace HE
 {
     class MeshComponent: public Component
     {
     private:
-        std::vector<SubMeshComponent*> m_SubMeshes;
-        std::string m_Path;
-        // AABB m_BoundingVolume;
-        // std::vector<Node*> m_Nodes;
+        std::shared_ptr<Mesh> m_Mesh;
 
     public:
         MeshComponent(Entity* entityHandle);
         virtual ~MeshComponent() = default;
 
-        void AddSubMesh(SubMeshComponent& subMesh);
-        void SetPath(const std::string& path);
-        const std::string& GetPath();
+        void Copy(Component* other_base) override;
 
-        const std::vector<SubMeshComponent*>& GetSubMeshes() const;
+        void SetMesh(const std::shared_ptr<Mesh>& mesh);
+        std::shared_ptr<Mesh> GetMesh();
 
     };
 }
 
-#endif // MESHCOMPONENT_H

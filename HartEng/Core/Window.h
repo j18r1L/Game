@@ -1,5 +1,4 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Log.h"
@@ -60,4 +59,3 @@ namespace HE
         static Window* Create(const WindowProps& props = WindowProps());
     };
 }
-#endif // WINDOW_H

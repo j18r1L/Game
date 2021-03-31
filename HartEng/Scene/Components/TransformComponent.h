@@ -1,5 +1,4 @@
-#ifndef TRANSFORMCOMPONENT_H
-#define TRANSFORMCOMPONENT_H
+#pragma once
 
 #include "HartEng/Scene/Component.h"
 #include "glm/glm.hpp"
@@ -21,6 +20,8 @@ namespace HE
         TransformComponent(Entity* entityHandle);
         virtual ~TransformComponent() = default;
 
+        void Copy(Component* other_base) override;
+
         void SetPosition(const glm::vec3& position);
         //void SetRotation(const glm::quat& position);
         void SetRotation(const glm::vec3& angles);
@@ -37,4 +38,3 @@ namespace HE
     };
 }
 
-#endif // TRANSFORM_H

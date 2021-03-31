@@ -1,27 +1,33 @@
 #include "HartEng/Scene/Entity.h"
 
-#include "HartEng/Core/pch.h"
+
 #include "HartEng/Scene/Components/TransformComponent.h"
-#include "HartEng/Scene/Components/MaterialComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
-#include "HartEng/Scene/Components/MeshComponent.h"
-#include "HartEng/Scene/Components/SubMeshComponent.h"
+#include "HartEng/Scene/Components/CollidersComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
-#include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/TagComponent.h"
+#include "HartEng/Core/pch.h"
 
 namespace HE
 {
     std::unordered_map<std::type_index, std::string> ComponentsTypes =
     {
         {std::type_index(typeid(TransformComponent)), "TransformComponent"},
-        {std::type_index(typeid(MaterialComponent)), "MaterialComponent"},
+        {std::type_index(typeid(TagComponent)), "TagComponent"},
         {std::type_index(typeid(Texture2DComponent)), "Texture2DComponent"},
         {std::type_index(typeid(MeshComponent)), "MeshComponent"},
-        {std::type_index(typeid(SubMeshComponent)), "SubMeshComponent"},
         {std::type_index(typeid(CameraComponent)), "CameraComponent"},
         {std::type_index(typeid(LightComponent)), "LightComponent"},
         {std::type_index(typeid(ScriptComponent)), "ScriptComponent"},
+        {std::type_index(typeid(BoxColliderComponent)), "BoxColliderComponent"},
+        {std::type_index(typeid(SphereColliderComponent)), "SphereColliderComponent"},
+        {std::type_index(typeid(CapsuleColliderComponent)), "CapsuleColliderComponent"},
+        {std::type_index(typeid(MeshColliderComponent)), "MeshColliderComponent"},
+        {std::type_index(typeid(RigidBodyComponent)), "RigidBodyComponent"},
+        
     };
 
     Entity::Entity(Scene* sceneHandle, const std::string& name, uint32_t ID):
@@ -58,20 +64,39 @@ namespace HE
             Component* component = nullptr;
             if (type == std::type_index(typeid(TransformComponent)))
                 component = new TransformComponent(this);
-            else if (type == std::type_index(typeid(MaterialComponent)))
-                component = new MaterialComponent(this);
+
+            else if (type == std::type_index(typeid(TagComponent)))
+                component = new TagComponent(this);
+
             else if (type == std::type_index(typeid(MeshComponent)))
                 component = new MeshComponent(this);
-            else if (type == std::type_index(typeid(SubMeshComponent)))
-                component = new SubMeshComponent(this);
+
             else if (type == std::type_index(typeid(Texture2DComponent)))
                 component = new Texture2DComponent(this);
+
             else if (type == std::type_index(typeid(CameraComponent)))
                 component = new CameraComponent(this);
+
             else if (type == std::type_index(typeid(LightComponent)))
                 component = new LightComponent(this);
+
             else if (type == std::type_index(typeid(ScriptComponent)))
                 component = new ScriptComponent(this);
+
+            else if (type == std::type_index(typeid(BoxColliderComponent)))
+                component = new BoxColliderComponent(this);
+
+            else if (type == std::type_index(typeid(SphereColliderComponent)))
+                component = new SphereColliderComponent(this);
+
+            else if (type == std::type_index(typeid(CapsuleColliderComponent)))
+                component = new CapsuleColliderComponent(this);
+
+            else if (type == std::type_index(typeid(MeshColliderComponent)))
+                component = new MeshColliderComponent(this);
+
+            else if (type == std::type_index(typeid(RigidBodyComponent)))
+                component = new RigidBodyComponent(this);
 
             m_Components.insert(std::make_pair(type, component));
             return component;
@@ -104,9 +129,21 @@ namespace HE
         return m_Components;
     }
 
+    const std::unordered_map<std::type_index, Component*>& Entity::GetComponents() const
+    {
+        HE_PROFILE_FUNCTION();
+
+        return m_Components;
+    }
+
     const std::string& Entity::GetName() const
     {
         return m_Name;
+    }
+
+    Scene* Entity::GetScene() const
+    {
+        return m_SceneHandle;
     }
 
     uint32_t Entity::GetID() const

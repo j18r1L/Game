@@ -1,5 +1,4 @@
-#ifndef LOG_H
-#define LOG_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 
@@ -61,5 +60,3 @@ namespace HE
     #define HE_TRACE
 #endif
 
-
-#endif // LOG_H

@@ -7,24 +7,23 @@ namespace HE
         m_EntityHandle = entityHandle;
     }
 
-    void MeshComponent::AddSubMesh(SubMeshComponent& subMesh)
+    void MeshComponent::Copy(Component* other_base)
     {
-        m_SubMeshes.push_back(&subMesh);
+        MeshComponent* other = dynamic_cast<MeshComponent*>(other_base);
+        m_Mesh = other->m_Mesh;
     }
 
-    void MeshComponent::SetPath(const std::string& path)
+    void MeshComponent::SetMesh(const std::shared_ptr<Mesh>& mesh)
     {
-        m_Path = path;
+        m_Mesh = mesh;
     }
 
-    const std::string& MeshComponent::GetPath()
+    std::shared_ptr<Mesh> MeshComponent::GetMesh()
     {
-        return m_Path;
+        return m_Mesh;
     }
 
-    const std::vector<SubMeshComponent*>& MeshComponent::GetSubMeshes() const
-    {
-        return m_SubMeshes;
-    }
+
+
 }
 

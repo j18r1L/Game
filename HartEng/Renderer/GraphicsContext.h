@@ -1,5 +1,4 @@
-#ifndef GRAPHICSCONTEXT_H
-#define GRAPHICSCONTEXT_H
+#pragma once
 
 namespace HE
 {
@@ -14,5 +13,3 @@ namespace HE
 
     };
 }
-
-#endif // GRAPHICSCONTEXT_H

@@ -1,5 +1,4 @@
-#ifndef KEYCODES_H
-#define KEYCODES_H
+#pragma once
 
 //GLFW KEY CODES
 
@@ -132,5 +131,3 @@
 #define HE_KEY_RIGHT_ALT          346
 #define HE_KEY_RIGHT_SUPER        347
 #define HE_KEY_MENU               348
-
-#endif // KEYCODES_H

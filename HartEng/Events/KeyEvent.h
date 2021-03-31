@@ -1,6 +1,4 @@
-#ifndef KEYEVENT_H
-#define KEYEVENT_H
-
+#pragma once
 
 #include "HartEng/Events/Event.h"
 
@@ -91,4 +89,3 @@ namespace HE
         EVENT_CLASS_TYPE(KeyTyped)
     };
 }
-#endif // KEYEVENT_H

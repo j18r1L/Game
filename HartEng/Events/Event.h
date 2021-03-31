@@ -1,5 +1,4 @@
-#ifndef EVENT_H
-#define EVENT_H
+#pragma once
 
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Core.h"
@@ -89,7 +88,7 @@ namespace HE
             // Если эвент, который отправляем совпадает с типом EventFn, то вызывается эта функция
             if (m_Event.GetEventType() == T::GetStaticType())
             {
-                m_Event.Handled = func(*(T*)&m_Event);
+                m_Event.Handled |= func(*(T*)&m_Event);
                 return true;
             }
             return false;
@@ -102,10 +101,3 @@ namespace HE
         return os << e.ToString();
     }
 }
-
-
-
-
-
-
-#endif // EVENT_H

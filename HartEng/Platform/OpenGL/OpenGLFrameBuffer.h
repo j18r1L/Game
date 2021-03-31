@@ -1,5 +1,4 @@
-#ifndef OPENGLFRAMEBUFFER_H
-#define OPENGLFRAMEBUFFER_H
+#pragma once
 
 #include "HartEng/Renderer/Framebuffer.h"
 
@@ -13,10 +12,6 @@ namespace HE
 
         uint32_t m_ColorAttachmentSize = 0;
 
-        //uint32_t m_ColorAttachment = 0;
-        //uint32_t m_DepthAttachment = 0;
-        //uint32_t m_IDAttachment = 0;
-
         FrameBufferSpecification m_Specification;
 
 
@@ -29,14 +24,13 @@ namespace HE
 
         void Invalidate();
 
-        void Bind(FramebufferBindType type = FramebufferBindType::FRAMEBUFFER) override;
-        void UnBind() override;
+        void Bind(FramebufferBindType type = FramebufferBindType::FRAMEBUFFER) const override;
+        void UnBind() const override;
         void Resize(uint32_t width, uint32_t height) override;
         
+        int ReadPixel(uint32_t attachmentIndex, uint32_t x, uint32_t y) const override;
 
         const FrameBufferSpecification & GetSpecification() const override;
     };
 
 }
-
-#endif // OPENGLFRAMEBUFFER_H
