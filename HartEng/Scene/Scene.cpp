@@ -2,14 +2,19 @@
 
 
 #include "HartEng/Scene/Components/TransformComponent.h"
-#include "HartEng/Scene/Components/MeshComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
+#include "HartEng/Scene/Components/CollidersComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
-#include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/LightComponent.h"
+#include "HartEng/Scene/Components/MeshComponent.h"
+#include "HartEng/Scene/Components/TagComponent.h"
 
-#include "HartEng/Renderer/Renderer.h"
+
 #include "HartEng/Renderer/SceneRenderer.h"
+#include "HartEng/Renderer/Renderer.h"
+
+#include "HartEng/Physics/Physics.h"
 
 #include "HartEng/Core/Log.h"
 #include <iostream>
@@ -22,7 +27,7 @@ namespace HE
         m_Name("Undefined"),
         m_ObjectsCount(0)
     {
-
+        Physics::CreateScene();
     }
     Scene::Scene(const std::string& scene_name):
         m_Entities(),
@@ -31,12 +36,38 @@ namespace HE
 
     {
         HE_CORE_TRACE("Creating scene with name: {0}", scene_name);
+        Physics::CreateScene();
+    }
+
+    Scene::Scene(const Scene& other) :
+        m_Entities(other.GetEntities()),
+        m_Name(other.GetName()),
+        m_ObjectsCount(m_Entities.size())
+    {
+        //HE_CORE_TRACE("Copy scene {0} to new scene with name: {1}", other.GetName(), m_Name);
+        Physics::CreateScene();
     }
 
     Entity* Scene::CreateEntity()
     {
         std::string entityName = "__obj_" + m_Name + "_" + std::to_string(m_ObjectsCount);
         return CreateEntity(entityName);
+    }
+
+    Entity* Scene::CreateEntity(const Entity& other)
+    {
+        std::string entityName = "__obj_" + m_Name + "_" + std::to_string(m_ObjectsCount);
+
+        Entity* entity = new Entity(this, entityName, m_ObjectsCount + 1); // 0 is not valid ID
+        m_Entities[entityName] = entity;
+        m_ObjectsCount++;
+
+        for (auto [type, component] : other.GetComponents())
+        {
+            auto component_new = entity->AddComponent(type);
+            component_new->Copy(component);
+        }
+        return entity;
     }
 
     Entity* Scene::CreateEntity(const std::string& name)
@@ -116,9 +147,36 @@ namespace HE
         return m_Entities;
     }
 
+    const std::unordered_map<std::string, Entity*>& Scene::GetEntities() const
+    {
+        return m_Entities;
+    }
+
     const std::string& Scene::GetName() const
     {
         return m_Name;
+    }
+
+    const LightEnvironment& Scene::GetLightEnvironment() const
+    {
+        return m_LightEnvironment;
+    }
+
+    Entity* Scene::FindEntityByTag(const std::string& tag)
+    {
+        HE_PROFILE_FUNCTION();
+
+        for (auto& [name, entity] : m_Entities)
+        {
+            if (entity->HasComponent<TagComponent>())
+            {
+                if (entity->GetComponent<TagComponent>()->GetTag() == tag)
+                {
+                    return entity;
+                }
+            }
+        }
+        return nullptr;
     }
 
     void Scene::DestroyEntity(const std::string& name)
@@ -141,6 +199,16 @@ namespace HE
             m_Play = true;
             for (auto& [name, entity] : m_Entities)
             {
+                if (entity->HasComponent<RigidBodyComponent>())
+                {
+                    Physics::CreateActor(*entity);
+                }
+
+            }
+
+
+            for (auto& [name, entity] : m_Entities)
+            {
                 if (entity->HasComponent<ScriptComponent>())
                 {
                     ScriptComponent* scriptComponent = entity->GetComponent<ScriptComponent>();
@@ -148,6 +216,8 @@ namespace HE
                 }
             }
         }
+
+        
         
     }
 
@@ -166,7 +236,9 @@ namespace HE
                     scriptComponent->OnDestroy();
                 }
             }
+            Physics::DestroyScene();
         }
+        
     }
 
     // Update scripts
@@ -184,6 +256,10 @@ namespace HE
                 }
             }
         }
+        {
+            HE_PROFILE_SCOPE("OnUpdate: update physics");
+            Physics::Simulate(ts);
+        }
     }
 
     // Runtime render
@@ -196,6 +272,9 @@ namespace HE
             HE_CORE_ASSERT(cameraEntity.GetID(), "Scene does not contain any cameras!");
             return;
         }
+
+        // Add all lights to LightEnvironment and copy them to SceneRenderer in BeginScene
+        ProcessLights();
 
         // Process camera entity
         glm::mat4 cameraViewMatrix = glm::inverse(cameraEntity.GetComponent<TransformComponent>()->GetTransform());
@@ -216,11 +295,10 @@ namespace HE
                 {
                     MeshComponent* meshComponent = entity->GetComponent<MeshComponent>();
                     TransformComponent* transformComponent = entity->GetComponent<TransformComponent>();
-                    if (meshComponent)
-                    {
-                        meshComponent->GetMesh().get()->OnUpdate(ts);
-                        SceneRenderer::SubmitMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), nullptr);
-                    }
+
+                    meshComponent->GetMesh().get()->OnUpdate(ts);
+                    SceneRenderer::SubmitMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), nullptr);
+                    
                 }
             }
             SceneRenderer::EndScene();
@@ -237,6 +315,10 @@ namespace HE
 
             SceneCamera sceneCamera;
             sceneCamera.SetPerspective(camera.GetFov(), camera.GetAspectRatio(), camera.GetNear(), camera.GetFar());
+
+            // Add all lights to LightEnvironment and copy them to SceneRenderer in BeginScene
+            ProcessLights();
+
             SceneRenderer::BeginScene(this, { sceneCamera, camera.GetView() });
 
            
@@ -270,12 +352,111 @@ namespace HE
                         SceneRenderer::SubmitEntityIDMesh(meshComponent->GetMesh(), transformComponent->GetTransform(), materialInstance);
                     }
                 }
+
+
+                // Render debugmeshes
+                if (entity->HasComponent<CameraComponent>())
+                {
+                    auto cameraComponent = entity->GetComponent<CameraComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    SceneRenderer::SubmitColliderMesh(cameraComponent->GetMesh(), transformComponent->GetTransform());
+                }
+
+                if (entity->HasComponent<BoxColliderComponent>())
+                {
+                   auto boxColliderComponent = entity->GetComponent<BoxColliderComponent>();
+                   auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                   SceneRenderer::SubmitColliderMesh(boxColliderComponent->GetMesh(), glm::translate(transformComponent->GetTransform(), boxColliderComponent->GetOffset()));
+                }
+
+                if (entity->HasComponent<SphereColliderComponent>())
+                {
+                    auto sphereColliderComponent = entity->GetComponent<SphereColliderComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    SceneRenderer::SubmitColliderMesh(sphereColliderComponent->GetMesh(), transformComponent->GetTransform());
+                }
+
+                if (entity->HasComponent<CapsuleColliderComponent>())
+                {
+                    auto capsuleColliderComponent = entity->GetComponent<CapsuleColliderComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    SceneRenderer::SubmitColliderMesh(capsuleColliderComponent->GetMesh(), transformComponent->GetTransform());
+                }
+
+                /*
+                if (entity->HasComponent<MeshColliderComponent>())
+                {
+                    auto capsuleColliderComponent = entity->GetComponent<MeshColliderComponent>();
+                    auto transformComponent = entity->GetComponent<TransformComponent>();
+
+                    for (auto& mesh : capsuleColliderComponent->GetProcessedMeshes())
+                    {
+                        SceneRenderer::SubmitColliderMesh(mesh, transformComponent->GetTransform());
+                    }
+                }
+                */
             }
             SceneRenderer::EndScene();
-
         }
+    }
 
-
+    void Scene::ProcessLights()
+    {
+        // Process lights
+        {
+            HE_PROFILE_SCOPE("Scene::OnRenderRuntime Process Lights");
+            m_LightEnvironment = LightEnvironment();
+            uint32_t directionalLightIndex = 0;
+            uint32_t pointLightIndex = 0;
+            uint32_t spotLightIndex = 0;
+            for (auto& [name, entity] : m_Entities)
+            {
+                // Pretty dumb, but there can be error that entity is nullptr
+                if (entity)
+                {
+                    if (entity->HasComponent<LightComponent>())
+                    {
+                        auto lightComponent = entity->GetComponent<LightComponent>();
+                        auto transformComponent = entity->GetComponent<TransformComponent>();
+                        LightType lightType = lightComponent->GetLightType();
+                        if (lightType == LightType::Point)
+                        {
+                            m_LightEnvironment.PointLights =
+                            {
+                                transformComponent->GetPosition(),
+                                lightComponent->GetColor(),
+                                lightComponent->GetIntensity()
+                            };
+                        }
+                        else if (lightType == LightType::Directional)
+                        {
+                            m_LightEnvironment.DirectionalLights =
+                            {
+                                -glm::normalize(glm::mat3(transformComponent->GetTransform()) * glm::vec3(1.0f)),
+                                lightComponent->GetColor(),
+                                lightComponent->GetIntensity()
+                            };
+                        }
+                        else if (lightType == LightType::Spot)
+                        {
+                            m_LightEnvironment.SpotLights =
+                            {
+                                transformComponent->GetPosition(),
+                                -glm::normalize(glm::mat3(transformComponent->GetTransform()) * glm::vec3(1.0f)),
+                                lightComponent->GetColor(),
+                                lightComponent->GetIntensity(),
+                                lightComponent->GetInnerConeAngle(),
+                                lightComponent->GetOuterConeAngle()
+                            };
+                        }
+                    }
+                }
+            }
+        }
     }
 
     void Scene::OnViewportResize(uint32_t width, uint32_t height)

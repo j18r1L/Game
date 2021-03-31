@@ -1,0 +1,2374 @@
+Scene: Editor scene
+Entities:
+  - Entity: Light
+    TransformComponent:
+      Position: [31.1571579, 48.5789413, -32.6738243]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    LightComponent:
+      LightType: 1
+      CastShadow: false
+      Direction: [0, 0, 1]
+      Color: [1, 1, 1]
+      Intensity: 1
+      Range: 0
+      InnerConeAngle: 0
+      OuterConeAngle: 0
+  - Entity: Plane
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [100, 0.440824866, 100]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/cube/cube.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      PhysicsMaterialAssetID: c9020430-6c9d-42f2-8bf4-4285f85c0ad4
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_66
+    TransformComponent:
+      Position: [158.143814, -59.449913, -339.030243]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: ab12046f-0e3f-4889-8b1a-46b958ce9490
+      PhysicsMaterialFilepath: ""
+  - Entity: Tree
+    TransformComponent:
+      Position: [35.8876877, -40.7721176, -315.902435]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 7ed6ac25-79a2-4aeb-8088-1819b3502a7c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_79
+    TransformComponent:
+      Position: [38.5462914, -48.2874832, -381.306458]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 27c7869b-c6ba-4d42-ba0c-25045462dfc5
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_27
+    TransformComponent:
+      Position: [93.7119598, -49.9156609, -213.793655]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+  - Entity: Terrain
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: de1c4ec0-202c-5cb7-9a52-869bd6240caa
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/terrain/untitled.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: de1c4ec0-202c-5cb7-9a52-869bd6240caa
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/terrain/untitled.obj
+      PhysicsMaterialAssetID: 12b336ee-cc2c-41d5-b7f2-10ae5e93e496
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_7
+    TransformComponent:
+      Position: [0, -43.0965042, -135.682892]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: a451de5c-aa38-4d72-8c84-2b44d80576b8
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_52
+    TransformComponent:
+      Position: [58.8348618, -52.3575211, -330.817871]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 9ad1cec8-bb79-4113-8d36-228d4ccecc72
+      PhysicsMaterialFilepath: ""
+  - Entity: Camera
+    TransformComponent:
+      Position: [-71.9352188, 89.7132416, -41.9620132]
+      Rotation: [65.4919434, 0, -49625.9219]
+      Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Camera
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 65
+        PerspectiveNear: 0.100000001
+        PerspectiveFar: 7000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: Box
+    TransformComponent:
+      Position: [33.7161789, 1.62601614, -30.1200256]
+      Rotation: [0, 0, 0]
+      Scale: [2, 0.311294883, 2]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/cube/cube.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      PhysicsMaterialAssetID: 14a217d3-a47e-4458-bd54-4eed5d9ede3f
+      PhysicsMaterialFilepath: ""
+  - Entity: Player
+    TransformComponent:
+      Position: [-71.9349518, 89.0125885, -41.9620743]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Player
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: true
+      LockRotationY: true
+      LockRotationZ: true
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 2
+      IsTrigger: false
+      PhysicsMaterialAssetID: e81f1fd2-c5fd-54da-ab54-5649b262fa57
+      PhysicsMaterialFilepath: D:/GitProjects/Game/assets/physics/Friction.pm
+  - Entity: __obj_Editor scene_28
+    TransformComponent:
+      Position: [69.6962585, -51.3478279, -223.028366]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: b65092f4-9c96-4dab-82a0-78063a526827
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_8
+    TransformComponent:
+      Position: [20.5460281, -44.9887619, -135.682892]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+      PhysicsMaterialAssetID: c00f1b5b-1958-4137-908c-a861b4b980fb
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_29
+    TransformComponent:
+      Position: [49.7411194, -50.5919991, -220.196533]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 1098048b-5503-4bf5-a3e6-3a6c0e50f02d
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_9
+    TransformComponent:
+      Position: [5.73803425, -42.2002869, -114.819954]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: bcecdf28-7f52-4923-98c5-c4a207a08912
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_10
+    TransformComponent:
+      Position: [24.0292549, -43.3887482, -114.751549]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: d14a3902-fd66-4e40-aa0f-4569981848a2
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_11
+    TransformComponent:
+      Position: [36.4022331, -45.5588875, -131.129211]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+  - Entity: __obj_Editor scene_12
+    TransformComponent:
+      Position: [40.5989113, -47.0808945, -142.985657]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 10f613c5-6aa5-4d6a-9d72-6c87a91b2cef
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_13
+    TransformComponent:
+      Position: [31.4593678, -47.0819016, -156.712738]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: b0a3b87e-e5fb-4982-8a0c-6ad3927d7e3c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_14
+    TransformComponent:
+      Position: [20.0852585, -46.9822731, -166.684708]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 74a3ab39-9644-48f4-8ab9-0d9f778ab05d
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_15
+    TransformComponent:
+      Position: [15.2303791, -47.0102654, -179.703278]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 7c8545fd-90b3-4a0b-81da-ecbee1ba5fa1
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_16
+    TransformComponent:
+      Position: [33.8027573, -49.1169548, -191.172928]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: e6f3b951-726c-4606-a377-047694227480
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_17
+    TransformComponent:
+      Position: [49.4351997, -49.9687996, -187.036469]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+  - Entity: __obj_Editor scene_18
+    TransformComponent:
+      Position: [61.6072884, -49.7966652, -181.056931]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: f8910431-fcdd-4aa6-a583-11e2607e12ad
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_19
+    TransformComponent:
+      Position: [74.6662064, -48.8693504, -175.365112]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: c5c5ba1d-be2d-4cb2-a1b2-a5d5f9a93009
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_20
+    TransformComponent:
+      Position: [92.9232025, -40.7721176, -180.707108]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: cb878ba6-b25b-4e26-8629-dbc9dd9d05b3
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_21
+    TransformComponent:
+      Position: [96.2458496, -44.1991425, -155.900604]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+      PhysicsMaterialAssetID: 78d73b11-dc82-42f8-8084-37de86d44057
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_22
+    TransformComponent:
+      Position: [71.9543457, -46.7716713, -148.779755]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+      PhysicsMaterialAssetID: 3e9b425a-02b9-4771-a8f3-ee6f5cd0fcc0
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_23
+    TransformComponent:
+      Position: [55.0646973, -45.4970779, -130.000427]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    SphereColliderComponent:
+      Radius: 0.5
+      IsTrigger: false
+      PhysicsMaterialAssetID: fb2530f5-87f5-437e-8291-ea2526ecd740
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_24
+    TransformComponent:
+      Position: [46.4184494, -42.6084938, -113.443092]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+      PhysicsMaterialAssetID: c9cb593b-b11d-4e13-8fa6-9ab4ce792d89
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_25
+    TransformComponent:
+      Position: [74.5093002, -40.7721024, -119.959091]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: bf5332a9-57ce-413a-a340-a7b3b3f7ee76
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_26
+    TransformComponent:
+      Position: [105.570663, -47.8707962, -210.062485]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: eff33d46-2993-421c-b669-c2359f8dca11
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_41
+    TransformComponent:
+      Position: [86.8029785, -50.8521652, -248.027573]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 28098af3-be95-4d82-adac-d9eb67e9f2d3
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_30
+    TransformComponent:
+      Position: [17.9259815, -40.7720718, -368.289795]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+      PhysicsMaterialAssetID: abf3c376-8621-4e3d-ab00-9f34bee93e2b
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_40
+    TransformComponent:
+      Position: [69.7346878, -50.94524, -255.46701]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 7b9a88f4-faf1-44ed-a497-aa5e411d8442
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_31
+    TransformComponent:
+      Position: [11.999074, -46.0325508, -233.782516]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: c7d0ff86-0772-422d-8e8f-df1eb5a3a810
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_43
+    TransformComponent:
+      Position: [105.688293, -49.7782173, -247.825745]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 9881caf5-da9e-485e-adfd-a7a0651be969
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_32
+    TransformComponent:
+      Position: [32.8881683, -48.9792671, -225.493011]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: d83d3e0c-07ee-49bd-9784-27780e129ca8
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_42
+    TransformComponent:
+      Position: [86.1765289, -50.3270264, -220.588989]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: a1df5119-a5ca-408d-bacc-ee4690679f0c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_33
+    TransformComponent:
+      Position: [11.9166756, -45.892189, -265.229675]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 22b1d65f-d968-4992-9b18-942fe888e2e3
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_45
+    TransformComponent:
+      Position: [140.868057, -43.9964523, -246.45639]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 0149aae2-210c-42ba-b358-627365e569e9
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_34
+    TransformComponent:
+      Position: [36.5216827, -48.3902435, -261.900787]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 7c23b2d9-e8fe-461b-b6ec-b0b2632b4f3b
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_44
+    TransformComponent:
+      Position: [122.828735, -47.4267426, -246.45639]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 71c41c90-2f2b-4ff3-9605-bb37c4b44c5f
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_35
+    TransformComponent:
+      Position: [22.9032192, -41.8690948, -290.648163]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 28f4d7b5-b57e-4ab2-bdde-d1bcbbe97f04
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_47
+    TransformComponent:
+      Position: [134.41983, -53.6006355, -280.883453]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: f7819840-9f22-4022-9079-116b35397623
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_36
+    TransformComponent:
+      Position: [35.8876877, -40.7721176, -315.902435]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+  - Entity: __obj_Editor scene_46
+    TransformComponent:
+      Position: [149.462296, -56.2498283, -268.893372]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 5fcfddb1-9fe7-4dd9-aac8-8cfe5d18799c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_37
+    TransformComponent:
+      Position: [14.0234451, -44.6604729, -205.667603]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: fd706ef9-7a5b-4020-9cc2-d5964073afea
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_49
+    TransformComponent:
+      Position: [100.988297, -53.8666725, -289.40979]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    SphereColliderComponent:
+      Radius: 0.5
+      IsTrigger: false
+      PhysicsMaterialAssetID: cd7162b1-2047-4182-874d-2d86187d2e41
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_48
+    TransformComponent:
+      Position: [117.106697, -53.508873, -285.05127]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 2e213c67-4a50-49d1-9c04-55920fa26989
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_39
+    TransformComponent:
+      Position: [52.153595, -50.0915833, -258.47168]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+  - Entity: __obj_Editor scene_50
+    TransformComponent:
+      Position: [79.9882507, -53.7207222, -298.562714]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 8bbb3945-2aaa-4389-93c4-fca54a32ed34
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_51
+    TransformComponent:
+      Position: [65.7333221, -47.9685097, -302.795776]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 3db13f6d-731f-4f04-af20-7bef72cd1c80
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_53
+    TransformComponent:
+      Position: [44.5043831, -49.2907486, -337.063995]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 423ae405-a5f5-435d-8bf1-c778f6b1153c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_54
+    TransformComponent:
+      Position: [28.4364204, -46.746891, -340.422638]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: c6154cdf-1b06-4fa2-883e-a55643932456
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_55
+    TransformComponent:
+      Position: [84.1746063, -56.1541939, -338.13147]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 5d22ad5b-b409-4e2c-a365-51e22d05e88f
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_56
+    TransformComponent:
+      Position: [95.7825623, -57.8222618, -335.472595]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 8ababd5b-1237-4209-a0f1-b9f97255b605
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_57
+    TransformComponent:
+      Position: [110.356255, -58.4873161, -329.923798]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: d4bc60b3-0c24-4be6-8223-d0824252d7ec
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_58
+    TransformComponent:
+      Position: [125.020576, -58.2616539, -321.942902]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: c60f970d-08fd-4297-888b-79f1e88bcaa8
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_59
+    TransformComponent:
+      Position: [142.579437, -57.3848534, -310.29953]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1
+      IsTrigger: false
+      PhysicsMaterialAssetID: cd2030ec-dca2-43d0-9d73-00f73121aba6
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_60
+    TransformComponent:
+      Position: [158.373215, -55.9981384, -301.842865]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 9d8486c0-8753-4467-bb5f-2adb9b85b942
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_61
+    TransformComponent:
+      Position: [171.542465, -53.5671883, -295.325287]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: d2a90034-791c-4f0c-b9ca-cf51bdf8af29
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_62
+    TransformComponent:
+      Position: [179.282684, -55.259388, -314.814545]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 5dc3204c-7348-4d49-814c-69c22bf3240e
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_63
+    TransformComponent:
+      Position: [166.872711, -56.3723717, -310.982849]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 1fd3b7e4-c2bc-47cf-9933-1b3a1eb0e7cf
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_67
+    TransformComponent:
+      Position: [145.661575, -59.0534058, -330.324829]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 6d542c7c-f1e4-45c9-96a1-6cffc216f936
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_68
+    TransformComponent:
+      Position: [145.734695, -60.846344, -341.721222]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 0a936b42-6600-4700-8486-83bd7b1031c5
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_69
+    TransformComponent:
+      Position: [136.524933, -61.1894913, -344.839569]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: a9fe553d-8c1c-4c9f-911a-3f3e59f80ff9
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_70
+    TransformComponent:
+      Position: [133.949844, -61.7424698, -357.82077]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 3e5b582c-3129-4a37-a29f-67bb4de3d7b7
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_71
+    TransformComponent:
+      Position: [123.939499, -60.1965637, -354.780823]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 04e7bc2f-3720-4daf-b4ca-453eff4d7402
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_72
+    TransformComponent:
+      Position: [117.441055, -62.0621719, -367.850922]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: bd4109bf-cdf9-49db-bd0f-0da872b7c655
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_73
+    TransformComponent:
+      Position: [103.819847, -61.6577682, -369.086334]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 0cfbd1e1-d2b2-4141-8f44-2e8c02874269
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_74
+    TransformComponent:
+      Position: [88.9066772, -59.3275719, -362.855774]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 3d20d269-561b-4f1a-adc6-e58f40b7a8b6
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_75
+    TransformComponent:
+      Position: [82.891449, -57.2740173, -378.231171]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 9ca758f6-b024-4b4f-b980-964bd8e6610f
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_76
+    TransformComponent:
+      Position: [70.0542374, -52.7734261, -370.203705]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: d2d8e1b9-bea3-406c-8a53-05dc1c470389
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_77
+    TransformComponent:
+      Position: [61.2170334, -51.3633881, -376.721802]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: cc4f2bcb-0414-4d3d-9caf-b64b66e342c7
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_78
+    TransformComponent:
+      Position: [48.7792244, -50.8642044, -382.056519]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 9838da1c-b6ad-454e-8ff9-db24ef109316
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_80
+    TransformComponent:
+      Position: [26.003685, -47.5922127, -389.406769]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 0c2440bc-8a7d-4d75-ba79-cfe0e1e8124a
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_81
+    TransformComponent:
+      Position: [18.9553604, -52.6891594, -417.490326]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 160a5467-046a-4601-b232-09bb3e093362
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_82
+    TransformComponent:
+      Position: [10.0405273, -51.5628281, -421.375793]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 6ecfe8fa-ae98-489e-be58-ea9f51c60906
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_83
+    TransformComponent:
+      Position: [0.585191727, -51.9955368, -425.497284]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 1c78df48-e04a-42f4-b6ef-6201dfbd5103
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_84
+    TransformComponent:
+      Position: [-12.9677658, -49.6079636, -423.739624]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: 28783c2d-72a4-441f-9664-7aa15f89cf1b
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_85
+    TransformComponent:
+      Position: [0.491704941, -44.85952, -405.908447]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    SphereColliderComponent:
+      Radius: 0.5
+      IsTrigger: false
+      PhysicsMaterialAssetID: 96df8e69-87a3-4f4b-b9b1-f3d4e0aec029
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_86
+    TransformComponent:
+      Position: [12.1079712, -40.7720871, -391.133606]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 1cc45656-c01a-5138-8dd2-c93752684d9b
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/tree/Lowpoly_tree_sample.obj
+      PhysicsMaterialAssetID: a45d801e-c524-41c5-a492-24b1959ff31a
+      PhysicsMaterialFilepath: ""

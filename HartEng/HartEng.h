@@ -13,9 +13,11 @@
 #include "HartEng/Scene/Components/MeshComponent.h"
 #include "HartEng/Scene/Components/Texture2DComponent.h"
 #include "HartEng/Scene/Components/TransformComponent.h"
+#include "HartEng/Scene/Components/TagComponent.h"
 #include "HartEng/Scene/Components/CameraComponent.h"
 #include "HartEng/Scene/Components/LightComponent.h"
 #include "HartEng/Scene/Components/ScriptComponent.h"
+#include "HartEng/Scene/Components/CollidersComponent.h"
 #include "HartEng/Scene/SceneSerializer.h"
 
 
@@ -31,6 +33,10 @@
 #include "HartEng/Renderer/Framebuffer.h"
 #include "HartEng/Renderer/Mesh.h"
 #include "HartEng/Renderer/SceneRenderer.h"
+
+// Physics
+#include "HartEng/Physics/Physics.h"
+#include "HartEng/Physics/PhysicsActor.h"
 
 // Events
 #include "HartEng/Events/Event.h"

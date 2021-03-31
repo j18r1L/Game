@@ -1,0 +1,629 @@
+Scene: Editor scene
+Entities:
+  - Entity: Light
+    TransformComponent:
+      Position: [31.1571579, 288.07901, -32.6738243]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    LightComponent:
+      LightType: 1
+      CastShadow: false
+      Direction: [0, 0, 1]
+      Color: [1, 1, 1]
+      Intensity: 1
+      Range: 0
+      InnerConeAngle: 0
+      OuterConeAngle: 0
+  - Entity: __obj_Editor scene_27
+    TransformComponent:
+      Position: [138.693726, -0.187040776, -313.708252]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: c749f564-7cce-50eb-b255-7205e014b33c
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone04.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: c749f564-7cce-50eb-b255-7205e014b33c
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone04.obj
+      PhysicsMaterialAssetID: 6442e16d-0d83-4bd1-b1d7-ef41a916d848
+      PhysicsMaterialFilepath: ""
+  - Entity: Terrain
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: ec0bd7ee-0348-5dd4-b881-ed9fea4e2ac6
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/terrain/scene.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: ec0bd7ee-0348-5dd4-b881-ed9fea4e2ac6
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/obj/terrain/scene.obj
+      PhysicsMaterialAssetID: ed17f958-ec63-49fa-99e6-0d4eebf53e13
+      PhysicsMaterialFilepath: ""
+  - Entity: Camera
+    TransformComponent:
+      Position: [136.822311, 0.972991109, -309.927887]
+      Rotation: [64.1516266, 0, -50389.1016]
+      Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Camera
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 65
+        PerspectiveNear: 0.5
+        PerspectiveFar: 7000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: Box
+    TransformComponent:
+      Position: [21.5511227, 31.9458675, -47.2728386]
+      Rotation: [0, 0, 0]
+      Scale: [2, 0.311294883, 2]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+      Filepath: D:/GitProjects/Game/assets/meshes/obj/cube/cube.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      PhysicsMaterialAssetID: 22763fd2-62c8-458c-8bc2-cd68b7f860ee
+      PhysicsMaterialFilepath: ""
+  - Entity: Player
+    TransformComponent:
+      Position: [136.822311, 0.572991133, -309.927887]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Player
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: true
+      LockRotationY: true
+      LockRotationZ: true
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 1.60000002
+      IsTrigger: false
+      PhysicsMaterialAssetID: e81f1fd2-c5fd-54da-ab54-5649b262fa57
+      PhysicsMaterialFilepath: D:/GitProjects/Game/assets/physics/Friction.pm
+  - Entity: __obj_Editor scene_10
+    TransformComponent:
+      Position: [133.917053, -0.468557596, -324.570831]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: e50c0349-0e2e-5075-8564-91d4f3dad713
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree04.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: e50c0349-0e2e-5075-8564-91d4f3dad713
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree04.obj
+      PhysicsMaterialAssetID: 4059e836-4623-498f-8a4d-951f07aae734
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_11
+    TransformComponent:
+      Position: [138.074753, -0.468557596, -326.743011]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 2d555477-d4a0-5c69-a8cf-ded96b1485c0
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush01.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 2d555477-d4a0-5c69-a8cf-ded96b1485c0
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush01.obj
+      PhysicsMaterialAssetID: 60a6e382-3794-468b-8327-3f76889d3a69
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_12
+    TransformComponent:
+      Position: [138.074753, -0.468557596, -325.155334]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: f2b932b6-eefb-5989-868a-bca295fdf3b9
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush02.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: f2b932b6-eefb-5989-868a-bca295fdf3b9
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush02.obj
+      PhysicsMaterialAssetID: 9b3ade9e-f7fe-4798-8177-aa13f11d253c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_13
+    TransformComponent:
+      Position: [138.074753, -0.468557596, -323.426849]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 6443047b-1f88-5c8a-8ad0-853840df7a9a
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush03.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 6443047b-1f88-5c8a-8ad0-853840df7a9a
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush03.obj
+      PhysicsMaterialAssetID: 20151136-3f72-4b6c-bfcd-1335ff73f0f3
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_14
+    TransformComponent:
+      Position: [138.074753, -0.468557596, -321.723511]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 8ba4b5dc-4ba6-585b-b500-79d5a00ed591
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush04.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 8ba4b5dc-4ba6-585b-b500-79d5a00ed591
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/bush04.obj
+      PhysicsMaterialAssetID: 107d11a8-5625-41f8-b36c-e83f531949df
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_15
+    TransformComponent:
+      Position: [136.556168, -0.468557596, -321.723511]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 0430eb38-aacb-56b7-a00b-9553ade15bce
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/flowerblue01.obj
+  - Entity: __obj_Editor scene_16
+    TransformComponent:
+      Position: [136.556168, -0.468557596, -323.154968]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 9156fac3-935e-5ea9-a27f-b0e83af02624
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/flowercalla.obj
+  - Entity: __obj_Editor scene_17
+    TransformComponent:
+      Position: [136.556168, -0.468557596, -324.214081]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 131040b2-5d6a-5ef6-b01e-4de2985f6616
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/flowererantis01.obj
+  - Entity: __obj_Editor scene_18
+    TransformComponent:
+      Position: [136.556168, -0.468557596, -328.664429]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 442829d7-ee8f-5f26-9b68-6aa177fbb62f
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree01.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 442829d7-ee8f-5f26-9b68-6aa177fbb62f
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree01.obj
+      PhysicsMaterialAssetID: a0a8bc09-41fa-4b46-816a-309d4c839b2b
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_19
+    TransformComponent:
+      Position: [133.917053, -0.468557596, -328.664429]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 5d80df35-79c5-5812-8ccd-bff51800c103
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree02.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 5d80df35-79c5-5812-8ccd-bff51800c103
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree02.obj
+      PhysicsMaterialAssetID: 7f91d272-a2a5-48b6-a674-618d64c14195
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_20
+    TransformComponent:
+      Position: [133.917053, -0.468557596, -326.42038]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 0db50022-9272-5583-a1a5-02cc72cca91f
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree03.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 0db50022-9272-5583-a1a5-02cc72cca91f
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree03.obj
+      PhysicsMaterialAssetID: 4eceb32a-be1c-4161-bb42-a2971e680680
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_21
+    TransformComponent:
+      Position: [138.470612, -0.187040776, -317.269897]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 2e98f7a1-7c0b-585c-8cdd-34888aa06cae
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/weedplant05.obj
+  - Entity: __obj_Editor scene_22
+    TransformComponent:
+      Position: [133.917053, -0.468557596, -322.730927]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 21242b10-0ed5-5b93-9887-6a27f952ce4e
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree05.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 21242b10-0ed5-5b93-9887-6a27f952ce4e
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/tree05.obj
+      PhysicsMaterialAssetID: d5d32cd9-9987-4d2f-ab25-ea7129e9d898
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_23
+    TransformComponent:
+      Position: [133.917053, -0.468557596, -320.048309]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: 3cb19a43-3405-53a6-acb7-25503ce3f2d9
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/mushroom01.obj
+  - Entity: __obj_Editor scene_24
+    TransformComponent:
+      Position: [133.917053, -0.468557596, -321.187805]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MeshComponent:
+      AssetID: cdf9f846-b90f-5189-a696-2f30f0da2283
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/mushroom02.obj
+  - Entity: __obj_Editor scene_25
+    TransformComponent:
+      Position: [133.917053, -0.187040776, -318.667358]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.36800003]
+    MeshComponent:
+      AssetID: 5a48d5f8-4bad-5203-b1f1-8396acc2bb64
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/pinecone01.obj
+  - Entity: __obj_Editor scene_26
+    TransformComponent:
+      Position: [133.917053, -0.187040776, -317.595581]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: d33caf16-dcfa-5e5c-b020-c19eb836ec6e
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/Weed01.obj
+  - Entity: __obj_Editor scene_28
+    TransformComponent:
+      Position: [136.002777, -0.187040776, -315.864838]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 9e92e097-a939-5e33-bdb3-0decddc152c1
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/Weed03.obj
+  - Entity: __obj_Editor scene_29
+    TransformComponent:
+      Position: [136.002777, -0.187040776, -317.551361]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: c8a09bfb-2441-5735-8e64-55b9e194f801
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/Weedplant01.obj
+  - Entity: __obj_Editor scene_30
+    TransformComponent:
+      Position: [137.170471, -0.187040776, -317.551361]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 4462a0ac-e7b4-5c6b-8682-fe2c11fa2503
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/weedplant02.obj
+  - Entity: __obj_Editor scene_31
+    TransformComponent:
+      Position: [137.170471, -0.187040776, -316.272675]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 115b9b72-b865-52d6-97bc-20390b4a411e
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/weedplant03.obj
+  - Entity: __obj_Editor scene_32
+    TransformComponent:
+      Position: [138.470612, -0.187040776, -316.272675]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 916643ad-6ca4-58af-a010-eeb329d87f52
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/weedplant04.obj
+  - Entity: __obj_Editor scene_33
+    TransformComponent:
+      Position: [133.917053, -0.187040776, -315.864838]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 3ba66334-0b86-5fa0-8ade-8c3a855747f9
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/Weed02.obj
+  - Entity: __obj_Editor scene_34
+    TransformComponent:
+      Position: [133.917053, -0.187040776, -313.648682]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 6ec463d3-0c04-567e-961b-2d1b1eb7faf2
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/threeleaf01.obj
+  - Entity: __obj_Editor scene_35
+    TransformComponent:
+      Position: [136.365601, -0.187040776, -313.648682]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: f2fa5b36-9757-5832-82ed-5a8be027e8f0
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone01.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: f2fa5b36-9757-5832-82ed-5a8be027e8f0
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone01.obj
+      PhysicsMaterialAssetID: 2fe48196-f050-4af5-8c2d-efdbe84c0d75
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_36
+    TransformComponent:
+      Position: [136.365601, -0.187040776, -312.218079]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 7af76dd5-77e6-5fc2-9364-e3a0a2bc5643
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone02.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 7af76dd5-77e6-5fc2-9364-e3a0a2bc5643
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone02.obj
+      PhysicsMaterialAssetID: c7b9e604-ea35-4784-acf2-b55a1cdf5f5c
+      PhysicsMaterialFilepath: ""
+  - Entity: __obj_Editor scene_37
+    TransformComponent:
+      Position: [138.693726, -0.187040776, -312.218079]
+      Rotation: [0, 0, 0]
+      Scale: [1.36800003, 1.36800003, 1.37319827]
+    MeshComponent:
+      AssetID: 28fa1719-4c4d-5ebd-9b80-bbcf892aba33
+      Filepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone03.obj
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 28fa1719-4c4d-5ebd-9b80-bbcf892aba33
+      CollisionMeshFilepath: D:/GitProjects/Game/assets/meshes/lowPolyPack/nature/obj/stone03.obj
+      PhysicsMaterialAssetID: 1d9fc157-3795-4e2f-a27e-114fe72eb705
+      PhysicsMaterialFilepath: ""

@@ -15,6 +15,8 @@ namespace HE
         Texture2DComponent(Entity* entityHandle);
         virtual ~Texture2DComponent() = default;
 
+        void Copy(Component* other_base) override {};
+
         void SetImage(std::shared_ptr<Texture2D> texture);
         void SetImage(const std::string& filepath);
 

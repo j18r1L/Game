@@ -9,6 +9,15 @@ namespace HE
         m_EntityHandle = entityHandle;
     }
 
+    void TransformComponent::Copy(Component* other_base)
+    {
+        TransformComponent* other = dynamic_cast<TransformComponent*>(other_base);
+        m_Transform = other->m_Transform;
+        m_Position = other->m_Position;
+        m_Rotation = other->m_Rotation;
+        m_Scale = other->m_Scale;
+    }
+
     void TransformComponent::Recalculate()
     {
         

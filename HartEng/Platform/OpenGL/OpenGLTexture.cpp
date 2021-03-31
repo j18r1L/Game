@@ -7,30 +7,44 @@
 
 namespace HE
 {
-    OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath):
+    OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath, bool flipped):
         m_Path(filepath),
-        m_DataFormat(0)
+        m_DataFormat(0),
+        m_Flipped(flipped)
+    {
+        Load();
+    }
+
+    OpenGLTexture2D::~OpenGLTexture2D()
     {
         HE_PROFILE_FUNCTION();
 
-        int width, height, channels;
-        stbi_set_flip_vertically_on_load(false);
+        Renderer::Submit([this]() mutable {
+            glDeleteTextures(1, &m_RendererID);
+            });
+    }
+
+    void OpenGLTexture2D::Load()
+    {
+        HE_PROFILE_FUNCTION();
+
+        int width = 0, height = 0, channels = 0;
+        stbi_set_flip_vertically_on_load(m_Flipped);
+        stbi_uc* data;
         {
             HE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-            stbi_uc* data;
-            data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
-            m_ImageData.Allocate(width * height * channels);
-            m_ImageData.Write(data, width * height * channels);
-            stbi_image_free(data);
-            //m_ImageData.Data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
+
+            data = stbi_load(m_Path.c_str(), &width, &height, &channels, 0);
         }
-        if (&m_ImageData.Data[0] == nullptr)
+        if (data == nullptr)
         {
-            HE_CORE_ERROR("Failed to load image from: " + filepath);
+            HE_CORE_ERROR("Failed to load image from: " + m_Path);
             return;
         }
-            
-        //HE_CORE_ASSERT(data, "Failed to load image from: " + path);
+        m_ImageData.Allocate(width * height * channels);
+        m_ImageData.Write(data, width * height * channels);
+        stbi_image_free(data);
+
         GLenum internalFormat = 0;
         if (channels == 1)
         {
@@ -48,6 +62,12 @@ namespace HE
             m_DataFormat = GL_RGBA;
         }
         HE_CORE_ASSERT(internalFormat & m_DataFormat, "Format not supported!");
+        if (m_Loaded)
+        {
+            Renderer::Submit([this]() mutable {
+                glDeleteTextures(1, &m_RendererID);
+                });
+        }
         m_Loaded = true;
         m_Width = width;
         m_Height = height;
@@ -55,8 +75,10 @@ namespace HE
             Renderer::Submit([this, internalFormat]() mutable
                 {
                     HE_PROFILE_SCOPE("OpenGL CreateTexture - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-                    // TODO перевод uint int
+
                     
+                    // TODO перевод uint int
+
                     /*
                     // TODO mipmap-ы
                     glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
@@ -76,22 +98,11 @@ namespace HE
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                    m_ImageData.Data.clear();
-                    //stbi_image_free(&m_ImageData.Data[0]);
+                    m_ImageData.Data = std::vector<uint8_t>();
+                    //m_ImageData.Data.clear();
                 });
-            
+
         }
-        
-        
-    }
-
-    OpenGLTexture2D::~OpenGLTexture2D()
-    {
-        HE_PROFILE_FUNCTION();
-
-        Renderer::Submit([this]() mutable {
-            glDeleteTextures(1, &m_RendererID);
-            });
     }
 
     void OpenGLTexture2D::SetData(void* data, uint32_t size) const
@@ -104,6 +115,15 @@ namespace HE
                 glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
             });
         
+    }
+
+    void OpenGLTexture2D::SetFlipped(bool flipped)
+    {
+        if (m_Flipped != flipped)
+        {
+            m_Flipped = flipped;
+            Load();
+        }
     }
 
     void OpenGLTexture2D::Bind(uint32_t slot) const
@@ -168,8 +188,24 @@ namespace HE
 
     /////////////////////////////////////// TEXTURECUBEMAP //////////////////////////////////////
 
-    OpenGLTextureCube::OpenGLTextureCube(const std::string& path):
+    OpenGLTextureCube::OpenGLTextureCube(const std::string& path, bool flipped):
         m_Path(path)
+    {
+        Load();
+    }
+
+    OpenGLTextureCube::~OpenGLTextureCube()
+    {
+        HE_PROFILE_FUNCTION();
+
+        Renderer::Submit([this]() mutable
+            {
+                glDeleteTextures(1, &m_RendererID);
+            });
+        
+    }
+
+    void OpenGLTextureCube::Load()
     {
         HE_PROFILE_FUNCTION();
 
@@ -191,15 +227,15 @@ namespace HE
             {
                 HE_PROFILE_SCOPE("stbi_load - OpenGLTextureCube::OpenGLTextureCube(const std::string&)");
                 stbi_uc* data;
-                data = stbi_load((path + faces[i]).c_str(), &width, &height, &channels, 0);
+                data = stbi_load((m_Path + faces[i]).c_str(), &width, &height, &channels, 0);
                 m_ImageData[i].Allocate(width * height * channels);
                 m_ImageData[i].Write(data, width * height * channels);
                 stbi_image_free(data);
-                
+
             }
             if (&m_ImageData[i].Data[0] == nullptr)
             {
-                HE_CORE_ERROR("Failed to load image from: " + path);
+                HE_CORE_ERROR("Failed to load image from: " + m_Path);
                 return;
             }
 
@@ -245,17 +281,6 @@ namespace HE
             });
     }
 
-    OpenGLTextureCube::~OpenGLTextureCube()
-    {
-        HE_PROFILE_FUNCTION();
-
-        Renderer::Submit([this]() mutable
-            {
-                glDeleteTextures(1, &m_RendererID);
-            });
-        
-    }
-
     void OpenGLTextureCube::SetData(void* data, uint32_t size) const
     {
         HE_PROFILE_FUNCTION();
@@ -264,6 +289,18 @@ namespace HE
         //HE_CORE_ASSERT(size == m_Width * m_Height * m_DataFormat, "Data must be entire texture!");
         //glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
+
+    void OpenGLTextureCube::SetFlipped(bool flipped)
+    {
+        HE_PROFILE_FUNCTION();
+
+        if (m_Flipped != flipped)
+        {
+            m_Flipped = flipped;
+            Load();
+        }
+    }
+    
 
     void OpenGLTextureCube::Bind(uint32_t slot) const
     {

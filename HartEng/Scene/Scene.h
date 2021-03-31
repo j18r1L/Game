@@ -9,6 +9,38 @@
 
 namespace HE
 {
+    struct DirectionalLight
+    {
+        glm::vec3 Direction;
+        glm::vec3 Color;
+        float Intensity;
+    };
+
+    struct PointLight
+    {
+        glm::vec3 Position;
+        glm::vec3 Color;
+        float Intensity;
+    };
+
+    struct SpotLight
+    {
+        glm::vec3 Position;
+        glm::vec3 Direction;
+        glm::vec3 Color;
+        float Intensity;
+        float InnerConeAngle;
+        float OuterConeAngle;
+    };
+
+    struct LightEnvironment
+    {
+        DirectionalLight DirectionalLights;
+        PointLight PointLights;
+        SpotLight SpotLights;
+    };
+
+
     class Entity;
 
     class Scene
@@ -19,23 +51,33 @@ namespace HE
         std::string m_Name;
         uint32_t m_ObjectsCount;
 
+        LightEnvironment m_LightEnvironment;
+
         bool m_Play = false;
         friend class SceneHierarchyPanel;
+
+        void ProcessLights();
 
     public:
         Scene();
         Scene(const std::string& scene_name);
+        Scene(const Scene& other);
 
         ~Scene() = default;
 
         Entity* CreateEntity();
+        Entity* CreateEntity(const Entity& other);
         Entity* CreateEntity(const std::string& name);
 
         Entity* GetEntity(const std::string& name);
         Entity* GetEntity(uint32_t entityID);
         Entity GetMainCameraEntity();
         const std::unordered_map<std::string, Entity*>& GetEntities();
+        const std::unordered_map<std::string, Entity*>& GetEntities() const;
         const std::string& GetName() const;
+        const LightEnvironment& GetLightEnvironment() const;
+
+        Entity* FindEntityByTag(const std::string& tag);
 
         void DestroyEntity(const std::string& name);
         void Clear();

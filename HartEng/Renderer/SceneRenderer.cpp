@@ -18,11 +18,15 @@ namespace HE
 		struct SceneInfo
 		{
 			SceneRendererCamera SceneCamera;
+
+			LightEnvironment SceneLightEnvironment;
 		} SceneData;
 		
+		// Geometry passes
 		std::shared_ptr<RenderPass> GeoPass;
 		std::shared_ptr<RenderPass> EntityIDPass;
 		
+		// Draw lists
 		struct DrawCommand
 		{
 			std::shared_ptr<Mesh> Mesh;
@@ -31,9 +35,14 @@ namespace HE
 		};
 		std::vector<DrawCommand> DrawList;
 		std::vector<DrawCommand> EntityIDDrawList;
+		std::vector<DrawCommand> ColliderDrawList;
 		
 
 		SceneRendererOptions Options;
+
+
+		// Materials
+		std::shared_ptr<MaterialInstance> ColliderMaterial;
 	};
 
 	struct SceneRendererStats
@@ -73,7 +82,7 @@ namespace HE
 			FrameBufferSpecification entityIdFramebufferSpec;
 			entityIdFramebufferSpec.Width = Application::Get().GetWindow().GetWidth();
 			entityIdFramebufferSpec.Height = Application::Get().GetWindow().GetHeight();
-			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::R32I };
+			entityIdFramebufferSpec.Attachments = { FramebufferTextureFormat::R32I, FramebufferTextureFormat::DEPTH24STENCIL8 };
 			entityIdFramebufferSpec.Samples = 1;
 			entityIdFramebufferSpec.ClearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 
@@ -82,6 +91,14 @@ namespace HE
 			entityIDRenderPassSpec.TargetFramebuffer = FrameBuffer::Create(entityIdFramebufferSpec);
 			s_SceneRendererData.EntityIDPass = RenderPass::Create(entityIDRenderPassSpec);
 		}
+
+
+		// Create materials
+		// Collider
+		std::string pathToProject = CMAKE_PATH;
+		auto colliderShader = Shader::Create(pathToProject + "/assets/shaders/Collider.glsl");
+		s_SceneRendererData.ColliderMaterial = MaterialInstance::Create(Material::Create(colliderShader));
+		s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::DepthTest, false);
 
 		
 
@@ -100,7 +117,7 @@ namespace HE
 		s_SceneRendererData.ActiveScene = scene;
 		s_SceneRendererData.SceneData.SceneCamera = camera;
 
-		//s_Data.ActiveLight = scene->m_Light;
+		s_SceneRendererData.SceneData.SceneLightEnvironment = scene->GetLightEnvironment();
 	}
 	void SceneRenderer::EndScene()
 	{
@@ -115,6 +132,11 @@ namespace HE
 	{
 		s_SceneRendererData.DrawList.push_back({ mesh, overrideMaterial, transform });
 		//s_Data.ShadowPassDrawList.push_back({});
+	}
+
+	void SceneRenderer::SubmitColliderMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform, std::shared_ptr<MaterialInstance> overrideMaterial)
+	{
+		s_SceneRendererData.ColliderDrawList.push_back({ mesh, overrideMaterial, transform });
 	}
 
 	void SceneRenderer::SubmitEntityIDMesh(std::shared_ptr<Mesh> mesh, const glm::mat4& transform, std::shared_ptr<MaterialInstance> overrideMaterial)
@@ -142,7 +164,7 @@ namespace HE
 		HE_CORE_ASSERT(!s_SceneRendererData.ActiveScene, "Already have active scene in SceneRenderer::FlushDrawList,do you call EndScene after last BeginScene?");
 		memset(&s_Stats, 0, sizeof(SceneRendererStats));
 
-		// Maybe sort by distance from camera, frustum culling and so on here..
+		// Maybe sort by distance from camera, frustum culling and so on here?
 
 		// Do the submiting to Renderer
 
@@ -184,6 +206,7 @@ namespace HE
 		}
 		s_SceneRendererData.DrawList.clear();
 		s_SceneRendererData.EntityIDDrawList.clear();
+		s_SceneRendererData.ColliderDrawList.clear();
 		s_SceneRendererData.SceneData = {};
 	}
 
@@ -200,15 +223,43 @@ namespace HE
 		// Render entities
 		for (auto& dc : s_SceneRendererData.DrawList)
 		{
-			// Get base material from mesh
-			auto& baseMaterial = dc.Mesh->GetMaterial();
+			// If changing mesh of meshCOmponent -> pointer to mesh in DrawList is nullptr
+			if (dc.Mesh)
+			{
+				// Get base material from mesh
+				auto& baseMaterial = dc.Mesh->GetMaterial();
 
-			// Set values
-			baseMaterial->Set("u_ViewProjectionMatrix", viewProjection);
-			baseMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+				// Set values
+				baseMaterial->Set("u_ViewProjectionMatrix", viewProjection);
+				baseMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
 
-			Renderer::SubmitMesh(dc.Mesh, dc.Transform, nullptr);
+				// Set lights (TODO: move to light environment and don't do per mesh)
+				baseMaterial->Set("u_DirectionalLights", s_SceneRendererData.SceneData.SceneLightEnvironment.DirectionalLights);
+				baseMaterial->Set("u_PointLights", s_SceneRendererData.SceneData.SceneLightEnvironment.PointLights);
+				baseMaterial->Set("u_SpotLights", s_SceneRendererData.SceneData.SceneLightEnvironment.SpotLights);
+
+				Renderer::SubmitMesh(dc.Mesh, dc.Transform, nullptr);
+			}
 		}
+
+
+
+		// Render colliders
+		bool hasColliders = s_SceneRendererData.ColliderDrawList.size() > 0;
+		if (hasColliders)
+		{
+			s_SceneRendererData.ColliderMaterial->Set("u_ViewProjection", viewProjection);
+			s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::DepthTest, false);
+			s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::LineMode, true);
+			s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::TwoSided, true);
+			for (auto& dc : s_SceneRendererData.ColliderDrawList)
+			{
+				if (dc.Mesh)
+					Renderer::SubmitMesh(dc.Mesh, dc.Transform, s_SceneRendererData.ColliderMaterial);
+			}
+		}
+
+
 		Renderer::EndRenderPass();
 	}
 
@@ -224,14 +275,18 @@ namespace HE
 		// Render entities
 		for (auto& dc : s_SceneRendererData.EntityIDDrawList)
 		{
-			// Get overriden material 
-			auto& overrideMaterial = dc.Material;
+			if (dc.Mesh)
+			{
+				// Get overriden material 
+				auto& overrideMaterial = dc.Material;
 
-			// Set values
-			overrideMaterial->Set("u_ViewProjectionMatrix", viewProjection);
-			overrideMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+				// Set values
+				overrideMaterial->Set("u_ViewProjectionMatrix", viewProjection);
+				overrideMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
 
-			Renderer::SubmitMesh(dc.Mesh, dc.Transform, overrideMaterial);
+				Renderer::SubmitMesh(dc.Mesh, dc.Transform, overrideMaterial);
+			}
+			
 		}
 		Renderer::EndRenderPass();
 	}

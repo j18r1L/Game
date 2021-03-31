@@ -14,6 +14,8 @@ namespace HE
 
         virtual ~Component();
 
+        virtual void Copy(Component* other_base) = 0;
+
         void SetEntity(Entity* entity);
     };
 }

@@ -1,0 +1,170 @@
+Scene: first_scene
+Entities:
+  - Entity: Cube_1
+    TransformComponent:
+      Position: [-2.91270542, 2.65546584, -0.350229859]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Player
+    RigidBodyComponent:
+      BodyType: 1
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: true
+      LockRotationY: true
+      LockRotationZ: true
+    CapsuleColliderComponent:
+      Radius: 0.5
+      Height: 2
+      IsTrigger: false
+      DebugMeshAssetID: be79be30-1d56-4a0c-a584-b90c5b15a6fb
+      PhysicsMaterialAssetID: e81f1fd2-c5fd-54da-ab54-5649b262fa57
+  - Entity: Cube_2
+    TransformComponent:
+      Position: [0.471652061, 3.87581825, 0]
+      Rotation: [0, 0, 0.251009911]
+      Scale: [0.810000002, 0.810000002, 0.810000002]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    BoxColliderComponent:
+      Size: [1, 1, 1]
+      Offset: [0, 0, 0]
+      IsTrigger: false
+      DebugMeshAssetID: d7642ebb-36f2-4b60-8a5e-59bd70bd84e1
+      PhysicsMaterialAssetID: 00000000-0000-0000-0000-000000000000
+  - Entity: Cube_3
+    TransformComponent:
+      Position: [4.76984644, 0, 0.725925982]
+      Rotation: [0, 45, 0]
+      Scale: [6.6907196, 0.0901335552, 0.99999994]
+    MeshComponent:
+      AssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 3d9bbf2b-5fcb-51f1-be20-fa8f816a0927
+      PhysicsMaterialAssetID: 00000000-0000-0000-0000-000000000000
+  - Entity: Sponza
+    TransformComponent:
+      Position: [0, -0.178633034, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.00999999978, 0.00999999978, 0.00999999978]
+    MeshComponent:
+      AssetID: 54b413e9-3195-52d5-bcb7-9ff273d59178
+    RigidBodyComponent:
+      BodyType: 0
+      Mass: 1
+      LinearDrag: 0
+      AngularDrag: 0.0500000007
+      DisableGravity: false
+      IsKinematic: false
+      Layer: 0
+      LockPositionX: false
+      LockPositionY: false
+      LockPositionZ: false
+      LockRotationX: false
+      LockRotationY: false
+      LockRotationZ: false
+    MeshColliderComponent:
+      Convex: false
+      Override: false
+      IsTrigger: false
+      CollisionMeshAssetID: 54b413e9-3195-52d5-bcb7-9ff273d59178
+      PhysicsMaterialAssetID: 00000000-0000-0000-0000-000000000000
+  - Entity: Camera
+    TransformComponent:
+      Position: [-2.68902636, 3.20231247, -0.317794979]
+      Rotation: [0, 0, 89.6041794]
+      Scale: [0.999999881, 1, 0.999999881]
+    TagComponent:
+      Tag: Camera
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 45
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: SpotLight
+    TransformComponent:
+      Position: [0, 7.40306044, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    LightComponent:
+      LightType: 1
+      CastShadow: false
+      Direction: [0, 0, 1]
+      Color: [0, 0, 1]
+      Intensity: 0.200000003
+      Range: 1
+      InnerConeAngle: 0
+      OuterConeAngle: 0
+  - Entity: PointLight
+    TransformComponent:
+      Position: [0, 9.39409256, 0]
+      Rotation: [-18.1085205, 0, 0]
+      Scale: [1, 0.999999583, 0.999999583]
+    LightComponent:
+      LightType: 2
+      CastShadow: false
+      Direction: [0, 0, 1]
+      Color: [1, 0, 0]
+      Intensity: 1
+      Range: 0
+      InnerConeAngle: 1
+      OuterConeAngle: 0.8642748
+  - Entity: DirectionalLight
+    TransformComponent:
+      Position: [0, 5.51273441, 0]
+      Rotation: [0, 0.853867829, 28.0719147]
+      Scale: [0.999999404, 0.999999523, 0.999999583]
+    LightComponent:
+      LightType: 0
+      CastShadow: false
+      Direction: [0, 0, 1]
+      Color: [1, 1, 1]
+      Intensity: 1.5
+      Range: 0
+      InnerConeAngle: 0
+      OuterConeAngle: 0

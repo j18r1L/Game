@@ -4,6 +4,7 @@
 #include "HartEng/Core/pch.h"
 #include "HartEng/Core/Log.h"
 #include "HartEng/Core/Application.h"
+#include "HartEng/Core/Timer.h"
 
 #include <glm/glm.hpp>
 #include <iostream>
@@ -123,23 +124,6 @@ namespace HE
         m_WorldUp = m_Up;
         m_Right = {1.0f, 0.0f, 0.0f};
     }
-    /*
-    PerspectiveCameraController::PerspectiveCameraController(float fov, float aspectRatio, float zNear, float zFar):
-        m_AspectRatio(aspectRatio),
-        m_Fov(fov),
-        m_LastMousePosition(0.0f, 0.0f),
-        m_Near(zNear),
-        m_Far(zFar),
-        m_Camera(fov, m_AspectRatio, zNear, zFar)
-    {
-        HE_PROFILE_FUNCTION();
-
-        m_Front = {0.0f, 1.0f, -1.0f};
-        m_Up = {0.0f, 1.0f, 0.0f};
-        m_WorldUp = m_Up;
-        m_Right = {1.0f, 0.0f, 0.0f};
-    }
-    */
 
     void PerspectiveCameraController::OnUpdate(Timestep ts)
     {
@@ -180,7 +164,27 @@ namespace HE
             glm::vec3 cameraPosition = m_Camera.GetPosition();
 
             // Position
-            float velocity = m_CameraTranslationSpeed * ts;
+            float speed = m_CameraTranslationSpeed;
+            static float timer = 0;
+            if (Input::IsKeyPressed(HE_KEY_LEFT_CONTROL))
+            {
+                float speed_multiplier = 10.0f;
+                
+                timer += 0.1f;
+                speed = m_CameraTranslationSpeed + speed_multiplier + timer;
+            }
+            else
+            {
+                timer = 0;
+            }
+
+            if (Input::IsKeyPressed(HE_KEY_LEFT_SHIFT))
+            {
+                float speed_multiplier = 4.0f;
+                speed = m_CameraTranslationSpeed - speed_multiplier;
+            }
+
+            float velocity = speed * ts;
             if (Input::IsKeyPressed(HE_KEY_W)) // forawrd
             {
                 cameraPosition += m_Front * velocity;
@@ -219,6 +223,7 @@ namespace HE
 
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseScrolledEvent>(HE_BIND_EVENT_FN(PerspectiveCameraController::OnMouseScroll));
+        dispatcher.Dispatch<KeyPressedEvent>(HE_BIND_EVENT_FN(PerspectiveCameraController::OnKeyPressed));
         dispatcher.Dispatch<WindowResizeEvent>(HE_BIND_EVENT_FN(PerspectiveCameraController::OnWindowResized));
     }
 
@@ -236,6 +241,28 @@ namespace HE
         m_Camera.SetProjection(m_Fov, m_AspectRatio, m_Near, m_Far);
 
         return false;
+    }
+
+    bool PerspectiveCameraController::OnKeyPressed(KeyPressedEvent& e)
+    {
+        bool capture = false;
+        if (e.GetKeyCode() == HE_KEY_LEFT_CONTROL)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_LEFT_SHIFT)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_W)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_S)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_D)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_A)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_SPACE)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_C)
+            capture = true;
+        return capture;
     }
 
     void PerspectiveCameraController::OnResize(float width, float height)

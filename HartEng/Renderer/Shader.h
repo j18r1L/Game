@@ -25,7 +25,7 @@ namespace HE
 
 	struct UniformBufferBase
 	{
-		virtual const byte* GetBuffer() const = 0;
+		virtual const uint8_t* GetBuffer() const = 0;
 		virtual const UniformDecl* GetUniforms() const = 0;
 		virtual unsigned int GetUniformCount() const = 0;
 	};
