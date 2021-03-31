@@ -472,87 +472,91 @@ namespace HE
         {
             auto meshComponent = entity->GetComponent<MeshComponent>();
             auto& mesh = meshComponent->GetMesh();
-            auto& materials = mesh->GetMaterials();
-            static uint32_t selectedMaterialIndex = 0;
-
-            for (uint32_t i = 0; i < materials.size(); i++)
+            if (mesh)
             {
-                auto& materialInstance = materials[i];
+                auto& materials = mesh->GetMaterials();
+                static uint32_t selectedMaterialIndex = 0;
 
-                ImGuiTreeNodeFlags node_flags = (selectedMaterialIndex == i ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
-                bool opened = ImGui::TreeNodeEx((void*)(&materialInstance), node_flags, materialInstance->GetName().c_str());
-                if (ImGui::IsItemClicked())
+                for (uint32_t i = 0; i < materials.size(); i++)
                 {
-                    selectedMaterialIndex = i;
-                }
-                if (opened)
-                {
-                    ImGui::TreePop();
-                }
-            }
+                    auto& materialInstance = materials[i];
 
-            if (selectedMaterialIndex < materials.size())
-            {
-                // Selected materail
-                auto& materialInstance = materials[selectedMaterialIndex];
-                ImGui::Text("Shader: %s", materialInstance->GetShader()->GetName().c_str());
-                // Textures
-                {
-                    if (ImGui::CollapsingHeader("Albedo", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
+                    ImGuiTreeNodeFlags node_flags = (selectedMaterialIndex == i ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_Leaf;
+                    bool opened = ImGui::TreeNodeEx((void*)(&materialInstance), node_flags, materialInstance->GetName().c_str());
+                    if (ImGui::IsItemClicked())
                     {
-                        auto& albedoColor = materialInstance->Get<glm::vec3>("u_AlbedoColor");
-                        bool useAlbedoMap = materialInstance->Get<float>("u_AlbedoTexToggle");
-                        auto& albedoMap = materialInstance->TryGetResource<Texture2D>("u_AlbedoTexture");
-                        
+                        selectedMaterialIndex = i;
+                    }
+                    if (opened)
+                    {
+                        ImGui::TreePop();
+                    }
+                }
 
-                        if (albedoMap)
+                if (selectedMaterialIndex < materials.size())
+                {
+                    // Selected material
+                    auto& materialInstance = materials[selectedMaterialIndex];
+                    ImGui::Text("Shader: %s", materialInstance->GetShader()->GetName().c_str());
+                    // Textures
+                    {
+                        if (ImGui::CollapsingHeader("Albedo", nullptr, ImGuiTreeNodeFlags_DefaultOpen))
                         {
-                            ImGui::Image((ImTextureID)albedoMap->GetRendererID(), ImVec2(64, 64));
-                        }
+                            auto& albedoColor = materialInstance->Get<glm::vec3>("u_AlbedoColor");
+                            bool useAlbedoMap = materialInstance->Get<float>("u_AlbedoTexToggle");
+                            auto& albedoMap = materialInstance->TryGetResource<Texture2D>("u_AlbedoTexture");
 
-                        if (ImGui::IsItemHovered())
-                        {
+
                             if (albedoMap)
                             {
-                                ImGui::BeginTooltip();
-                                //ImGui::Text("%s", albedoMap->GetPath().c_str());
-                                ImGui::Image((void*)albedoMap->GetRendererID(), ImVec2(124, 124));
-                                ImGui::EndTooltip();
+                                ImGui::Image((ImTextureID)albedoMap->GetRendererID(), ImVec2(64, 64));
                             }
-                            if (ImGui::IsItemClicked())
+
+                            if (ImGui::IsItemHovered())
                             {
-                                std::string filepath = FileDialog::OpenFile("");
-                                if (filepath != "")
+                                if (albedoMap)
                                 {
-                                    albedoMap = AssetManager::LoadOrCreateAsset<Texture2D>(filepath);
-                                    materialInstance->Set("u_AlbedoTexture", albedoMap);
+                                    ImGui::BeginTooltip();
+                                    //ImGui::Text("%s", albedoMap->GetPath().c_str());
+                                    ImGui::Image((void*)albedoMap->GetRendererID(), ImVec2(124, 124));
+                                    ImGui::EndTooltip();
+                                }
+                                if (ImGui::IsItemClicked())
+                                {
+                                    std::string filepath = FileDialog::OpenFile("");
+                                    if (filepath != "")
+                                    {
+                                        albedoMap = AssetManager::LoadOrCreateAsset<Texture2D>(filepath);
+                                        materialInstance->Set("u_AlbedoTexture", albedoMap);
+                                    }
                                 }
                             }
-                        }
 
-                        ImGui::SameLine();
-                        ImGui::BeginGroup();
-                        if (ImGui::Checkbox("Use##AlbedoMap", &useAlbedoMap))
-                        {
-                            materialInstance->Set<float>("u_AlbedoTexToggle", useAlbedoMap ? 1.0f : 0.0f);
-                        }
-
-                        if (albedoMap)
-                        {
-                            bool flipped = albedoMap->GetFlipped();
                             ImGui::SameLine();
-                            if (ImGui::Checkbox("Flipped", &flipped))
+                            ImGui::BeginGroup();
+                            if (ImGui::Checkbox("Use##AlbedoMap", &useAlbedoMap))
                             {
-                                albedoMap->SetFlipped(flipped);
+                                materialInstance->Set<float>("u_AlbedoTexToggle", useAlbedoMap ? 1.0f : 0.0f);
                             }
+
+                            if (albedoMap)
+                            {
+                                bool flipped = albedoMap->GetFlipped();
+                                ImGui::SameLine();
+                                if (ImGui::Checkbox("Flipped WIP", &flipped))
+                                {
+                                    albedoMap->SetFlipped(flipped);
+                                }
+                            }
+
+                            ImGui::EndGroup();
+                            ImGui::SameLine();
+                            ImGui::ColorEdit3("Color##Albedo", glm::value_ptr(albedoColor), ImGuiColorEditFlags_NoInputs);
                         }
-                        
-                        ImGui::EndGroup();
-                        ImGui::SameLine();
-                        ImGui::ColorEdit3("Color##Albedo", glm::value_ptr(albedoColor), ImGuiColorEditFlags_NoInputs);
                     }
                 }
             }
+            
         }
 
 

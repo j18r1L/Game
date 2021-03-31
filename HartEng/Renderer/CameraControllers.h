@@ -6,6 +6,7 @@
 #include "HartEng/Events/Event.h"
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/Events/MousesEvent.h"
+#include "HartEng/Events/KeyEvent.h"
 
 namespace HE
 {
@@ -73,6 +74,7 @@ namespace HE
         PerspectiveCamera m_Camera;
 
         bool OnMouseScroll(MouseScrolledEvent& e);
+        bool OnKeyPressed(KeyPressedEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);
 
     public:

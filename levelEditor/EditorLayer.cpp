@@ -33,9 +33,9 @@ namespace HE
         m_SceneHierarchyPanel->SetShaderLibrary(Renderer::GetShaderLibrary());
 
         
-        SceneSerializer serializer(m_EditorScene, Renderer::GetShaderLibrary());
-        serializer.Deserialize(path_to_project + "/assets/scenes/Platformer.he");
-
+        //SceneSerializer serializer(m_EditorScene, Renderer::GetShaderLibrary());
+        //serializer.Deserialize(path_to_project + "/assets/scenes/test.he");
+        /*
         {
             // Manually add FPS script
             Entity* entity = m_EditorScene->GetEntity("Player");
@@ -48,6 +48,7 @@ namespace HE
             auto script = new CameraScript(entity);
             entity->AddComponent<ScriptComponent>(script);
         }
+        */
         
         
 
@@ -327,9 +328,18 @@ namespace HE
     void EditorLayer::OnEvent(Event &e)
     {
         HE_PROFILE_FUNCTION();
-        EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<MouseButtonPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnMouseButton));
-        dispatcher.Dispatch<KeyPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+
+        // Camera controller OnEvent
+        if (m_ViewportFocused && m_SceneState != SceneState::Play)
+            m_CameraController.OnEvent(e);
+        
+        //if (!e.Handled)
+        {
+            EventDispatcher dispatcher(e);
+            dispatcher.Dispatch<MouseButtonPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnMouseButton));
+            dispatcher.Dispatch<KeyPressedEvent>(HE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+        }
+        
     }
 
     bool EditorLayer::OnMouseButton(MouseButtonPressedEvent& event)
@@ -367,7 +377,7 @@ namespace HE
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
     {
         // Duplicate selected entity
-        if (Input::IsKeyPressed(HE_KEY_LEFT_CONTROL) && Input::IsKeyPressed(HE_KEY_D))
+        if (Input::IsKeyPressed(HE_KEY_LEFT_CONTROL) && Input::IsKeyPressed(HE_KEY_D) && !Input::IsMouseButtonPressed(HE_MOUSE_BUTTON_2))
         {
             auto selectedEntity = m_SceneHierarchyPanel->GetSelectedEntity();
             if (selectedEntity)

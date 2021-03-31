@@ -223,6 +223,7 @@ namespace HE
 
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseScrolledEvent>(HE_BIND_EVENT_FN(PerspectiveCameraController::OnMouseScroll));
+        dispatcher.Dispatch<KeyPressedEvent>(HE_BIND_EVENT_FN(PerspectiveCameraController::OnKeyPressed));
         dispatcher.Dispatch<WindowResizeEvent>(HE_BIND_EVENT_FN(PerspectiveCameraController::OnWindowResized));
     }
 
@@ -240,6 +241,28 @@ namespace HE
         m_Camera.SetProjection(m_Fov, m_AspectRatio, m_Near, m_Far);
 
         return false;
+    }
+
+    bool PerspectiveCameraController::OnKeyPressed(KeyPressedEvent& e)
+    {
+        bool capture = false;
+        if (e.GetKeyCode() == HE_KEY_LEFT_CONTROL)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_LEFT_SHIFT)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_W)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_S)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_D)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_A)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_SPACE)
+            capture = true;
+        if (e.GetKeyCode() == HE_KEY_C)
+            capture = true;
+        return capture;
     }
 
     void PerspectiveCameraController::OnResize(float width, float height)
