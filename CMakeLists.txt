@@ -89,7 +89,7 @@ add_subdirectory("${YAML_DIR}")
 # PhysX submodule
 #### Build PhysX library ####
 # PHYSX_PATH - path to the `{cloned repository}/physx` repo directory git://github.com/NVIDIAGameWorks/PhysX.git
-set( PHYSX_ROOT_DIR "${LIB_DIR}/PhysX/physx" ) #This is needed for $ENV{PHYSX_PATH}/compiler/public/CMakeLists.txt
+set( PHYSX_ROOT_DIR "${LIB_DIR}/PhysX" ) #This is needed for $ENV{PHYSX_PATH}/compiler/public/CMakeLists.txt
 #set( PHYSX_INCLUDE_DIRS ${PHYSX_ROOT_DIR}/include/ ${PHYSX_ROOT_DIR}/../pxshared/include/ )
 #set( PHYSX_LIBRARIES
 #	PhysXExtensions
@@ -268,16 +268,16 @@ target_link_libraries(${PROJECT_NAME} "spdlog" "${SPDLOG_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${SPDLOG_DIR}/include")
 
 # PhysX
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXExtensions_static_64.lib" )
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysX_64.lib" )
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXPvdSDK_static_64.lib" )
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXVehicle_static_64.lib" )
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXCharacterKinematic_static_64.lib")
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXCooking_64.lib")
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXCommon_64.lib")
-target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXFoundation_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXExtensions_static_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysX_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXPvdSDK_static_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXVehicle_static_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXCharacterKinematic_static_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXCooking_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXCommon_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/lib/debug/PhysXFoundation_64.lib")
 target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/include")
-target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/../pxshared/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/pxshared/include")
 
 #add_library(physx SHARED IMPORTED GLOBAL)
 #set_property(TARGET physx PROPERTY IMPORTED_IMPLIB_RELEASE "${PHYSX_ROOT_DIR}/../lib/debug/PhysX_64.dll")
@@ -304,8 +304,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/../pxshare
 #	message("Physx Output Path: " ${PhysxOutputPath})
 
 	# copy PhysX dll's to build dir. Happens on every build.
-	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PHYSX_ROOT_DIR}/../lib/debug/" "${CMAKE_BINARY_DIR}")
-    target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/../lib/debug/") 
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PHYSX_ROOT_DIR}/lib/debug/" "${CMAKE_BINARY_DIR}")
+    target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/lib/debug/") 
 #endif()
 
 
