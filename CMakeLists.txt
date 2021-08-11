@@ -90,35 +90,35 @@ add_subdirectory("${YAML_DIR}")
 #### Build PhysX library ####
 # PHYSX_PATH - path to the `{cloned repository}/physx` repo directory git://github.com/NVIDIAGameWorks/PhysX.git
 set( PHYSX_ROOT_DIR "${LIB_DIR}/PhysX/physx" ) #This is needed for $ENV{PHYSX_PATH}/compiler/public/CMakeLists.txt
-set( PHYSX_INCLUDE_DIRS ${PHYSX_ROOT_DIR}/include/ ${PHYSX_ROOT_DIR}/../pxshared/include/ )
-set( PHYSX_LIBRARIES
-	PhysXExtensions
-	PhysX
-	PhysXPvdSDK
-	PhysXVehicle
-	PhysXCharacterKinematic
-	PhysXCooking
-	PhysXCommon
-	PhysXFoundation
+#set( PHYSX_INCLUDE_DIRS ${PHYSX_ROOT_DIR}/include/ ${PHYSX_ROOT_DIR}/../pxshared/include/ )
+#set( PHYSX_LIBRARIES
+#	PhysXExtensions
+#	PhysX
+#	PhysXPvdSDK
+#	PhysXVehicle
+#	PhysXCharacterKinematic
+#	PhysXCooking
+#	PhysXCommon
+#	PhysXFoundation
 	# SnippetUtils
-)
+#)
 
-set(TARGET_BUILD_PLATFORM "windows") # has to match the TARGET_BUILD_PLATFORM in $ENV{PHYSX_PATH}/physix/buildtools/cmake_generate_projects.py
-set(PX_BUILDSNIPPETS OFF CACHE BOOL "Generate the snippets")
-set(PX_BUILDPUBLICSAMPLES OFF CACHE BOOL "Generate the samples projects")
-set(PX_GENERATE_STATIC_LIBRARIES ON CACHE BOOL "Generate static libraries")
-set(PX_FLOAT_POINT_PRECISE_MATH OFF CACHE BOOL "Float point precise math")
-set(NV_USE_STATIC_WINCRT ON CACHE BOOL "Use the statically linked windows CRT")
-set(NV_USE_DEBUG_WINCRT ON CACHE BOOL "Use the debug version of the CRT")
-set(PXSHARED_PATH ${PHYSX_ROOT_DIR}/../pxshared)
-set(PXSHARED_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-set(CMAKEMODULES_VERSION "1.27")
-set(CMAKEMODULES_PATH ${PHYSX_ROOT_DIR}/../externals/cmakemodules)
-set(PX_OUTPUT_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/HartEng/vendor/PhysX)
-set(PX_OUTPUT_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/HartEng/vendor/PhysX)
+#set(TARGET_BUILD_PLATFORM "windows") # has to match the TARGET_BUILD_PLATFORM in $ENV{PHYSX_PATH}/physix/buildtools/cmake_generate_projects.py
+#set(PX_BUILDSNIPPETS OFF CACHE BOOL "Generate the snippets")
+#set(PX_BUILDPUBLICSAMPLES OFF CACHE BOOL "Generate the samples projects")
+#set(PX_GENERATE_STATIC_LIBRARIES OFF CACHE BOOL "Generate static libraries")
+#set(PX_FLOAT_POINT_PRECISE_MATH OFF CACHE BOOL "Float point precise math")
+#set(NV_USE_STATIC_WINCRT OFF CACHE BOOL "Use the statically linked windows CRT")
+#set(NV_USE_DEBUG_WINCRT ON CACHE BOOL "Use the debug version of the CRT")
+#set(PXSHARED_PATH ${PHYSX_ROOT_DIR}/../pxshared)
+#set(PXSHARED_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+#set(CMAKEMODULES_VERSION "1.27")
+#set(CMAKEMODULES_PATH ${PHYSX_ROOT_DIR}/../externals/cmakemodules)
+#set(PX_OUTPUT_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/HartEng/vendor/PhysX)
+#set(PX_OUTPUT_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/HartEng/vendor/PhysX)
   
 # Call into PhysX's CMake scripts
-add_subdirectory(${PHYSX_ROOT_DIR}/compiler/public externals/physx)
+#add_subdirectory(${PHYSX_ROOT_DIR}/compiler/public externals/physx)
 
 
 
@@ -268,35 +268,45 @@ target_link_libraries(${PROJECT_NAME} "spdlog" "${SPDLOG_LIBRARIES}")
 target_include_directories(${PROJECT_NAME} PRIVATE "${SPDLOG_DIR}/include")
 
 # PhysX
-target_link_libraries(${PROJECT_NAME} "PhysXExtensions" )
-target_link_libraries(${PROJECT_NAME} "PhysX" )
-target_link_libraries(${PROJECT_NAME} "PhysXPvdSDK" )
-target_link_libraries(${PROJECT_NAME} "PhysXCharacterKinematic")
-target_link_libraries(${PROJECT_NAME} "PhysXCooking")
-target_link_libraries(${PROJECT_NAME} "PhysXCommon")
-target_link_libraries(${PROJECT_NAME} "PhysXFoundation")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXExtensions_static_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysX_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXPvdSDK_static_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXVehicle_static_64.lib" )
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXCharacterKinematic_static_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXCooking_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXCommon_64.lib")
+target_link_libraries(${PROJECT_NAME} "${PHYSX_ROOT_DIR}/../lib/debug/PhysXFoundation_64.lib")
 target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/../pxshared/include")
+
+#add_library(physx SHARED IMPORTED GLOBAL)
+#set_property(TARGET physx PROPERTY IMPORTED_IMPLIB_RELEASE "${PHYSX_ROOT_DIR}/../lib/debug/PhysX_64.dll")
+#target_link_libraries(${PROJECT_NAME} PRIVATE physx)
+#set_property(TARGET physx PROPERTY IMPORTED_LOCATION_RELEASE "${SDL_ROOT_PATH}/bin/SDL2.dll")
+#set_property(TARGET physx PROPERTY IMPORTED_IMPLIB_DEBUG "${SDL_ROOT_PATH}/lib/SDL2d.lib")
+#set_property(TARGET physx PROPERTY IMPORTED_LOCATION_DEBUG "${SDL_ROOT_PATH}/bin/SDL2d.dll")
+
 
 
 # Add physx libraries to target
 #target_link_libraries(game_engine PUBLIC ${PHYSX_LIBRARIES})
 #### Windows only: Copy the Physx dll files to the simulation executable####
 
-if (TARGET_BUILD_PLATFORM STREQUAL "windows")
+#if (TARGET_BUILD_PLATFORM STREQUAL "windows")
 	# References NvidiaBuildOptions.cmake to figure out if system is 32/64 bit
-	IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
-		SET(LIBPATH_SUFFIX "64")
-	ELSE()
-		SET(LIBPATH_SUFFIX "32")
-	ENDIF()
-	GetPlatformBinName(PLATFORM_BIN_NAME ${LIBPATH_SUFFIX})
-	set(PhysxOutputPath ${PX_OUTPUT_LIB_DIR}/bin/${PLATFORM_BIN_NAME}/)
-	message("Physx Output Path: " ${PhysxOutputPath})
+#	IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+#		SET(LIBPATH_SUFFIX "64")
+#	ELSE()
+#		SET(LIBPATH_SUFFIX "32")
+#	ENDIF()
+#	GetPlatformBinName(PLATFORM_BIN_NAME ${LIBPATH_SUFFIX})
+#	set(PhysxOutputPath ${PX_OUTPUT_LIB_DIR}/bin/${PLATFORM_BIN_NAME}/)
+#	message("Physx Output Path: " ${PhysxOutputPath})
 
 	# copy PhysX dll's to build dir. Happens on every build.
-	#add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PhysxOutputPath}" "$<TARGET_FILE_DIR:target_name >/..")
-    #target_include_directories(${PROJECT_NAME} PRIVATE "${PhysxOutputPath}/debug")
-endif()
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PHYSX_ROOT_DIR}/../lib/debug/" "${CMAKE_BINARY_DIR}")
+    target_include_directories(${PROJECT_NAME} PRIVATE "${PHYSX_ROOT_DIR}/../lib/debug/") 
+#endif()
 
 
 
