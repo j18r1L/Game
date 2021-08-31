@@ -11,10 +11,22 @@
 namespace HE
 {
 	OpenGLShader::OpenGLShader(const std::string& filepath)
-		: m_AssetPath(filepath)
 	{
+		m_AssetPath.push_back(filepath);
 		size_t found = filepath.find_last_of("/\\");
 		m_Name = found != std::string::npos ? filepath.substr(found + 1) : filepath;
+		found = m_Name.find_last_of(".");
+		m_Name = found != std::string::npos ? m_Name.substr(0, found) : m_Name;
+
+		Reload();
+	}
+
+	OpenGLShader::OpenGLShader(const std::string& vertexfilepath, const std::string& fragmentfilepath)
+	{
+		m_AssetPath.push_back(vertexfilepath);
+		m_AssetPath.push_back(fragmentfilepath);
+		size_t found = vertexfilepath.find_last_of("/\\");
+		m_Name = found != std::string::npos ? vertexfilepath.substr(found + 1) : vertexfilepath;
 		found = m_Name.find_last_of(".");
 		m_Name = found != std::string::npos ? m_Name.substr(0, found) : m_Name;
 
@@ -30,7 +42,11 @@ namespace HE
 
 	void OpenGLShader::Reload()
 	{
-		std::string source = ReadShaderFromFile(m_AssetPath);
+		std::string source = "";
+		for (size_t i = 0; i < m_AssetPath.size(); i++)
+		{
+			source += ReadShaderFromFile(m_AssetPath[i]);
+		}
 		Load(source);
 	}
 
@@ -87,7 +103,8 @@ namespace HE
 		}
 		else
 		{
-			HE_CORE_ASSERT(false, "Could not load shader!");
+			std::string errorMessage = "Could not load shader: " + filepath;
+			HE_CORE_ASSERT(false, errorMessage);
 		}
 		in.close();
 		return result;
@@ -364,9 +381,10 @@ namespace HE
 			const char* namestr = name.c_str();
 			if (const char* s = strstr(namestr, "["))
 			{
+				const char* end = strstr(namestr, "]");
 				name = std::string(namestr, s - namestr);
 
-				const char* end = strstr(namestr, "]");
+				
 				std::string c(s + 1, end - s);
 				count = atoi(c.c_str());
 			}
@@ -538,6 +556,7 @@ namespace HE
 		std::vector<GLuint> shaderRendererIDs;
 
 		GLuint program = glCreateProgram();
+		size_t id = 0;
 		for (auto& kv : m_ShaderSource)
 		{
 			GLenum type = kv.first;
@@ -560,7 +579,7 @@ namespace HE
 				std::vector<GLchar> infoLog(maxLength);
 				glGetShaderInfoLog(shaderRendererID, maxLength, &maxLength, &infoLog[0]);
 
-				HE_CORE_ERROR("Shader compilation failed ({0}):\n{1}", m_AssetPath, &infoLog[0]);
+				HE_CORE_ERROR("Shader compilation failed ({0}):\n{1}", m_AssetPath[id], &infoLog[0]);
 
 				// We don't need the shader anymore.
 				glDeleteShader(shaderRendererID);
@@ -570,6 +589,7 @@ namespace HE
 
 			shaderRendererIDs.push_back(shaderRendererID);
 			glAttachShader(program, shaderRendererID);
+			id++;
 		}
 
 		// Link our program
@@ -586,7 +606,7 @@ namespace HE
 			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
 			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-			HE_CORE_ERROR("Shader linking failed ({0}):\n{1}", m_AssetPath, &infoLog[0]);
+			HE_CORE_ERROR("Shader linking failed ({0}):\n{1}", m_AssetPath[id], &infoLog[0]);
 
 			// We don't need the program anymore.
 			glDeleteProgram(program);
@@ -675,7 +695,7 @@ namespace HE
 
 	void OpenGLShader::ResolveAndSetUniformArray(OpenGLShaderUniformDeclaration* uniform, Buffer buffer)
 	{
-		//HZ_CORE_ASSERT(uniform->GetLocation() != -1, "Uniform has invalid location!");
+		//HE_CORE_ASSERT(uniform->GetLocation() != -1, "Uniform has invalid location!");
 
 		uint32_t offset = uniform->GetOffset();
 		switch (uniform->GetType())

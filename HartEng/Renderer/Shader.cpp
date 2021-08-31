@@ -44,6 +44,22 @@ namespace HE
         return nullptr;
     }
 
+    std::shared_ptr<Shader> Shader::Create(const std::string& vertexFilepath, const std::string& fragmentFilepath)
+    {
+        RendererAPI::API api = Renderer::GetAPI();
+        if (api == RendererAPI::API::OpenGL)
+        {
+            return std::shared_ptr<Shader>(new OpenGLShader(vertexFilepath, fragmentFilepath));
+        }
+        else if (api == RendererAPI::API::None)
+        {
+            HE_CORE_ASSERT(false, "RendererAPI::None currently not supported!");
+            return nullptr;
+        }
+        HE_CORE_ASSERT(false, "Unknown RendererAPI!");
+        return nullptr;
+    }
+
     void ShaderLibrary::Add(const std::string& name, const std::shared_ptr<Shader> shader)
     {
         
@@ -68,12 +84,21 @@ namespace HE
         return shader;
     }
 
+    std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        auto shader = Shader::Create(vertexPath, fragmentPath);
+        Add(shader);
+        return shader;
+    }
+
+    /*
     std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& name, const std::string& path)
     {
         auto shader = Shader::Create(path);
         Add(name, shader);
         return shader;
     }
+    */
 
     std::shared_ptr<Shader> ShaderLibrary::Get(const std::string& name)
     {

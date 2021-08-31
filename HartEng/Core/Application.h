@@ -33,7 +33,8 @@ namespace HE
         LayerStack m_LayerStack;
 
         Timestep m_Timestep;
-        float m_CurrentTime;
+        float m_CurrentTime = 0.0f;
+        uint32_t m_FrameCount = 0;
 
 
 
@@ -68,6 +69,10 @@ namespace HE
         ImGUILayer* GetImGuiLayer()
         {
             return m_ImGuiLayer;
+        }
+        uint32_t GetFrameCount()
+        {
+            return m_FrameCount;
         }
     };
 

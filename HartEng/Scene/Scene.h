@@ -7,40 +7,10 @@
 #include "HartEng/Renderer/Shader.h"
 #include "HartEng/Renderer/Framebuffer.h"
 
+#include "../assets/shaders/common/Structures.h"
+
 namespace HE
 {
-    struct DirectionalLight
-    {
-        glm::vec3 Direction;
-        glm::vec3 Color;
-        float Intensity;
-    };
-
-    struct PointLight
-    {
-        glm::vec3 Position;
-        glm::vec3 Color;
-        float Intensity;
-    };
-
-    struct SpotLight
-    {
-        glm::vec3 Position;
-        glm::vec3 Direction;
-        glm::vec3 Color;
-        float Intensity;
-        float InnerConeAngle;
-        float OuterConeAngle;
-    };
-
-    struct LightEnvironment
-    {
-        DirectionalLight DirectionalLights;
-        PointLight PointLights;
-        SpotLight SpotLights;
-    };
-
-
     class Entity;
 
     class Scene
@@ -51,7 +21,8 @@ namespace HE
         std::string m_Name;
         uint32_t m_ObjectsCount;
 
-        LightEnvironment m_LightEnvironment;
+        LightStruct m_Lights;
+        CameraMatrixStruct m_CameraMatrixStruct;
 
         bool m_Play = false;
         friend class SceneHierarchyPanel;
@@ -75,7 +46,7 @@ namespace HE
         const std::unordered_map<std::string, Entity*>& GetEntities();
         const std::unordered_map<std::string, Entity*>& GetEntities() const;
         const std::string& GetName() const;
-        const LightEnvironment& GetLightEnvironment() const;
+        const LightStruct& GetLights() const;
 
         Entity* FindEntityByTag(const std::string& tag);
 

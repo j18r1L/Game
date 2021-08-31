@@ -55,6 +55,7 @@ namespace HE
 		// Represents a complete shader program stored in a single file.
 		// in the future this will be an asset object + metadata
 		static std::shared_ptr<Shader> Create(const std::string& filepath);
+		static std::shared_ptr<Shader> Create(const std::string& vertexFilepath, const std::string& fragmentFilepath);
 		static std::shared_ptr<Shader> CreateFromString(const std::string& source);
 
 		virtual void SetVSMaterialUniformBuffer(Buffer buffer) = 0;
@@ -84,7 +85,8 @@ namespace HE
         void Add(const std::string& name, const std::shared_ptr<Shader> shader);
 
         std::shared_ptr<Shader> Load(const std::string& path);
-        std::shared_ptr<Shader> Load(const std::string& name, const std::string& path);
+        std::shared_ptr<Shader> Load(const std::string& vertexPath, const std::string& fragmentPath);
+        //std::shared_ptr<Shader> Load(const std::string& name, const std::string& path);
 
         std::shared_ptr<Shader> Get(const std::string& name);
         const std::unordered_map<std::string, std::shared_ptr<Shader>> GetShaders() const;

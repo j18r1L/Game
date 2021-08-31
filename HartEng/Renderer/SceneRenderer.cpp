@@ -19,7 +19,9 @@ namespace HE
 		{
 			SceneRendererCamera SceneCamera;
 
-			LightEnvironment SceneLightEnvironment;
+			LightStruct SceneLights;
+
+			FrameData SceneFrameData;
 		} SceneData;
 		
 		// Geometry passes
@@ -99,26 +101,39 @@ namespace HE
 		auto colliderShader = Shader::Create(pathToProject + "/assets/shaders/Collider.glsl");
 		s_SceneRendererData.ColliderMaterial = MaterialInstance::Create(Material::Create(colliderShader));
 		s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::DepthTest, false);
-
-		
-
-
-		
 	}
+
 	void SceneRenderer::SetViewportSize(uint32_t width, uint32_t height)
 	{
 		s_SceneRendererData.GeoPass->GetSpecification().TargetFramebuffer->Resize(width, height);
 		s_SceneRendererData.EntityIDPass->GetSpecification().TargetFramebuffer->Resize(width, height);
 	}
-	void SceneRenderer::BeginScene(const Scene* scene, const SceneRendererCamera& camera)
+
+	void SceneRenderer::BeginScene(const Scene* scene, const SceneRendererCamera& camera, const Timestep& ts)
 	{
 		HE_CORE_ASSERT(!s_SceneRendererData.ActiveScene, "Already have active scene in SceneRenderer::BeginScene,do you call EndScene after last BeginScene?");
 	
+		// TODO set uniform buffers in BeginScene with binding points, not per material 
+
 		s_SceneRendererData.ActiveScene = scene;
 		s_SceneRendererData.SceneData.SceneCamera = camera;
+		const auto& window = Application::Get().GetWindow();
+		// .x = scene delta time (ms)
+		// .y = tick  delta time (ms)
+		// .z = tick  total time (s),
+		// .w = frame index 
+		s_SceneRendererData.SceneData.SceneFrameData.timingData.x = ts.GetMilliseconds();
+		s_SceneRendererData.SceneData.SceneFrameData.timingData.x = ts.GetMilliseconds();
+		s_SceneRendererData.SceneData.SceneFrameData.timingData.z = window.GetTime();
+		s_SceneRendererData.SceneData.SceneFrameData.timingData.w = Application::Get().GetFrameCount();
 
-		s_SceneRendererData.SceneData.SceneLightEnvironment = scene->GetLightEnvironment();
+		s_SceneRendererData.SceneData.SceneFrameData.viewportData.x = window.GetWidth();
+		s_SceneRendererData.SceneData.SceneFrameData.viewportData.y = window.GetHeight();
+		s_SceneRendererData.SceneData.SceneFrameData.viewportData.z = camera.Near;
+		s_SceneRendererData.SceneData.SceneFrameData.viewportData.w = camera.Far;
+		s_SceneRendererData.SceneData.SceneLights = scene->GetLights();
 	}
+
 	void SceneRenderer::EndScene()
 	{
 		HE_CORE_ASSERT(s_SceneRendererData.ActiveScene, "There is no active scene when SceneRenderer::EndScene was called! Do you call BeginScene first?");
@@ -217,8 +232,8 @@ namespace HE
 
 		auto& sceneCamera = s_SceneRendererData.SceneData.SceneCamera;
 
-		auto viewProjection = sceneCamera.Camera.GetProjection() * sceneCamera.ViewMatrix;
-		glm::vec3 cameraPosition = glm::inverse(s_SceneRendererData.SceneData.SceneCamera.ViewMatrix)[3]; // TODO: Negate instead
+		//auto viewProjection = sceneCamera.Camera.GetProjection() * sceneCamera.ViewMatrix;
+		//glm::vec3 cameraPosition = glm::inverse(s_SceneRendererData.SceneData.SceneCamera.ViewMatrix)[3]; // TODO: Negate instead
 
 		// Render entities
 		for (auto& dc : s_SceneRendererData.DrawList)
@@ -230,13 +245,18 @@ namespace HE
 				auto& baseMaterial = dc.Mesh->GetMaterial();
 
 				// Set values
-				baseMaterial->Set("u_ViewProjectionMatrix", viewProjection);
-				baseMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+				//baseMaterial->Set("u_ViewProjectionMatrix", viewProjection);
+				//baseMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+				baseMaterial->Set("u_CameraData", s_SceneRendererData.SceneData.SceneCamera);
+				baseMaterial->Set("u_FrameData", s_SceneRendererData.SceneData.SceneFrameData);
+				
+
 
 				// Set lights (TODO: move to light environment and don't do per mesh)
-				baseMaterial->Set("u_DirectionalLights", s_SceneRendererData.SceneData.SceneLightEnvironment.DirectionalLights);
-				baseMaterial->Set("u_PointLights", s_SceneRendererData.SceneData.SceneLightEnvironment.PointLights);
-				baseMaterial->Set("u_SpotLights", s_SceneRendererData.SceneData.SceneLightEnvironment.SpotLights);
+				baseMaterial->Set("u_LightData", s_SceneRendererData.SceneData.SceneLights);
+				//baseMaterial->Set("u_DirectionalLights", s_SceneRendererData.SceneData.SceneLightEnvironment.DirectionalLights);
+				//baseMaterial->Set("u_PointLights", s_SceneRendererData.SceneData.SceneLightEnvironment.PointLights);
+				//baseMaterial->Set("u_SpotLights", s_SceneRendererData.SceneData.SceneLightEnvironment.SpotLights);
 
 				Renderer::SubmitMesh(dc.Mesh, dc.Transform, nullptr);
 			}
@@ -248,7 +268,8 @@ namespace HE
 		bool hasColliders = s_SceneRendererData.ColliderDrawList.size() > 0;
 		if (hasColliders)
 		{
-			s_SceneRendererData.ColliderMaterial->Set("u_ViewProjection", viewProjection);
+			//s_SceneRendererData.ColliderMaterial->Set("u_ViewProjection", viewProjection);
+			s_SceneRendererData.ColliderMaterial->Set("u_CameraData", s_SceneRendererData.SceneData.SceneCamera);
 			s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::DepthTest, false);
 			s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::LineMode, true);
 			s_SceneRendererData.ColliderMaterial->SetFlag(MaterialFlag::TwoSided, true);
@@ -269,8 +290,8 @@ namespace HE
 
 		auto& sceneCamera = s_SceneRendererData.SceneData.SceneCamera;
 
-		auto viewProjection = sceneCamera.Camera.GetProjection() * sceneCamera.ViewMatrix;
-		glm::vec3 cameraPosition = glm::inverse(s_SceneRendererData.SceneData.SceneCamera.ViewMatrix)[3]; // TODO: Negate instead
+		//auto viewProjection = sceneCamera.Camera.GetProjection() * sceneCamera.ViewMatrix;
+		//glm::vec3 cameraPosition = glm::inverse(s_SceneRendererData.SceneData.SceneCamera.ViewMatrix)[3]; // TODO: Negate instead
 
 		// Render entities
 		for (auto& dc : s_SceneRendererData.EntityIDDrawList)
@@ -281,8 +302,9 @@ namespace HE
 				auto& overrideMaterial = dc.Material;
 
 				// Set values
-				overrideMaterial->Set("u_ViewProjectionMatrix", viewProjection);
-				overrideMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+				//overrideMaterial->Set("u_ViewProjectionMatrix", viewProjection);
+				//overrideMaterial->Set("u_ViewMatrix", sceneCamera.ViewMatrix);
+				overrideMaterial->Set("u_CameraData", s_SceneRendererData.SceneData.SceneCamera);
 
 				Renderer::SubmitMesh(dc.Mesh, dc.Transform, overrideMaterial);
 			}

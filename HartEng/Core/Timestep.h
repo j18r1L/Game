@@ -13,7 +13,7 @@ namespace HE
 
         }
 
-        operator float() const
+        operator double() const
         {
             return m_Time;
         }

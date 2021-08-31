@@ -7,9 +7,40 @@ layout(location = 2) in vec3 a_Tangent;
 layout(location = 3) in vec3 a_Binormal;
 layout(location = 4) in vec2 a_TexCoord;
 
-uniform mat4 u_ViewProjectionMatrix;
-uniform mat4 u_ViewMatrix;
-uniform mat4 u_Transform;
+
+struct MeshMatrixStruct
+{
+	mat4 transform;
+};
+
+struct FrameData
+{
+	vec4 timingData;
+
+	vec4 viewportData;
+
+};
+
+struct CameraMatrixStruct
+{
+	mat4 view;
+	mat4 proj;
+	mat4 projView;
+	
+	mat4 viewInv;
+	mat4 projInv;
+	mat4 projViewInv;
+
+	mat4 viewPrevFrame;
+	mat4 projPrevFrame;
+	mat4 projViewPrevFrame;
+};
+
+uniform CameraMatrixStruct u_CameraData;
+
+uniform FrameData u_FrameData;
+
+uniform MeshMatrixStruct u_MeshData;
 
 out VertexOutput
 {
@@ -24,15 +55,15 @@ out VertexOutput
 
 void main()
 {
-	vs_Output.WorldPosition = vec3(u_Transform * vec4(a_Position, 1.0));
-    vs_Output.Normal = mat3(u_Transform) * a_Normal;
+	vs_Output.WorldPosition = vec3(u_MeshData.transform * vec4(a_Position, 1.0));
+    vs_Output.Normal = mat3(u_MeshData.transform) * a_Normal;
 	vs_Output.TexCoord = vec2(a_TexCoord.x, 1.0 - a_TexCoord.y);
-	vs_Output.WorldNormals = mat3(u_Transform) * mat3(a_Tangent, a_Binormal, a_Normal);
-	vs_Output.WorldTransform = mat3(u_Transform);
+	vs_Output.WorldNormals = mat3(u_MeshData.transform) * mat3(a_Tangent, a_Binormal, a_Normal);
+	vs_Output.WorldTransform = mat3(u_MeshData.transform);
 	vs_Output.Binormal = a_Binormal;
-	vs_Output.ViewPosition = vec3(u_ViewMatrix * vec4(vs_Output.WorldPosition, 1.0));
+	vs_Output.ViewPosition = vec3(u_CameraData.view * vec4(vs_Output.WorldPosition, 1.0));
 	
-	gl_Position = u_ViewProjectionMatrix * u_Transform * vec4(a_Position, 1.0);
+	gl_Position = u_CameraData.projView * u_MeshData.transform * vec4(a_Position, 1.0);
 }
 
 #type fragment

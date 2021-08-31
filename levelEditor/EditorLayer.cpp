@@ -2,8 +2,6 @@
 
 #include "assets/scripts/CameraScript.h"
 #include "assets/scripts/FPSScript.h"
-#include "HartEng/Core/Utils.h"
-#include "HartEng/Asset/AssetManager.h"
 #include "Panels/AssetManagerPanel.h"
 
 namespace HE

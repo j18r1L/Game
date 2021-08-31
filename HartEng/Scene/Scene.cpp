@@ -16,7 +16,9 @@
 
 #include "HartEng/Physics/Physics.h"
 
+#include "HartEng/Core/Application.h"
 #include "HartEng/Core/Log.h"
+
 #include <iostream>
 #include <memory>
 
@@ -157,9 +159,9 @@ namespace HE
         return m_Name;
     }
 
-    const LightEnvironment& Scene::GetLightEnvironment() const
+    const LightStruct& Scene::GetLights() const
     {
-        return m_LightEnvironment;
+        return m_Lights;
     }
 
     Entity* Scene::FindEntityByTag(const std::string& tag)
@@ -279,11 +281,41 @@ namespace HE
         // Process camera entity
         glm::mat4 cameraViewMatrix = glm::inverse(cameraEntity.GetComponent<TransformComponent>()->GetTransform());
         SceneCamera& mainCamera = cameraEntity.GetComponent<CameraComponent>()->GetCamera();
+
+        // Prepare CameraMatrixSctuct and keep track of previous frame matrices 
+        m_CameraMatrixStruct.projPrevFrame = m_CameraMatrixStruct.proj;
+        m_CameraMatrixStruct.proj = mainCamera.GetProjection();
+        m_CameraMatrixStruct.projInv = glm::inverse(m_CameraMatrixStruct.proj);
+        
+        m_CameraMatrixStruct.viewPrevFrame = m_CameraMatrixStruct.view;
+        m_CameraMatrixStruct.view = cameraViewMatrix;
+        m_CameraMatrixStruct.viewInv = glm::inverse(m_CameraMatrixStruct.view);
+
+        m_CameraMatrixStruct.projViewPrevFrame = m_CameraMatrixStruct.projView;
+        m_CameraMatrixStruct.projView = m_CameraMatrixStruct.proj * m_CameraMatrixStruct.view;
+        m_CameraMatrixStruct.projViewInv = glm::inverse(m_CameraMatrixStruct.projView);
+
+        float nearClip = 0.1f;
+        float farClip = 1.0f;
+        float fov = 45.0f;
+        switch (mainCamera.GetProjectionType())
+        {
+        case SceneCamera::ProjectionType::Perspective:
+            nearClip = mainCamera.GetPerspectiveNearClip();
+            farClip = mainCamera.GetPerspectiveFarClip();
+            fov = mainCamera.GetPerspectiveFov();
+            break;
+        case SceneCamera::ProjectionType::Orthographic: 
+            nearClip = mainCamera.GetOrthographicNearClip();
+            farClip = mainCamera.GetOrthographicFarClip();
+            break;
+        }
+
+       
         {
             HE_PROFILE_SCOPE("OnUpdate: Scene submit");
 
-            //SceneRendererCamera cam(mainCamera, cameraViewMatrix, 0.0f, 0.0f, 0.0f);
-            SceneRenderer::BeginScene(this, { mainCamera, cameraViewMatrix });
+            SceneRenderer::BeginScene(this, { mainCamera, m_CameraMatrixStruct, nearClip, farClip, fov }, ts);
 
             // For all entities
             for (auto& [name, entity] : m_Entities)
@@ -302,7 +334,6 @@ namespace HE
                 }
             }
             SceneRenderer::EndScene();
-            
         }
     }
 
@@ -319,7 +350,19 @@ namespace HE
             // Add all lights to LightEnvironment and copy them to SceneRenderer in BeginScene
             ProcessLights();
 
-            SceneRenderer::BeginScene(this, { sceneCamera, camera.GetView() });
+            m_CameraMatrixStruct.projPrevFrame = m_CameraMatrixStruct.proj;
+            m_CameraMatrixStruct.proj = sceneCamera.GetProjection();
+            m_CameraMatrixStruct.projInv = glm::inverse(m_CameraMatrixStruct.proj);
+
+            m_CameraMatrixStruct.viewPrevFrame = m_CameraMatrixStruct.view;
+            m_CameraMatrixStruct.view = camera.GetView();
+            m_CameraMatrixStruct.viewInv = glm::inverse(m_CameraMatrixStruct.view);
+
+            m_CameraMatrixStruct.projViewPrevFrame = m_CameraMatrixStruct.projView;
+            m_CameraMatrixStruct.projView = m_CameraMatrixStruct.proj * m_CameraMatrixStruct.view;
+            m_CameraMatrixStruct.projViewInv = glm::inverse(m_CameraMatrixStruct.projView);
+
+            SceneRenderer::BeginScene(this, { sceneCamera, m_CameraMatrixStruct, camera.GetNear(), camera.GetFar(), camera.GetFov()}, ts);
 
            
             auto& material = Material::Create(Renderer::GetShaderLibrary().get()->Get("EntityID"));
@@ -409,10 +452,15 @@ namespace HE
         // Process lights
         {
             HE_PROFILE_SCOPE("Scene::OnRenderRuntime Process Lights");
-            m_LightEnvironment = LightEnvironment();
-            uint32_t directionalLightIndex = 0;
-            uint32_t pointLightIndex = 0;
-            uint32_t spotLightIndex = 0;
+            m_Lights = LightStruct();
+            std::vector<LightMatrixStruct> lightMatrixStruct(HE_MAX_LIGHT_COUNT);
+
+            uint32_t directionalLightCount = 0;
+
+            uint32_t pointLightCount = 0;
+
+            uint32_t spotLightCount = 0;
+
             for (auto& [name, entity] : m_Entities)
             {
                 // Pretty dumb, but there can be error that entity is nullptr
@@ -423,39 +471,62 @@ namespace HE
                         auto lightComponent = entity->GetComponent<LightComponent>();
                         auto transformComponent = entity->GetComponent<TransformComponent>();
                         LightType lightType = lightComponent->GetLightType();
-                        if (lightType == LightType::Point)
+                        if (lightType == LightType::Directional)
                         {
-                            m_LightEnvironment.PointLights =
-                            {
-                                transformComponent->GetPosition(),
-                                lightComponent->GetColor(),
-                                lightComponent->GetIntensity()
-                            };
+                            lightMatrixStruct.insert(lightMatrixStruct.begin() + directionalLightCount,
+                                {
+                                    // Position, range
+                                    { transformComponent->GetPosition(), lightComponent->GetRange() },
+                                    // Color, intensity
+                                    { lightComponent->GetColor(), lightComponent->GetIntensity() },
+                                    // spot inner, outer, scale, offset angles
+                                    { 0.0f, 0.0f, 0.0f, 0.0f }
+
+                                });
+
+                            directionalLightCount++;
                         }
-                        else if (lightType == LightType::Directional)
+                        else if (lightType == LightType::Point)
                         {
-                            m_LightEnvironment.DirectionalLights =
-                            {
-                                -glm::normalize(glm::mat3(transformComponent->GetTransform()) * glm::vec3(1.0f)),
-                                lightComponent->GetColor(),
-                                lightComponent->GetIntensity()
-                            };
+                            lightMatrixStruct.insert(lightMatrixStruct.begin() + directionalLightCount + pointLightCount,
+                                {
+                                    // Position, range
+                                    { transformComponent->GetPosition(), lightComponent->GetRange() },
+                                    // Color, intensity
+                                    { lightComponent->GetColor(), lightComponent->GetIntensity() },
+                                    // spot inner, outer, scale, offset angles
+                                    { 0.0f, 0.0f, 0.0f, 0.0f }
+
+                                });
+                            pointLightCount++;
                         }
                         else if (lightType == LightType::Spot)
                         {
-                            m_LightEnvironment.SpotLights =
-                            {
-                                transformComponent->GetPosition(),
-                                -glm::normalize(glm::mat3(transformComponent->GetTransform()) * glm::vec3(1.0f)),
-                                lightComponent->GetColor(),
-                                lightComponent->GetIntensity(),
-                                lightComponent->GetInnerConeAngle(),
-                                lightComponent->GetOuterConeAngle()
-                            };
+                            lightMatrixStruct.insert(lightMatrixStruct.begin() + directionalLightCount + pointLightCount + spotLightCount,
+                                {
+                                    // Position, range
+                                    { transformComponent->GetPosition(), lightComponent->GetRange() },
+                                    // Color, intensity
+                                    { lightComponent->GetColor(), lightComponent->GetIntensity() },
+                                    // spot inner, outer, scale, offset angles
+                                    { lightComponent->GetInnerConeAngle() , lightComponent->GetOuterConeAngle(), 1.0f, 0.0f }
+
+                                });
+                            spotLightCount++;
                         }
                     }
                 }
             }
+
+            // Set begin indices & counts
+            m_Lights.directionalLightBeginIndex = 0;
+            m_Lights.directionalLightCount = directionalLightCount;
+
+            m_Lights.pointLightBeginIndex = m_Lights.directionalLightCount;
+            m_Lights.pointLightCount = pointLightCount;
+
+            m_Lights.spotLightBeginIndex = m_Lights.directionalLightCount + m_Lights.pointLightCount;
+            m_Lights.spotLightCount = spotLightCount;
         }
     }
 

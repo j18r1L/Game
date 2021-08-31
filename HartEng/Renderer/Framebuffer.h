@@ -68,7 +68,7 @@ namespace HE
     struct FrameBufferSpecification
     {
         // Struct of properties
-        uint32_t Width = 0.0f, Height = 0.0f;
+        uint32_t Width = 0, Height = 0;
         glm::vec4 ClearColor{ 1.0f, 0.0f, 1.0f, 1.0f };
         FramebufferAttachmentSpecification Attachments;
         uint32_t Samples = 1;

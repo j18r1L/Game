@@ -111,6 +111,7 @@ namespace HE
             float time = m_Window->GetTime();
             m_Timestep.SetTime(time - m_CurrentTime);
             m_CurrentTime = time;
+            
 
             if (!m_Minimized)
             {
@@ -128,6 +129,7 @@ namespace HE
                 
             }
             m_Window->OnUpdate();
+            m_FrameCount++;
         }
     }
 

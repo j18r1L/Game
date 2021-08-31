@@ -16,7 +16,8 @@ namespace HE
 		bool m_Loaded = false;
 		bool m_IsCompute = false;
 
-		std::string m_Name, m_AssetPath;
+		std::string m_Name;
+		std::vector<std::string> m_AssetPath;
 		std::unordered_map<GLenum, std::string> m_ShaderSource;
 
 		std::vector<std::function<void()>> m_ShaderReloadedCallbacks;
@@ -30,6 +31,7 @@ namespace HE
 	public:
 		OpenGLShader() = default;
 		OpenGLShader(const std::string& filepath);
+		OpenGLShader(const std::string& vertexfilepath, const std::string& fragmentfilepath);
 		static std::shared_ptr<OpenGLShader> CreateFromString(const std::string& source);
 
 		virtual void Reload() override;

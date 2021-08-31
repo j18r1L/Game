@@ -7,6 +7,7 @@
 #include "HartEng/Core/Log.h"
 #include "HartEng/Core/Layer.h"
 #include "HartEng/Core/Input.h"
+#include "HartEng/Core/Utils.h"
 
 // Scene
 #include "HartEng/Scene/Scene.h"
@@ -43,6 +44,9 @@
 #include "HartEng/Events/KeyEvent.h"
 #include "HartEng/Events/ApplicationEvent.h"
 #include "HartEng/Events/MousesEvent.h"
+
+// Assets
+#include "HartEng/Asset/AssetManager.h"
 
 // imGUI
 #include "HartEng/imGUI/imGUILayer.h"

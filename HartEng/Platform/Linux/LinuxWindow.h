@@ -43,7 +43,6 @@ namespace HE
 
         static void GLFWCursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 
-        // Вызывается каждый кадр
         void OnUpdate() override;
 
         inline unsigned int GetWidth() const override { return m_Data.Width; }
@@ -52,7 +51,7 @@ namespace HE
         inline unsigned int GetYPosition() const override { return m_Data.YPosition; }
         double GetTime() const override;
 
-        // Атрибуты окна
+        // Window attributes
         void DisableCursor() override;
         void HideCursor() override;
         void ShowCursor() override;

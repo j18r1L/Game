@@ -30,6 +30,7 @@ namespace HE
         std::string PathToProject = CMAKE_PATH;
         Renderer::GetShaderLibrary()->Load(PathToProject + "/assets/shaders/Black.glsl");
         Renderer::GetShaderLibrary()->Load(PathToProject + "/assets/shaders/EntityID.glsl");
+        //Renderer::GetShaderLibrary()->Load(PathToProject + "/assets/shaders/Black.vert", PathToProject + "/assets/shaders/Black.frag");
         //Renderer3D::Init();
         //Renderer2D::Init();
     }
@@ -77,9 +78,11 @@ namespace HE
             // Material
             auto material = overrideMaterial ? overrideMaterial : materials[submesh.MaterialIndex];
             auto shader = material->GetShader();
+            material->Set("u_MeshData", transform * submesh.Transform);
             material->Bind();
 
-            shader->SetMat4("u_Transform", transform * submesh.Transform);
+            //shader->SetMat4("u_Transform", transform * submesh.Transform);
+            //shader->Set("u_MeshData", s_SceneRendererData.SceneData.SceneFrameData);
 
             Renderer::Submit([mesh, submesh, material]() {
                 if (material->GetFlag(MaterialFlag::DepthTest))
